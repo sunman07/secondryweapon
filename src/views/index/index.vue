@@ -182,7 +182,6 @@
 }
 </style>
 <script>
-import axios from 'axios';
 import { getSchoolInfo } from "../../service/common.service";
 import { setAntTitle } from "../../lib/common";
 import { MESSAGE_TYPE } from "../../components/baberrage/constants";
@@ -205,9 +204,7 @@ export default {
   mounted() {},
   created() {
     setAntTitle("工作台数据");
-    axios.get('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll',{
-    headers: {'Access-Control-Allow-Origin': '*'}
-}).then(r=>{
+    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
       console.log(r)
     })
     getSchoolInfo().then(r => {
