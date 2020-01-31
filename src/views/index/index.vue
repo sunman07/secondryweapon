@@ -221,18 +221,22 @@ export default {
         MyReportDay: "",
         UID: "",
         ClassName: ""
-      }
+      },
+      Interval:''
     };
   },
   components: {
     baberrage: () => import("../../components/baberrage/vue-baberrage")
   },
   mounted() {},
+  destroyed(){
+    clearInterval(this.Interval);
+  },
   created() {
     setAntTitle("我要报平安");
     this.city();
     this.QueryReport();
-    setInterval(()=>{this.QueryReport()},12000)
+   this.Interval= setInterval(()=>{this.QueryReport()},30000)
     /*    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
       console.log(r)
     }) */
@@ -303,7 +307,7 @@ export default {
       );
     },
     QueryReport() {
-      QueryLastReport().then(r => {
+      QueryLastReport({Count:50}).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
           this.addToList(res.Data);
