@@ -328,7 +328,7 @@ export default {
             avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
             msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj.ClassName ||
               ""}${this.topObj.Name || ""}，${item.Name}`,
-            time: 8,
+            time: 7,
             type: MESSAGE_TYPE.NORMAL
           });
         }
@@ -337,7 +337,7 @@ export default {
     addToList(arr = []) {
       //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
       arr.forEach(it => {
-        let time = 8;
+        let time = 7;
         const have = this.barrageList.find(i => i.RecordID == it.RecordID);
         console.log('have',have)
         if (!have) {
