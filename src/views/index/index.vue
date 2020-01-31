@@ -12,7 +12,7 @@
       </div>
       <baberrage
         :isShow="barrageIsShow"
-        :boxHeight="350"
+        :boxHeight="360"
         :barrageList="barrageList"
         :loop="barrageLoop"
       ></baberrage>
@@ -95,7 +95,7 @@
     position: absolute;
     width: 100%;
     justify-content: center;
-    bottom: 10px;
+    bottom: 16px;
     .icon {
       height: 16px;
       width: 16px;
@@ -328,7 +328,7 @@ export default {
             avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
             msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj.ClassName ||
               ""}${this.topObj.Name || ""}，${item.Name}`,
-            time: 6,
+            time: 8,
             type: MESSAGE_TYPE.NORMAL
           });
         }
@@ -337,7 +337,7 @@ export default {
     addToList(arr = []) {
       //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
       arr.forEach(it => {
-        let time = 6;
+        let time = 8;
         const have = this.barrageList.find(i => i.RecordID == it.RecordID);
         console.log('have',have)
         if (!have) {
