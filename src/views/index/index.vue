@@ -207,13 +207,13 @@ export default {
       msg: "Hello vue-baberrage",
       barrageIsShow: true,
       currentId: 0,
-      barrageLoop: true,
+      barrageLoop: false,
       barrageList: [],
       show: false,
       bizTypes: [],
       LocationProvince: "",
       LocationCity: "",
-      serverUrl:'',
+      serverUrl: "",
       topObj: {
         AcademyAllCount: "",
         AcademyName: "",
@@ -232,6 +232,7 @@ export default {
     setAntTitle("我要报平安");
     this.city();
     this.QueryReport();
+    setInterval(()=>{this.QueryReport()},12000)
     /*    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
       console.log(r)
     }) */
@@ -248,8 +249,8 @@ export default {
       if (!res.FeedbackCode) {
         const config = res.Data.Params;
         const item = config.find(item => item.Key == "Store.Public.Host");
-        if(item){
-          this.serverUrl=item.Value;
+        if (item) {
+          this.serverUrl = item.Value;
         }
       }
     });
@@ -302,7 +303,7 @@ export default {
       );
     },
     QueryReport() {
-      QueryLastReport({ Count: 100 }).then(r => {
+      QueryLastReport().then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
           this.addToList(res.Data);
@@ -335,19 +336,22 @@ export default {
     },
     addToList(arr = []) {
       //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
-      let items = [];
       arr.forEach(it => {
         let time = 6;
-        items.push({
-          avatar: `${this.serverUrl}/static/headpictures/${it.UID}.jpg-thumb`,
-          msg: `${formatDate(it.ReportTime, "MM月dd日")} 我是${it.Class}${
-            it.Name
-          }，${it.ReportContent}`,
-          time: time,
-          type: MESSAGE_TYPE.NORMAL
-        });
+        const have = this.barrageList.find(i => i.RecordID == it.RecordID);
+        console.log('have',have)
+        if (!have) {
+          this.barrageList.push({
+            avatar: `${this.serverUrl}/static/headpictures/${it.UID}.jpg-thumb`,
+            msg: `${formatDate(it.ReportTime, "MM月dd日")} 我是${it.Class}${
+              it.Name
+            }，${it.ReportContent}`,
+            time: time,
+            type: MESSAGE_TYPE.NORMAL
+          });
+        }
       });
-      this.barrageList = items;
+      console.log('barrageList',this.barrageList)
     }
   }
 };

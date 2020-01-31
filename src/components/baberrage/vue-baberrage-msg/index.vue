@@ -1,5 +1,5 @@
 <template>
-  <div class="baberrage-item" v-bind:class="item.barrageStyle" v-bind:style="item.style">
+  <div class="baberrage-item" style="margin-bottom:6px" v-bind:class="item.barrageStyle" v-bind:style="item.style">
     <div class="baberrage-avatar">
       <img :src="item.avatar"  @error="imageLoadOnError"/>
     </div>

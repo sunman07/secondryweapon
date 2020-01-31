@@ -14,7 +14,6 @@ exports.cdn={
         `${cdnBaseHttp}vue/2.6.7/vue.min.js`,
         `${cdnBaseHttp}vue-router/3.0.1/vue-router.min.js`,
         `${cdnBaseHttp}axios/0.18.0/axios.min.js`,
-        `${cdnBaseHttp}vuex/3.1.1/vuex.min.js`
     ]
 };
 //获取版本号

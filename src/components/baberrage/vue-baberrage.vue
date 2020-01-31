@@ -101,7 +101,6 @@ export default {
     this.laneNum = Math.floor(this.boxHeightVal / (this.messageHeight + this.messageGap * 2))
     this.setUpLane()
     this.shuffle()
-
     this.play()
   },
   watch: {
@@ -133,7 +132,7 @@ export default {
           let current = this.barrageList.splice(0, this.laneNum)
           // 判断长度
            //if (this.strlen(current.msg) === 0 || this.strlen(current.msg) > this.maxWordCount) continue
-           //this.normalQueue.push(...current)
+           this.normalQueue.push(current)
 
           this.addTask(() => {
             this.normalQueue = [
