@@ -30,7 +30,7 @@ export default {
   display: block;
   color: #000;
   transform: translateX(500%);
-  padding: 5px 8px 5px 38px;
+  padding: 0px 8px 5px 38px;
   text-align: left;
   white-space: nowrap;
 
@@ -59,12 +59,10 @@ export default {
    background-color:rgba(117,187,243,0.4);
   border-radius: 45px;
   border-radius: 45px;
-  width: 60vw;
   font-family: PingFangSC-Regular;
   font-size: 16px;
   color: #ffffff;
   letter-spacing: 0.69px;
-  margin: 7px auto;
   text-align: left;
 }
 </style>

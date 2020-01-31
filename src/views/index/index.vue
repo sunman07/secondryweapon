@@ -6,16 +6,20 @@
       </div>
       <div class="number-bg">
         {{topObj.AcademyName}} 累计
-        <span class="number">{{topObj.AcademyAllCount}}</span>人次已报平安
+        <span class="number">{{topObj.AcademyAllCount}}</span> 人次已报平安
         今天 累计
-        <span class="number">{{topObj.DayCount}}</span>人次已报平安
+        <span class="number">{{topObj.DayCount}}</span> 人次已报平安
       </div>
-{{LocationCity}}
-      <baberrage :isShow="barrageIsShow" :barrageList="barrageList" :loop="barrageLoop"></baberrage>
+      <baberrage
+        :isShow="barrageIsShow"
+        :boxHeight="350"
+        :barrageList="barrageList"
+        :loop="barrageLoop"
+      ></baberrage>
       <div class="footer">
-        <div class="reported" @click="addToList">
+        <div class="reported">
           <div class="top">
-            <span style="font-size:24px">5</span>天
+            <span style="font-size:24px">{{topObj.MyReportDay}}</span>天
           </div>
           <div class="finish">我已报</div>
         </div>
@@ -32,7 +36,7 @@
             <span class="a-close" @click="show=false">x</span>
           </div>
           <div class="list">
-            <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code">
+            <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code" @click="Report(item)">
               <img class="icon" :src="getImg(ix)" alt />
               <span class="elip">{{item.Name||''}}</span>
             </div>
@@ -188,9 +192,11 @@
 <script>
 import {
   getBizCode,
-  QueryReportTopStatistics
+  QueryReportTopStatistics,
+  onReport,
+  QueryLastReport
 } from "../../service/common.service";
-import { setAntTitle } from "../../lib/common";
+import { setAntTitle, formatDate } from "../../lib/common";
 import { MESSAGE_TYPE } from "../../components/baberrage/constants";
 
 export default {
@@ -200,15 +206,17 @@ export default {
       msg: "Hello vue-baberrage",
       barrageIsShow: true,
       currentId: 0,
-      barrageLoop: false,
+      barrageLoop: true,
       barrageList: [],
       show: false,
       bizTypes: [],
-      LocationCity:'',
-      topObj:{
-        AcademyAllCount:'',
-        AcademyName:"",
-        DayCount:''
+      LocationProvince: "",
+      LocationCity: "",
+      topObj: {
+        AcademyAllCount: "",
+        AcademyName: "",
+        DayCount: "",
+        MyReportDay: ""
       }
     };
   },
@@ -219,7 +227,8 @@ export default {
   created() {
     setAntTitle("我要报平安");
     this.city();
-  /*    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
+    this.QueryReport();
+    /*    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
       console.log(r)
     }) */
     this.getTopData();
@@ -249,28 +258,86 @@ export default {
         }
       });
     },
-    city(){    //定义获取城市方法
-            // eslint-disable-next-line no-undef
-            const geolocation = new BMap.Geolocation();
-            var _this = this
-            geolocation.getCurrentPosition(function getinfo(position){
-                let city = position.address.city; 
-                console.log('city',position)
-                _this.LocationCity = city
-            }, function() {
-                _this.LocationCity = "定位失败"
-            }, {provider: 'baidu'});		
+    //定义获取城市方法
+    city() {
+      // eslint-disable-next-line no-undef
+      const geolocation = new BMap.Geolocation();
+      var _this = this;
+      geolocation.getCurrentPosition(
+        function getinfo(position) {
+          const address = position.address;
+          console.log("city", position);
+          _this.LocationProvince = address.province;
+          _this.LocationCity = address.city;
         },
-    addToList() {
-      for (let index = 0; index < 10; index++) {
+        function() {
+          //_this.LocationCity = "";
+          this.$dialog
+            .confirm({
+              title: "提示",
+              message: "尚未定位到您的位置是否再次尝试一下?"
+            })
+            .then(() => {
+              this.city();
+            })
+            .catch(() => {
+              // on cancel
+            });
+        },
+        { provider: "baidu" }
+      );
+    },
+    QueryReport() {
+      QueryLastReport({ Count: 100 }).then(r => {
+        const res = r.data;
+        if (!res.FeedbackCode) {
+          this.addToList(res.Data);
+        }
+      });
+    },
+    /* 上报 */
+    Report(item) {
+      if (!this.LocationCity) {
+        this.$toast("位置信息尚未获取,请稍等片刻报平安!");
+        return;
+      }
+      const params = { ReportArea: this.LocationCity, ReportCode: item.Code };
+      onReport(params).then(r => {
+        const res = r.data;
+        if (!res.FeedbackCode) {
+          this.$toast(res.FeedbackText);
+          this.getTopData();
+          this.show = false;
+          this.barrageList.push({
+            avatar: require("../../assets/images/0.png"),
+            msg: `${formatDate(new Date(), "MM月dd日")} 我是，${item.Name}`,
+            time: 6,
+            type: MESSAGE_TYPE.NORMAL
+          });
+        }
+      });
+    },
+    addToList(arr = []) {
+      arr.forEach((it, ix) => {
+        let time = 6;
+        if (ix == 0) {
+          time = 3;
+        }
+        if (ix == 1) {
+          time = 4;
+        }
+        if (ix == 2) {
+          time = 5;
+        }
         this.barrageList.push({
-          id: ++this.currentId,
           avatar: require("../../assets/images/0.png"),
-          msg: this.msg,
-          time: 4,
+          msg: `${formatDate(it.ReportTime, "MM月dd日")} 我是${it.Class}${
+            it.Name
+          }，${it.ReportContent}`,
+          time: time,
           type: MESSAGE_TYPE.NORMAL
         });
-      }
+      });
     }
   }
 };

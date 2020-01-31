@@ -1,4 +1,5 @@
 import Vue from "vue";
-import { Toast, ActionSheet } from "vant";
+import { Toast,Dialog, ActionSheet } from "vant";
+Vue.use(Dialog);
 Vue.use(Toast);
 Vue.use(ActionSheet);

@@ -333,6 +333,7 @@ export default {
   width: 100%;
   height: 100%;
   padding-top: 14px;
+  padding-bottom: 40px;
   overflow:hidden;
 }
 </style>
