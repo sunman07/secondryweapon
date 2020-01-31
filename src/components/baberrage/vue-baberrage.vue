@@ -4,7 +4,7 @@
       <VueBaberrageMsg  v-for="item in topQueue" :key="item.id" class="baberrage-item" :item="item" />
     </div>
     <!-- Normal -->
-    <div class="baberrage-lane" v-for="lane in lanes" :key="lane.id">
+    <div class="baberrage-lane" style="padding-bottom:10px" v-for="lane in lanes" :key="lane.id">
       <VueBaberrageMsg   v-for="item in lane.laneQueue" :key="item.runtimeId" class="baberrage-item" :item="item" />
     </div>
     <div class="baberrage-bottom">
@@ -330,7 +330,7 @@ export default {
 .baberrage-stage{
   position: absolute;
   width: 100%;
-  height: 100vh;
+  height: 400px;
   padding-top: 14px;
   overflow:hidden;
 }

@@ -1,6 +1,6 @@
 <template>
-  <div class="baberrage-item" style="margin-bottom:6px" v-bind:class="item.barrageStyle" v-bind:style="item.style">
-    <div class="baberrage-avatar">
+  <div class="baberrage-item"  v-bind:class="item.barrageStyle" v-bind:style="item.style">
+     <div class="baberrage-avatar">
       <img :src="item.avatar"  @error="imageLoadOnError"/>
     </div>
     <div class="baberrage-msg">{{ item.msg }}</div>
@@ -31,6 +31,7 @@ export default {
 
 <style lang="less">
 .baberrage-item {
+  box-sizing: border-box;
   position: absolute;
   width: auto;
   display: block;
@@ -56,6 +57,7 @@ export default {
 
   .baberrage-msg {
     line-height: 34px;
+    height: 34px;
     padding-left: 8px;
     white-space: nowrap;
   }
