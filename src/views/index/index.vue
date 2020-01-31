@@ -5,12 +5,12 @@
         <img src="@/assets/images/title.png" alt />
       </div>
       <div class="number-bg">
-        计算机学院 累计
-        <span class="number">2340</span>人次已报平安
+        {{topObj.AcademyName}} 累计
+        <span class="number">{{topObj.AcademyAllCount}}</span>人次已报平安
         今天 累计
-        <span class="number">2340</span>人次已报平安
+        <span class="number">{{topObj.DayCount}}</span>人次已报平安
       </div>
-
+{{LocationCity}}
       <baberrage :isShow="barrageIsShow" :barrageList="barrageList" :loop="barrageLoop"></baberrage>
       <div class="footer">
         <div class="reported" @click="addToList">
@@ -32,9 +32,9 @@
             <span class="a-close" @click="show=false">x</span>
           </div>
           <div class="list">
-            <div class="item">
-              <img class="icon" src="@/assets/images/message.png" alt />
-              <span class="elip">武汉加油！中国加油！</span>
+            <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code">
+              <img class="icon" :src="getImg(ix)" alt />
+              <span class="elip">{{item.Name||''}}</span>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
     background-repeat: no-repeat;
     padding: 10px 20px;
     font-family: PingFangSC-Regular;
-    font-size: 14px;
+    font-size: 16px;
     color: #def0fd;
     letter-spacing: 0.6px;
     text-align: left;
@@ -141,6 +141,7 @@
   .action-content {
     background: #faf3e3;
     height: 300px;
+    overflow: hidden;
     box-shadow: 0 -12px 24px 0 rgba(25, 70, 166, 0.2);
     border-radius: 12px 12px 0 0;
     border-radius: 12px 12px 0px 0px;
@@ -159,9 +160,12 @@
     }
     .list {
       margin: 10px 20px;
+      max-height: 235px;
+      overflow: auto;
       .item {
         background: #ffffff;
         display: flex;
+        margin: 8px auto;
         align-items: center;
         padding: 10px 8px;
         border-radius: 72px;
@@ -182,7 +186,10 @@
 }
 </style>
 <script>
-import { getSchoolInfo } from "../../service/common.service";
+import {
+  getBizCode,
+  QueryReportTopStatistics
+} from "../../service/common.service";
 import { setAntTitle } from "../../lib/common";
 import { MESSAGE_TYPE } from "../../components/baberrage/constants";
 
@@ -195,7 +202,14 @@ export default {
       currentId: 0,
       barrageLoop: false,
       barrageList: [],
-      show: false
+      show: false,
+      bizTypes: [],
+      LocationCity:'',
+      topObj:{
+        AcademyAllCount:'',
+        AcademyName:"",
+        DayCount:''
+      }
     };
   },
   components: {
@@ -203,27 +217,59 @@ export default {
   },
   mounted() {},
   created() {
-    setAntTitle("工作台数据");
-    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
+    setAntTitle("我要报平安");
+    this.city();
+  /*    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
       console.log(r)
-    })
-    getSchoolInfo().then(r => {
-      console.log(r);
-      const item = r.data.Data;
-      this.logo = item.Logo;
-      this.Campus = item.Campus;
+    }) */
+    this.getTopData();
+    getBizCode("studentSafetyReport").then(r => {
+      const res = r.data;
+      if (!res.FeedbackCode) {
+        const item = res.Data;
+        this.bizTypes = item || [];
+      }
     });
   },
   methods: {
+    getImg(ix) {
+      let ixx = ix;
+      if (ix > 2) {
+        ixx = Math.floor(Math.random() * 2);
+      }
+      const img = require(`../../assets/images/${ixx}.png`);
+      return img;
+    },
+    getTopData() {
+      QueryReportTopStatistics().then(r => {
+        const res = r.data;
+        if (!res.FeedbackCode) {
+          const item = res.Data;
+          this.topObj = item || [];
+        }
+      });
+    },
+    city(){    //定义获取城市方法
+            // eslint-disable-next-line no-undef
+            const geolocation = new BMap.Geolocation();
+            var _this = this
+            geolocation.getCurrentPosition(function getinfo(position){
+                let city = position.address.city; 
+                console.log('city',position)
+                _this.LocationCity = city
+            }, function() {
+                _this.LocationCity = "定位失败"
+            }, {provider: 'baidu'});		
+        },
     addToList() {
       for (let index = 0; index < 10; index++) {
-         this.barrageList.push({
-        id: ++this.currentId,
-        avatar: "../../assets/images/message.png",
-        msg: this.msg,
-        time: 4,
-        type: MESSAGE_TYPE.NORMAL
-      });
+        this.barrageList.push({
+          id: ++this.currentId,
+          avatar: require("../../assets/images/0.png"),
+          msg: this.msg,
+          time: 4,
+          type: MESSAGE_TYPE.NORMAL
+        });
       }
     }
   }

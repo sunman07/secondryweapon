@@ -36,34 +36,35 @@ export default {
 
   .baberrage-avatar {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
     left: 8px;
     top: 5px;
     border-radius: 50px;
     overflow: hidden;
 
     img {
-      width: 30px;
+      width: 34px;
     }
   }
 
   .baberrage-msg {
-    line-height: 30px;
+    line-height: 34px;
     padding-left: 8px;
     white-space: nowrap;
   }
 }
 
 .baberrage-item.normal {
-  opacity: 0.4;
-  background: #75bbf3;
+   background-color:rgba(117,187,243,0.4);
   border-radius: 45px;
   border-radius: 45px;
+  width: 60vw;
   font-family: PingFangSC-Regular;
   font-size: 16px;
   color: #ffffff;
   letter-spacing: 0.69px;
+  margin: 7px auto;
   text-align: left;
 }
 </style>

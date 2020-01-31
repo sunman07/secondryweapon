@@ -1,4 +1,5 @@
 import http from '../lib/fetch';
+const api = "/api/studentsafetyreport/";
 
 /**
  * 获取学校信息
@@ -11,22 +12,22 @@ export function getSchoolInfo() {
     });
 }
 /**
- * 获取学生数据
+ * 获取上报类型
  */
-export function studentBigdata() {
-    return http.postJSON({
-        Router: '/api/bigdata/studentbigdata',
-        Method: 'POST',
-        Body: {}
-    });
-}
+export function getBizCode(CodeType='') {
+         return http.postJSON({
+           Router: "/api/system/bizcode",
+           Method: "POST",
+           Body: { CodeType }
+         });
+       }
 /**
- * 获取教职工数据
+ * 获取头部数据
  */
-export function staffBigdata() {
-    return http.postJSON({
-        Router: '/api/bigdata/staffbigdata',
-        Method: 'POST',
-        Body: {}
-    });
-}
+export function QueryReportTopStatistics() {
+         return http.postJSON({
+           Router: `${api}queryreporttopstatistics`,
+           Method: "POST",
+           Body: {}
+         });
+       }
