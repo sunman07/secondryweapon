@@ -70,7 +70,7 @@
     background-repeat: no-repeat;
     padding: 10px 20px;
     font-family: PingFangSC-Regular;
-    font-size: 16px;
+    font-size: 14px;
     color: #def0fd;
     letter-spacing: 0.6px;
     text-align: left;
@@ -130,8 +130,8 @@
     .submit {
       width: 215px;
       background: #fcb521;
-      height: 48px;
-      line-height: 48px;
+      height: 50px;
+      line-height: 50px;
       border-radius: 30px;
       border-radius: 30px;
       font-family: PingFang-SC-Medium;
@@ -194,7 +194,8 @@ import {
   getBizCode,
   QueryReportTopStatistics,
   onReport,
-  QueryLastReport
+  QueryLastReport,
+  getConfig
 } from "../../service/common.service";
 import { setAntTitle, formatDate } from "../../lib/common";
 import { MESSAGE_TYPE } from "../../components/baberrage/constants";
@@ -212,11 +213,14 @@ export default {
       bizTypes: [],
       LocationProvince: "",
       LocationCity: "",
+      serverUrl:'',
       topObj: {
         AcademyAllCount: "",
         AcademyName: "",
         DayCount: "",
-        MyReportDay: ""
+        MyReportDay: "",
+        UID: "",
+        ClassName: ""
       }
     };
   },
@@ -237,6 +241,16 @@ export default {
       if (!res.FeedbackCode) {
         const item = res.Data;
         this.bizTypes = item || [];
+      }
+    });
+    getConfig().then(r => {
+      const res = r.data;
+      if (!res.FeedbackCode) {
+        const config = res.Data.Params;
+        const item = config.find(item => item.Key == "Store.Public.Host");
+        if(item){
+          this.serverUrl=item.Value;
+        }
       }
     });
   },
@@ -308,9 +322,11 @@ export default {
           this.$toast(res.FeedbackText);
           this.getTopData();
           this.show = false;
+          const date = new Date();
           this.barrageList.push({
-            avatar: require("../../assets/images/0.png"),
-            msg: `${formatDate(new Date(), "MM月dd日")} 我是，${item.Name}`,
+            avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
+            msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj.ClassName ||
+              ""}${this.topObj.Name || ""}，${item.Name}`,
             time: 6,
             type: MESSAGE_TYPE.NORMAL
           });
@@ -318,19 +334,12 @@ export default {
       });
     },
     addToList(arr = []) {
-      arr.forEach((it, ix) => {
+      //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
+      let items = [];
+      arr.forEach(it => {
         let time = 6;
-        if (ix == 0) {
-          time = 3;
-        }
-        if (ix == 1) {
-          time = 4;
-        }
-        if (ix == 2) {
-          time = 5;
-        }
-        this.barrageList.push({
-          avatar: require("../../assets/images/0.png"),
+        items.push({
+          avatar: `${this.serverUrl}/static/headpictures/${it.UID}.jpg-thumb`,
           msg: `${formatDate(it.ReportTime, "MM月dd日")} 我是${it.Class}${
             it.Name
           }，${it.ReportContent}`,
@@ -338,6 +347,7 @@ export default {
           type: MESSAGE_TYPE.NORMAL
         });
       });
+      this.barrageList = items;
     }
   }
 };

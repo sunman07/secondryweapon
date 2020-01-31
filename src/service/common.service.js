@@ -52,3 +52,20 @@ export function QueryLastReport(params = {}) {
     Body: params
   });
 }
+/**
+ * 获取配置
+ */
+export function getConfig() {
+  return http.postJSON(
+    {
+      Router: "/app/client/config",
+      Method: "POST",
+      Body: {
+        DEVICETYPE: "Web",
+        DEVICEID: "Web",
+        VERSION: "1.1"
+      }
+    },
+    "/api/appsrv/interface"
+  );
+}

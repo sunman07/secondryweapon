@@ -1,7 +1,7 @@
 <template>
   <div class="baberrage-item" v-bind:class="item.barrageStyle" v-bind:style="item.style">
     <div class="baberrage-avatar">
-      <img :src="item.avatar" />
+      <img :src="item.avatar"  @error="imageLoadOnError"/>
     </div>
     <div class="baberrage-msg">{{ item.msg }}</div>
   </div>
@@ -19,6 +19,12 @@ export default {
   },
   data() {
     return {};
+  },
+  methods:{
+     imageLoadOnError(e) {
+      console.log("frrrr", e);
+      this.item.avatar= require("../../../assets/images/user.jpg");
+    }
   }
 };
 </script>
@@ -30,7 +36,7 @@ export default {
   display: block;
   color: #000;
   transform: translateX(500%);
-  padding: 0px 8px 5px 38px;
+  padding: 5px 8px 5px 38px;
   text-align: left;
   white-space: nowrap;
 

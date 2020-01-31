@@ -5,7 +5,7 @@
     </div>
     <!-- Normal -->
     <div class="baberrage-lane" v-for="lane in lanes" :key="lane.id">
-      <VueBaberrageMsg  v-for="item in lane.laneQueue" :key="item.runtimeId" class="baberrage-item" :item="item" />
+      <VueBaberrageMsg   v-for="item in lane.laneQueue" :key="item.runtimeId" class="baberrage-item" :item="item" />
     </div>
     <div class="baberrage-bottom">
       <VueBaberraageMsg  v-for="item in bottomQueue" :key="item.id" class="baberrage-item" :item="item" />
@@ -132,8 +132,8 @@ export default {
         while (this.barrageList.length > 0) {
           let current = this.barrageList.splice(0, this.laneNum)
           // 判断长度
-          // if (this.strlen(current.msg) === 0 || this.strlen(current.msg) > this.maxWordCount) continue
-          // this.normalQueue.push(current)
+           //if (this.strlen(current.msg) === 0 || this.strlen(current.msg) > this.maxWordCount) continue
+           //this.normalQueue.push(...current)
 
           this.addTask(() => {
             this.normalQueue = [
