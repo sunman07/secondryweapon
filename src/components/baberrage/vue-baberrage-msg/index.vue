@@ -36,7 +36,6 @@ export default {
   width: auto;
   display: block;
   color: #000;
-  margin-left: 50px;
   transform: translateX(500%);
   padding: 5px 8px 5px 38px;
   text-align: left;
