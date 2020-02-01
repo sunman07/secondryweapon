@@ -5,15 +5,18 @@
         <img src="@/assets/images/title.png" alt />
       </div>
       <div class="number-bg">
-        <div>{{topObj.AcademyName}} 累计
-        <span class="number">{{topObj.AcademyAllCount}}</span> 人次已报平安</div>
         <div>
-        今天 累计
-        <span class="number">{{topObj.DayCount}}</span> 人次已报平安</div>
+          {{topObj.AcademyName}} 累计
+          <span class="number">{{topObj.AcademyAllCount}}</span> 人次已报平安
+        </div>
+        <div>
+          今天 累计
+          <span class="number">{{topObj.DayCount}}</span> 人次已报平安
+        </div>
       </div>
       <baberrage
         :isShow="barrageIsShow"
-        :boxHeight="360"
+        :boxHeight="340"
         :barrageList="barrageList"
         :loop="barrageLoop"
       ></baberrage>
@@ -77,7 +80,7 @@
     letter-spacing: 0.6px;
     text-align: left;
     line-height: 28px;
-    div{
+    div {
       text-align: center;
     }
     .number {
@@ -202,8 +205,9 @@ import {
   QueryLastReport,
   getConfig
 } from "../../service/common.service";
-import { setAntTitle, formatDate } from "../../lib/common";
+import { setAntTitle, debounce, formatDate } from "../../lib/common";
 import { MESSAGE_TYPE } from "../../components/baberrage/constants";
+import baberrage from "../../components/baberrage/vue-baberrage";
 
 export default {
   name: "index",
@@ -227,21 +231,23 @@ export default {
         UID: "",
         ClassName: ""
       },
-      Interval:''
+      Interval: ""
     };
   },
   components: {
-    baberrage: () => import("../../components/baberrage/vue-baberrage")
+    baberrage: baberrage
   },
   mounted() {},
-  destroyed(){
+  destroyed() {
     clearInterval(this.Interval);
   },
   created() {
+    this.QueryReport();
     setAntTitle("我要报平安");
     this.city();
-    this.QueryReport();
-   this.Interval= setInterval(()=>{this.QueryReport()},30000)
+    this.Interval = setInterval(() => {
+      this.QueryReport();
+    }, 30000);
     /*    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
       console.log(r)
     }) */
@@ -312,7 +318,7 @@ export default {
       );
     },
     QueryReport() {
-      QueryLastReport({Count:50}).then(r => {
+      QueryLastReport({ Count: 20 }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
           this.addToList(res.Data);
@@ -326,31 +332,34 @@ export default {
         return;
       }
       const params = { ReportArea: this.LocationCity, ReportCode: item.Code };
-      onReport(params).then(r => {
-        const res = r.data;
-        if (!res.FeedbackCode) {
-          this.$toast(res.FeedbackText);
-          this.getTopData();
-          this.show = false;
-          const date = new Date();
-          this.barrageList.push({
-            avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
-            msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj.ClassName ||
-              ""}${this.topObj.Name || ""}，${item.Name}`,
-            time: 7,
-            type: MESSAGE_TYPE.NORMAL
-          });
-        }
-      });
+       this.show = false;
+      debounce(() => {
+        onReport(params).then(r => {
+          const res = r.data;
+          if (!res.FeedbackCode) {
+            this.$toast(res.FeedbackText);
+            this.getTopData();
+            const date = new Date();
+            this.barrageList.push({
+              avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
+              msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj
+                .ClassName || ""}${this.topObj.Name || ""}，${item.Name}`,
+              time: 5,
+              type: MESSAGE_TYPE.NORMAL
+            });
+          }
+        });
+      }, 300);
     },
     addToList(arr = []) {
       //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
       arr.forEach(it => {
-        let time = 7;
+        let time = 5;
         const have = this.barrageList.find(i => i.RecordID == it.RecordID);
-        console.log('have',have)
+        console.log("have", have);
         if (!have) {
           this.barrageList.push({
+            id: ++this.currentId,
             avatar: `${this.serverUrl}/static/headpictures/${it.UID}.jpg-thumb`,
             msg: `${formatDate(it.ReportTime, "MM月dd日")} 我是${it.Class}${
               it.Name
@@ -360,7 +369,7 @@ export default {
           });
         }
       });
-      console.log('barrageList',this.barrageList)
+      console.log("barrageList", this.barrageList);
     }
   }
 };

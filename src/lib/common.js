@@ -1,3 +1,8 @@
+let timeout = null;
+function debounce(fn, wait) {
+  if (timeout !== null) clearTimeout(timeout);
+  timeout = setTimeout(fn, wait);
+}
 function closeView() {
 // eslint-disable-next-line
     antlinker.closeView({
@@ -63,4 +68,5 @@ function formatDate(date3, fmt) {
     return fmt;
 }
 
-export { closeView, formatDate, setAntTitle, formater, getSChoolCode }
+export { debounce,closeView, formatDate, setAntTitle, formater, getSChoolCode };
+

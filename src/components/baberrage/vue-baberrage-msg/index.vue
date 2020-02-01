@@ -71,6 +71,7 @@ export default {
   font-family: PingFangSC-Regular;
   font-size: 16px;
   color: #ffffff;
+  margin-left: 50px;
   letter-spacing: 0.69px;
   text-align: left;
 }

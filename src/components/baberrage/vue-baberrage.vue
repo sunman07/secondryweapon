@@ -105,6 +105,7 @@ export default {
   },
   watch: {
     barrageList () {
+      console.log('change')
       this.insertToReadyShowQueue()
     }
   },
@@ -142,7 +143,7 @@ export default {
           })
         }
         this.updateBarrageDate()
-      }, 100)
+      }, 300)
     },
     // 更新弹幕数据
     updateBarrageDate (timestamp) {
