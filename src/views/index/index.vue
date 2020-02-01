@@ -17,6 +17,7 @@
       <baberrage
         :isShow="barrageIsShow"
         :boxHeight="340"
+        :boxWidth="0"
         :barrageList="barrageList"
         :loop="barrageLoop"
       ></baberrage>
@@ -213,7 +214,7 @@ export default {
   name: "index",
   data() {
     return {
-      msg: "Hello vue-baberrage",
+      msg: "",
       barrageIsShow: true,
       currentId: 0,
       barrageLoop: false,
@@ -318,7 +319,7 @@ export default {
       );
     },
     QueryReport() {
-      QueryLastReport({ Count: 20 }).then(r => {
+      QueryLastReport({ Count: 50 }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
           this.addToList(res.Data);
@@ -353,6 +354,7 @@ export default {
     },
     addToList(arr = []) {
       //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
+      console.time('qw')
       arr.forEach(it => {
         let time = 5;
         const have = this.barrageList.find(i => i.RecordID == it.RecordID);
@@ -369,6 +371,7 @@ export default {
           });
         }
       });
+      console.timeEnd('qw')
       console.log("barrageList", this.barrageList);
     }
   }

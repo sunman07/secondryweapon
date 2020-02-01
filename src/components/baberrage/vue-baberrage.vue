@@ -60,7 +60,7 @@ export default {
     },
     maxWordCount: {
       type: Number,
-      default: 20
+      default: 10
     },
     throttleGap: {
       type: Number,
@@ -101,11 +101,11 @@ export default {
     this.laneNum = Math.floor(this.boxHeightVal / (this.messageHeight + this.messageGap * 2))
     this.setUpLane()
     this.shuffle()
-    this.play()
+    this.play();
   },
   watch: {
-    barrageList () {
-      console.log('change')
+    barrageList (val) {
+      console.log('change',val)
       this.insertToReadyShowQueue()
     }
   },
@@ -133,7 +133,7 @@ export default {
           let current = this.barrageList.splice(0, this.laneNum)
           // 判断长度
            //if (this.strlen(current.msg) === 0 || this.strlen(current.msg) > this.maxWordCount) continue
-           //this.normalQueue.push(current)
+          // this.normalQueue.push(current)
 
           this.addTask(() => {
             this.normalQueue = [
@@ -147,6 +147,7 @@ export default {
     },
     // 更新弹幕数据
     updateBarrageDate (timestamp) {
+     // console.log('timestamp:',timestamp)
       if (this.startTime == null) this.startTime = timestamp
       if (typeof timestamp !== 'undefined') {
         this.move(timestamp)
@@ -217,7 +218,6 @@ export default {
       item.currentTime = timestamp
       // 移动距离
       let moveVal = item.speed * progress
-
       // 如果移动距离为0或者NaN 跳过，保持动画连续和减少重绘
       if (moveVal <= 0 || isNaN(moveVal)) return
       item.left -= moveVal
@@ -320,7 +320,7 @@ export default {
           len++
         }
       }
-      return len
+      return len-4
     }
   }
 }
