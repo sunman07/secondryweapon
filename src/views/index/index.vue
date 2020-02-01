@@ -70,11 +70,11 @@
     background: url("../../assets/images/number_bg.png");
     background-size: cover;
     height: 89.5px;
-    width: 320px;
+    width: 350px;
     text-align: center;
     box-sizing: border-box;
     background-repeat: no-repeat;
-    padding: 10px 20px;
+    padding: 10px 10px;
     font-family: PingFangSC-Regular;
     font-size: 14px;
     color: #def0fd;
@@ -83,6 +83,9 @@
     line-height: 28px;
     div {
       text-align: center;
+      white-space: nowrap; //强制不换行-必须
+      overflow: hidden; //隐藏溢出的文本-必须
+      text-overflow: ellipsis;
     }
     .number {
       font-family: DINCond-Bold;

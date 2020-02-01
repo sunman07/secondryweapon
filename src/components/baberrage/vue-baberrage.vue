@@ -331,7 +331,7 @@ export default {
 .baberrage-stage{
   position: absolute;
   width: 100%;
-  height: 400px;
+  height: 360px;
   padding-top: 14px;
   overflow:hidden;
 }
