@@ -4,7 +4,7 @@
       <VueBaberrageMsg  v-for="item in topQueue" :key="item.id" class="baberrage-item" :item="item" />
     </div>
     <!-- Normal -->
-    <div class="baberrage-lane" style="padding-bottom:10px;padding-left:200px" v-for="lane in lanes" :key="lane.id">
+    <div class="baberrage-lane" style="padding-bottom:10px" v-for="lane in lanes" :key="lane.id">
       <VueBaberrageMsg   v-for="item in lane.laneQueue" :key="item.runtimeId" class="baberrage-item" :item="item" />
     </div>
     <div class="baberrage-bottom">
@@ -252,7 +252,7 @@ export default {
       item.startTime = timestamp
       item.currentTime = timestamp
       item.speed = this.boxWidthVal / (item.time * 1000)
-      item.width = this.strlen(item.msg) * 9 + 20
+      item.width = this.strlen(item.msg) * 9 + 200
       if (item.type === MESSAGE_TYPE.NORMAL) {
         // 选择位置
         if (this.showInd + 1 > this.laneNum) {

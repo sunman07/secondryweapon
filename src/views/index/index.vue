@@ -325,7 +325,7 @@ export default {
       QueryLastReport({ Count: 50 }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
-          this.addToList(res.Data);
+          this.addToList(res.Data||[]);
         }
       });
     },

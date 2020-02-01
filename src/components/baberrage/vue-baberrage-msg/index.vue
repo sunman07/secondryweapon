@@ -1,7 +1,7 @@
 <template>
   <div class="baberrage-item"  v-bind:class="item.barrageStyle" v-bind:style="item.style">
      <div class="baberrage-avatar">
-      <img :src="item.avatar"  @error="imageLoadOnError"/>
+      <img :src="item.avatar"   @error="imageLoadOnError"/>
     </div>
     <div class="baberrage-msg">{{ item.msg }}</div>
   </div>
@@ -40,7 +40,6 @@ export default {
   padding: 5px 8px 5px 38px;
   text-align: left;
   white-space: nowrap;
-
   .baberrage-avatar {
     position: absolute;
     width: 34px;
@@ -70,7 +69,6 @@ export default {
   font-family: PingFangSC-Regular;
   font-size: 16px;
   color: #ffffff;
-  margin-left: 50px;
   letter-spacing: 0.69px;
   text-align: left;
 }
