@@ -235,7 +235,8 @@ export default {
         UID: "",
         ClassName: ""
       },
-      Interval: ""
+      Interval: "",
+      myFlag:false
     };
   },
   components: {
@@ -344,13 +345,16 @@ export default {
             this.$toast(res.FeedbackText);
             this.getTopData();
             const date = new Date();
+            this.myFlag=true;
             this.barrageList.push({
+                id: ++this.currentId,
               avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
               msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj
                 .ClassName || ""}${this.topObj.Name || ""}，${item.Name}`,
               time: 5,
               type: MESSAGE_TYPE.NORMAL
             });
+            this.myFlag=false;
           }
         });
       }, 300);
@@ -362,7 +366,8 @@ export default {
         let time = 5;
         const have = this.barrageList.find(i => i.RecordID == it.RecordID);
         console.log("have", have);
-        if (!have) {
+        if (!have&&!this.myFlag) {
+          console.log('有新数据!')
           this.barrageList.push({
             id: ++this.currentId,
             avatar: `${this.serverUrl}/static/headpictures/${it.UID}.jpg-thumb`,
