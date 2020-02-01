@@ -322,8 +322,8 @@ export default {
         { provider: "baidu" }
       );
     },
-    QueryReport() {
-      QueryLastReport({ Count: 50 }).then(r => {
+    QueryReport(Count=50) {
+      QueryLastReport({ Count}).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
           this.addToList(res.Data||[]);

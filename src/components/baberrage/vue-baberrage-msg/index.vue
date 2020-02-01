@@ -21,8 +21,7 @@ export default {
     return {};
   },
   methods:{
-     imageLoadOnError(e) {
-      console.log("frrrr", e);
+     imageLoadOnError() {
       this.item.avatar= require("../../../assets/images/user.jpg");
     }
   }

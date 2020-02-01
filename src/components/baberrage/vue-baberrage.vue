@@ -272,7 +272,13 @@ export default {
         this.lanes[laneInd].laneQueue.push(item)
         // 计算位置
         item.top = this.indexShowQueue[laneInd] * (this.messageHeight + this.messageGap * 2) - this.messageGap
-        item.left = lastLeft
+        console.log('showInd',this.showInd)
+        console.log('laneInd',item.id)
+        if(item.id<12){
+item.left = lastLeft-600;
+        }else{
+      item.left = lastLeft;
+      }
         this.showInd++
       } else {
         item.left = (this.boxWidthVal - item.width) / 2
