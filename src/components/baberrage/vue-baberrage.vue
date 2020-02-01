@@ -132,7 +132,7 @@ export default {
           let current = this.barrageList.splice(0, this.laneNum)
           // 判断长度
            //if (this.strlen(current.msg) === 0 || this.strlen(current.msg) > this.maxWordCount) continue
-           this.normalQueue.push(current)
+           //this.normalQueue.push(current)
 
           this.addTask(() => {
             this.normalQueue = [
@@ -142,7 +142,7 @@ export default {
           })
         }
         this.updateBarrageDate()
-      }, 300)
+      }, 100)
     },
     // 更新弹幕数据
     updateBarrageDate (timestamp) {

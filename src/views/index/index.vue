@@ -5,10 +5,11 @@
         <img src="@/assets/images/title.png" alt />
       </div>
       <div class="number-bg">
-        {{topObj.AcademyName}} 累计
-        <span class="number">{{topObj.AcademyAllCount}}</span> 人次已报平安
+        <div>{{topObj.AcademyName}} 累计
+        <span class="number">{{topObj.AcademyAllCount}}</span> 人次已报平安</div>
+        <div>
         今天 累计
-        <span class="number">{{topObj.DayCount}}</span> 人次已报平安
+        <span class="number">{{topObj.DayCount}}</span> 人次已报平安</div>
       </div>
       <baberrage
         :isShow="barrageIsShow"
@@ -65,7 +66,8 @@
     background: url("../../assets/images/number_bg.png");
     background-size: cover;
     height: 89.5px;
-    width: 300px;
+    width: 320px;
+    text-align: center;
     box-sizing: border-box;
     background-repeat: no-repeat;
     padding: 10px 20px;
@@ -75,6 +77,9 @@
     letter-spacing: 0.6px;
     text-align: left;
     line-height: 28px;
+    div{
+      text-align: center;
+    }
     .number {
       font-family: DINCond-Bold;
       font-size: 22px;
