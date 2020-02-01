@@ -215,7 +215,7 @@ export default {
     normalMove (item, timestamp) {
       // 时间差
       let progress = timestamp - item.currentTime
-      item.currentTime = timestamp
+      item.currentTime = timestamp+1
       // 移动距离
       let moveVal = item.speed * progress
       // 如果移动距离为0或者NaN 跳过，保持动画连续和减少重绘
@@ -320,7 +320,7 @@ export default {
           len++
         }
       }
-      return len
+      return len-4
     }
   }
 }
