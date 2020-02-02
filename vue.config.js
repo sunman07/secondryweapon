@@ -65,7 +65,6 @@ module.exports = {
     //线上环境
     if (process.env.NODE_ENV === "production") {
       console.log("这是生产模式...");
-      myConfig.externals = externals;
       // gzip
       //  构建时开启gzip，降低服务器压缩对CPU资源的占用，服务器也要相应开启gzip
       productionGzip &&

@@ -73,10 +73,6 @@
         <div class="bounce3"></div>
       </div>
     </div>
-    <!-- 使用CDN加速的JS文件，配置在vue.config.js下 -->
-    <% for (var i in htmlWebpackPlugin.options.cdn&&htmlWebpackPlugin.options.cdn.js) { %>
-    <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
-    <% } %>
     <!-- built files will be auto injected -->
     <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I"></script>
     <script src=https://h5public.xiaoyuanjijiehao.com/sdk/antlinker.1.0.11.js></script>
