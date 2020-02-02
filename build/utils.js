@@ -1,5 +1,5 @@
 //cdn地址
-const cdnBaseHttp = 'https://cdn.bootcss.com/';
+const cdnBaseHttp = "https://h5public.xiaoyuanjijiehao.com/vue/";
 //排除内容
 exports.externals = {
     'vue': 'Vue',
@@ -11,9 +11,9 @@ exports.cdn={
     css: [],
     js: [
         /*放插件的cdn地址(国内比较常用的bootcdn.com)*/
-        `${cdnBaseHttp}vue/2.6.7/vue.min.js`,
-        `${cdnBaseHttp}vue-router/3.0.1/vue-router.min.js`,
-        `${cdnBaseHttp}axios/0.18.0/axios.min.js`,
+        `${cdnBaseHttp}vue.min.js`,
+        `${cdnBaseHttp}vue-router.min.js`,
+        `${cdnBaseHttp}axios.min.js`,
     ]
 };
 //获取版本号
