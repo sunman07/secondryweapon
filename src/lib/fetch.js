@@ -6,7 +6,14 @@ let req = {
             Router: Router,
             Method: Method || 'POST',
             Body: JSON.stringify(Body) || "{}"
-        })).catch(()=>{
+        })).then(r=>{
+            const data=r.data;
+            if(data.FeedbackCode===1){
+                 Toast("接口访问异常!");
+            }else{
+                return r;
+            }
+        }).catch(()=>{
             Toast('接口访问异常!');
         })
     },

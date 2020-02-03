@@ -4,7 +4,7 @@ const autoprefixer = require("autoprefixer");
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const productionGzip = true; // 是否使用gzip
 const productionGzipExtensions = ['js', 'css']; // 需要gzip压缩的文件后缀
-const token = "HQPH0FEVM4OT3P8XG-PAEQ";
+const token = "V2NAOVXIONWFIHFUWVZ7SG";
 // gzip --end
 module.exports = {
   /*基础地址*/
