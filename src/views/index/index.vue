@@ -236,7 +236,7 @@ export default {
         ClassName: ""
       },
       Interval: "",
-      myFlag:false
+      myFlag: false
     };
   },
   components: {
@@ -298,35 +298,38 @@ export default {
       // eslint-disable-next-line no-undef
       const geolocation = new BMap.Geolocation();
       var _this = this;
+      // 开启SDK辅助定位
+      geolocation.enableSDKLocation();
       geolocation.getCurrentPosition(
-        function getinfo(position) {
-          const address = position.address;
-          console.log("city", position);
-          _this.LocationProvince = address.province;
-          _this.LocationCity = address.city;
-        },
-        function() {
-          //_this.LocationCity = "";
-          this.$dialog
-            .confirm({
-              title: "提示",
-              message: "尚未定位到您的位置是否再次尝试一下?"
-            })
-            .then(() => {
-              this.city();
-            })
-            .catch(() => {
-              // on cancel
-            });
+        function(position) {
+          console.log("status", this.getStatus());
+          if (this.getStatus() == 0) {
+            const address = position.address;
+            console.log("city", position);
+            _this.LocationProvince = address.province;
+            _this.LocationCity = address.city;
+          } else {
+            _this.$dialog
+              .confirm({
+                title: "提示",
+                message: "尚未定位到您的位置是否再次尝试一下?"
+              })
+              .then(() => {
+                _this.city();
+              })
+              .catch(() => {
+                // on cancel
+              });
+          }
         },
         { provider: "baidu" }
       );
     },
-    QueryReport(Count=50) {
-      QueryLastReport({ Count}).then(r => {
+    QueryReport(Count = 50) {
+      QueryLastReport({ Count }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
-          this.addToList(res.Data||[]);
+          this.addToList(res.Data || []);
         }
       });
     },
@@ -337,7 +340,7 @@ export default {
         return;
       }
       const params = { ReportArea: this.LocationCity, ReportCode: item.Code };
-       this.show = false;
+      this.show = false;
       debounce(() => {
         onReport(params).then(r => {
           const res = r.data;
@@ -345,29 +348,27 @@ export default {
             this.$toast(res.FeedbackText);
             this.getTopData();
             const date = new Date();
-            this.myFlag=true;
+            this.myFlag = true;
             this.barrageList.push({
-                id: ++this.currentId,
+              id: ++this.currentId,
               avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
               msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj
                 .ClassName || ""}${this.topObj.Name || ""}，${item.Name}`,
               time: 5,
               type: MESSAGE_TYPE.NORMAL
             });
-            this.myFlag=false;
+            this.myFlag = false;
           }
         });
       }, 300);
     },
     addToList(arr = []) {
       //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
-      console.time('qw')
+      console.time("qw");
       arr.forEach(it => {
         let time = 5;
         const have = this.barrageList.find(i => i.RecordID == it.RecordID);
-        console.log("have", have);
-        if (!have&&!this.myFlag) {
-          console.log('有新数据!')
+        if (!have && !this.myFlag) {
           this.barrageList.push({
             id: ++this.currentId,
             avatar: `${this.serverUrl}/static/headpictures/${it.UID}.jpg-thumb`,
@@ -379,8 +380,7 @@ export default {
           });
         }
       });
-      console.timeEnd('qw')
-      console.log("barrageList", this.barrageList);
+      console.timeEnd("qw");
     }
   }
 };

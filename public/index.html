@@ -74,18 +74,14 @@
       </div>
     </div>
     <!-- built files will be auto injected -->
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I"></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=T0wtBakrhXOzVrC0jNyPlNIBVIHWDcVg"></script>
     <script src=https://h5public.xiaoyuanjijiehao.com/sdk/antlinker.1.0.11.js></script>
   </body>
   <script>
-    function showLocation(data) {
-    console.log('gggg')
-    console.log(data.content.address_detail.city);
-    }
     var obj = {};
     antlinker.exeUserBasicInfoSdk(obj, function (obj, success) {
       s = document.createElement("script");
-      s.setAttribute("src", "main.js");
+      s.setAttribute("src", "main.js?v=1.1");
       document.body.appendChild(s);
     })
     var sEl = document.createElement("script");
