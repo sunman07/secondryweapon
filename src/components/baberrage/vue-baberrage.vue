@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import uuidv4 from 'uuid/v4'
+import uuidv4 from 'uuid'
 import VueBaberrageMsg from './vue-baberrage-msg'
 import { MESSAGE_TYPE } from './constants/index.js'
 import { setTimeout } from 'timers'

@@ -305,7 +305,7 @@ export default {
       geolocation.getCurrentPosition(
         function(position) {
           console.log("status", this.getStatus());
-          if (this.getStatus() == 1) {
+          if (this.getStatus() == 0) {
             const address = position.address;
             console.log("city", position);
             _this.LocationProvince = address.province;
