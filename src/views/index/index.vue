@@ -226,6 +226,8 @@ export default {
       bizTypes: [],
       LocationProvince: "",
       LocationCity: "",
+      locationCount: 0,
+      LocationCheck: true,
       serverUrl: "",
       topObj: {
         AcademyAllCount: "",
@@ -303,12 +305,17 @@ export default {
       geolocation.getCurrentPosition(
         function(position) {
           console.log("status", this.getStatus());
-          if (this.getStatus() == 0) {
+          if (this.getStatus() == 1) {
             const address = position.address;
             console.log("city", position);
             _this.LocationProvince = address.province;
             _this.LocationCity = address.city;
           } else {
+            if (_this.locationCount >= 2) {
+              _this.LocationCheck = false;
+              _this.$toast("多次定位无法获取位置,请直接报平安!");
+              return;
+            }
             _this.$dialog
               .confirm({
                 title: "提示",
@@ -316,6 +323,7 @@ export default {
               })
               .then(() => {
                 _this.city();
+                _this.locationCount++;
               })
               .catch(() => {
                 // on cancel
@@ -335,9 +343,11 @@ export default {
     },
     /* 上报 */
     Report(item) {
-      if (!this.LocationCity) {
-        this.$toast("位置信息尚未获取,请稍等片刻报平安!");
-        return;
+      if (this.LocationCheck) {
+        if (!this.LocationCity) {
+          this.$toast("位置信息尚未获取,请稍等片刻报平安!");
+          return;
+        }
       }
       const params = { ReportArea: this.LocationCity, ReportCode: item.Code };
       this.show = false;
