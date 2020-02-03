@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.c33955dab33cda449337e9f34b5ee951.js"
+  "precache-manifest.ef7cde65f414bea2e88d21f7afe64b57.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "m_safereport"});
