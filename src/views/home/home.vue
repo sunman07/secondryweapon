@@ -1,103 +1,140 @@
 <template>
   <div class="index">
-    <div class="bg">
-      <div class="title">
-        <img src="@/assets/images/title.png" alt />
-      </div>
-      <div class="number-bg">
-        <div>
-          {{topObj.AcademyName}} 累计
-          <span class="number">{{topObj.AcademyAllCount}}</span> 人次已报平安
-        </div>
-        <div>
-          今天 累计
-          <span class="number">{{topObj.DayCount}}</span> 人次已报平安
-        </div>
-      </div>
-      <baberrage
-        :isShow="barrageIsShow"
-        :boxHeight="340"
-        :boxWidth="0"
-        :barrageList="barrageList"
-        :loop="barrageLoop"
-      ></baberrage>
-      <div class="footer">
-        <div class="status-submit" @click="navReport">
-          <img class="icon" src="@/assets/images/report1.png" alt />
-          <span>情况上报</span>
-        </div>
-        <div class="submit" @click="show=true">
-          <img class="icon" src="@/assets/images/report_icon.png" alt />
-          <span>我要报平安</span>
-        </div>
-      </div>
-      <!-- action -->
-      <van-action-sheet v-model="show">
-        <div class="action-content">
-          <div class="a-title">
-            我要报平安
-            <span class="a-close" @click="show=false">x</span>
+    <div class="h-bg"></div>
+    <van-panel class="h-header" title="xxxxxx班级">
+      <ul class="list" style="line-height:44px">
+        <li class="item f-s-22" style="color: #0F0F0F;">40</li>
+        <li class="item f-s-22" style="color: #066BFC;">0</li>
+        <li class="item f-s-22" style="color: #FBB200;">50</li>
+        <li class="item f-s-22" style="color: #F24724;">20%</li>
+      </ul>
+      <ul class="list" style="line-height:24px;margin-top:-6px;padding-bottom:12px">
+        <li class="item f-s-14">总人数</li>
+        <li class="item f-s-14">已上报</li>
+        <li class="item f-s-14">未上报</li>
+        <li class="item f-s-14">上报率</li>
+      </ul>
+    </van-panel>
+    <van-panel class="home-panel" title="今日报平安" status="累计2000次">
+      <van-steps direction="vertical" v-if="dataSet.length">
+        <van-step v-for="item of dataSet" :key="item.RecordID">
+          <div class="m-b-6">{{item.ReportTime}}</div>
+          <div class="step-label m-b-6">{{item.Name}}</div>
+          <div class="step-context">
+            {{item.ReportContent}}
+            <span>
+              <van-tag round color="#FEF0CD" text-color="#FBB200">210</van-tag>
+            </span>
           </div>
-          <div class="list">
-            <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code" @click="Report(item)">
-              <img class="icon" :src="getImg(ix)" alt />
-              <span class="elip">{{item.Name||''}}</span>
-            </div>
-          </div>
-        </div>
-      </van-action-sheet>
+        </van-step>
+      </van-steps>
+      <div class="empty" v-if="!dataSet.length">
+        <img src="@/assets/images/no_record.png" alt />
+        <div class="desc">今天还没有人报平安哦</div>
+      </div>
+    </van-panel>
+    <div class="footer">
+      <div class="status-submit" @click="navReport">
+        <img class="icon" src="@/assets/images/report1.png" alt />
+        <span>情况上报</span>
+      </div>
+      <div class="submit1" @click="show=true">
+        <img class="icon" src="@/assets/images/report_icon.png" alt />
+        <span>我要报平安</span>
+      </div>
     </div>
+    <!-- action -->
+    <van-action-sheet v-model="show">
+      <div class="action-content">
+        <div class="a-title">
+          我要报平安
+          <span class="a-close" @click="show=false">x</span>
+        </div>
+        <div class="list">
+          <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code" @click="Report(item)">
+            <img class="icon" :src="getImg(ix)" alt />
+            <span class="elip">{{item.Name||''}}</span>
+          </div>
+        </div>
+      </div>
+    </van-action-sheet>
+
+        <!-- 已上报 -->
+    <van-action-sheet v-model="finishShow">
+      <div class="action-content">
+        <div class="a-title">
+          我要报平安
+          <span class="a-close" @click="show=false">x</span>
+        </div>
+        <div class="list">
+          <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code" @click="Report(item)">
+            <img class="icon" :src="getImg(ix)" alt />
+            <span class="elip">{{item.Name||''}}</span>
+          </div>
+        </div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 <style scoped lang="less">
 .index {
-  background-image: linear-gradient(#2852a6, #21869a);
-  background-size: 100vh;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  .bg {
-    background: url("../../assets/images/bg_image.png");
+  .h-bg {
+    background: url("../../assets/images/bg-image.png");
     background-size: contain;
     background-repeat: no-repeat;
-    height: 100vh;
-    width: 100vw;
+    height: 157.5px;
   }
-  .number-bg {
-    margin: auto;
-    background: url("../../assets/images/number_bg.png");
-    background-size: cover;
-    height: 89.5px;
-    width: 350px;
-    text-align: center;
-    box-sizing: border-box;
-    background-repeat: no-repeat;
-    padding: 10px 10px;
-    font-family: PingFangSC-Regular;
+  .home-panel {
+    margin: auto 16px;
+    border-radius: 6px;
+    height: calc(~'100vh - 320px');
+    overflow: auto;
+  }
+  .van-panel__header {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+  .van-panel__header-value {
+    font-family: PingFang-SC-Regular;
     font-size: 14px;
-    color: #def0fd;
-    letter-spacing: 0.6px;
-    text-align: left;
-    line-height: 28px;
-    div {
-      text-align: center;
-      white-space: nowrap; //强制不换行-必须
-      overflow: hidden; //隐藏溢出的文本-必须
-      text-overflow: ellipsis;
+    color: #7b7b7b;
+    letter-spacing: 0;
+  }
+  .h-header {
+    border-radius: 6px;
+    margin: -50px 16px 16px 16px;
+  }
+  .list {
+    text-align: center;
+    .f-s-14 {
+      font-size: 14px;
     }
-    .number {
-      font-family: DINCond-Bold;
+    .f-s-22 {
       font-size: 22px;
-      color: #ffffff;
-      letter-spacing: 0.94px;
-      text-align: left;
+    }
+    .item {
+      display: inline-block;
+      width: 25%;
+      font-family: PingFangSC-Regular;
+      color: #7b7b7b;
+      text-align: center;
     }
   }
-  .title {
+  .empty {
+    padding: 20px;
     text-align: center;
-    margin: 40px auto 20px auto;
     img {
-      height: 36.5px;
+      width: 98px;
+      height: 98px;
+    }
+    .desc {
+      font-family: PingFang-SC-Regular;
+      font-size: 14px;
+      color: #999999;
+      text-align: center;
     }
   }
   .footer {
@@ -105,6 +142,7 @@
     position: absolute;
     width: 100%;
     justify-content: center;
+    align-items: center;
     bottom: 16px;
     .icon {
       height: 16px;
@@ -113,7 +151,7 @@
     }
     .status-submit {
       width: 123px;
-      background: #FC5006;
+      background: #fc5006;
       height: 50px;
       line-height: 52px;
       border-radius: 30px;
@@ -125,8 +163,8 @@
       text-align: center;
       margin-right: 15px;
     }
- 
-    .submit {
+
+    .submit1 {
       width: 215px;
       background: #fcb521;
       height: 50px;
@@ -169,6 +207,7 @@
         background: #ffffff;
         display: flex;
         margin: 8px auto;
+        width: auto;
         align-items: center;
         padding: 10px 8px;
         border-radius: 72px;
@@ -196,25 +235,21 @@ import {
   QueryLastReport,
   getConfig
 } from "../../service/common.service";
-import { setAntTitle, debounce, formatDate } from "../../lib/common";
-import { MESSAGE_TYPE } from "../../components/baberrage/constants";
-import baberrage from "../../components/baberrage/vue-baberrage";
+import { setAntTitle, debounce } from "../../lib/common";
 
 export default {
-  name: "index",
+  name: "home",
   data() {
     return {
-      msg: "",
-      barrageIsShow: true,
-      currentId: 0,
-      barrageLoop: false,
-      barrageList: [],
+      dataSet: [],
       show: false,
       bizTypes: [],
       LocationProvince: "",
       LocationCity: "",
       locationCount: 0,
       LocationCheck: true,
+      finishShow:false,
+      unFinishShow:false,
       serverUrl: "",
       topObj: {
         AcademyAllCount: "",
@@ -228,9 +263,7 @@ export default {
       myFlag: false
     };
   },
-  components: {
-    baberrage: baberrage
-  },
+  components: {},
   mounted() {},
   destroyed() {
     clearInterval(this.Interval);
@@ -242,9 +275,6 @@ export default {
     this.Interval = setInterval(() => {
       this.QueryReport();
     }, 30000);
-    /*    fetch('https://api.map.baidu.com/location/ip?ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I&coor=bd09ll').then(r=>{
-      console.log(r)
-    }) */
     this.getTopData();
     getBizCode("studentSafetyReport").then(r => {
       const res = r.data;
@@ -266,8 +296,8 @@ export default {
   },
   methods: {
     //去上报疫情
-    navReport(){
-      this.$router.push({path:'/report'})
+    navReport() {
+      this.$router.push({ path: "/report" });
     },
     getImg(ix) {
       let ixx = ix;
@@ -328,7 +358,7 @@ export default {
       QueryLastReport({ Count }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
-          this.addToList(res.Data || []);
+          this.dataSet = res.Data;
         }
       });
     },
@@ -348,40 +378,9 @@ export default {
           if (!res.FeedbackCode) {
             this.$toast(res.FeedbackText);
             this.getTopData();
-            const date = new Date();
-            this.myFlag = true;
-            this.barrageList.push({
-              id: ++this.currentId,
-              avatar: `${this.serverUrl}/static/headpictures/${this.topObj.UID}.jpg-thumb`,
-              msg: `${formatDate(date, "MM月dd日")} 我是${this.topObj
-                .ClassName || ""}${this.topObj.Name || ""}，${item.Name}`,
-              time: 5,
-              type: MESSAGE_TYPE.NORMAL
-            });
-            this.myFlag = false;
           }
         });
       }, 300);
-    },
-    addToList(arr = []) {
-      //let url='/static/headpictures/{{item.BuID}}.jpg-thumb';
-      console.time("qw");
-      arr.forEach(it => {
-        let time = 5;
-        const have = this.barrageList.find(i => i.RecordID == it.RecordID);
-        if (!have && !this.myFlag) {
-          this.barrageList.push({
-            id: ++this.currentId,
-            avatar: `${this.serverUrl}/static/headpictures/${it.UID}.jpg-thumb`,
-            msg: `${formatDate(it.ReportTime, "MM月dd日")} 我是${it.Class}${
-              it.Name
-            }，${it.ReportContent}`,
-            time: time,
-            type: MESSAGE_TYPE.NORMAL
-          });
-        }
-      });
-      console.timeEnd("qw");
     }
   }
 };

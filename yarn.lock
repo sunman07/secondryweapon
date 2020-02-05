@@ -2410,6 +2410,11 @@ core-js@^2.4.0, core-js@^2.6.5:
   resolved "https://registry.npm.taobao.org/core-js/download/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
   integrity sha1-a0shRiDINBUuF5Mjcn/Bl0GwhPI=
 
+core-js@^2.6.11:
+  version "2.6.11"
+  resolved "https://registry.npm.taobao.org/core-js/download/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
+  integrity sha1-OIMUafmSK97Y7iHJ3EaYXgOZMIw=
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.npm.taobao.org/core-util-is/download/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -8299,10 +8304,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vant@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.npm.taobao.org/vant/download/vant-2.4.4.tgz#158a0d9f9762bcfc64745728eb30384ab66271d1"
-  integrity sha1-FYoNn5divPxkdFco6zA4SrZicdE=
+vant@^2.4.6:
+  version "2.4.6"
+  resolved "https://registry.npm.taobao.org/vant/download/vant-2.4.6.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvant%2Fdownload%2Fvant-2.4.6.tgz#3c7aa17bd8b69138815d357d9fbbba699dc859f4"
+  integrity sha1-PHqhe9i2kTiBXTV9n7u6aZ3IWfQ=
   dependencies:
     "@babel/runtime" "7.x"
     "@vant/icons" "1.2.1"

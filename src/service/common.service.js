@@ -43,6 +43,16 @@ export function onReport(params = {}) {
   });
 }
 /**
+ * 情况上报
+ */
+export function onStatusReport(params = {}) {
+  return http.postJSON({
+    Router: `${api}report`,
+    Method: "POST",
+    Body: params
+  });
+}
+/**
  * 获取最新上报
  */
 export function QueryLastReport(params = {}) {
@@ -68,4 +78,14 @@ export function getConfig() {
     },
     "/api/appsrv/interface"
   );
+}
+/**
+ * 获取用户信息
+ */
+export function getUserInfo(IntelUserCode = "") {
+    return http.postJSON({
+        Router: '/api/system/myhead',
+        Method: 'POST',
+        Body: { IntelUserCode: IntelUserCode }
+    });
 }

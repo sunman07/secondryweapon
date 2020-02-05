@@ -1,10 +1,11 @@
 const {externals, cdn} = require("./build/utils");
 const autoprefixer = require("autoprefixer");
+const path = require("path");
 // gzip --start
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const productionGzip = true; // 是否使用gzip
 const productionGzipExtensions = ['js', 'css']; // 需要gzip压缩的文件后缀
-const token = "V2NAOVXIONWFIHFUWVZ7SG";
+const token = "LOTVECPBNZYD37H3SRHN_A";
 // gzip --end
 module.exports = {
   /*基础地址*/
@@ -110,6 +111,16 @@ module.exports = {
             propList: ["*"]
           })
         ]
+      },
+      less: {
+        modifyVars: {
+          "font-size-sm": "13px",
+          "font-size-md": "15px",
+          "font-size-lg": "17px",
+          "button-primary-background-color": "#FC5006",
+          "button-primary-border-color": "#FC5006",
+          green: "#FBB200"
+        }
       }
     }
   }
