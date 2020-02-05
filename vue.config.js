@@ -5,7 +5,7 @@ const path = require("path");
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const productionGzip = true; // 是否使用gzip
 const productionGzipExtensions = ['js', 'css']; // 需要gzip压缩的文件后缀
-const token = "LOTVECPBNZYD37H3SRHN_A";
+const token = "LFHEUM71OBSAXLD5OXR1MW";
 // gzip --end
 module.exports = {
   /*基础地址*/

@@ -1,12 +1,20 @@
 <template>
   <div class="index">
     <div class="h-bg"></div>
-    <van-panel class="h-header" title="xxxxxx班级">
+    <van-panel class="h-header" :title="UserInfo.ClassName||''">
       <ul class="list" style="line-height:44px">
-        <li class="item f-s-22" style="color: #0F0F0F;">40</li>
-        <li class="item f-s-22" style="color: #066BFC;">0</li>
-        <li class="item f-s-22" style="color: #FBB200;">50</li>
-        <li class="item f-s-22" style="color: #F24724;">20%</li>
+        <li class="item f-s-22" style="color: #0F0F0F;">{{headObj.TotalCount}}</li>
+        <li
+          class="item f-s-22"
+          style="color: #066BFC;"
+          @click="finishShow=true;getReportStudent(1)"
+        >{{headObj.ReportCount}}</li>
+        <li
+          class="item f-s-22"
+          style="color: #FBB200;"
+          @click="unFinishShow=true;getReportStudent(2)"
+        >{{parseInt(headObj.TotalCount||0)-parseInt(headObj.ReportCount||0)}}</li>
+        <li class="item f-s-22" style="color: #F24724;">{{Percent}}%</li>
       </ul>
       <ul class="list" style="line-height:24px;margin-top:-6px;padding-bottom:12px">
         <li class="item f-s-14">总人数</li>
@@ -15,7 +23,7 @@
         <li class="item f-s-14">上报率</li>
       </ul>
     </van-panel>
-    <van-panel class="home-panel" title="今日报平安" status="累计2000次">
+    <van-panel class="home-panel" title="今日报平安" :status="sumTotalCountDes">
       <van-steps direction="vertical" v-if="dataSet.length">
         <van-step v-for="item of dataSet" :key="item.RecordID">
           <div class="m-b-6">{{item.ReportTime}}</div>
@@ -23,7 +31,7 @@
           <div class="step-context">
             {{item.ReportContent}}
             <span>
-              <van-tag round color="#FEF0CD" text-color="#FBB200">210</van-tag>
+              <van-tag round color="#FEF0CD" text-color="#FBB200">{{item.C}}</van-tag>
             </span>
           </div>
         </van-step>
@@ -45,7 +53,7 @@
     </div>
     <!-- action -->
     <van-action-sheet v-model="show">
-      <div class="action-content">
+      <div class="action-content select">
         <div class="a-title">
           我要报平安
           <span class="a-close" @click="show=false">x</span>
@@ -59,18 +67,38 @@
       </div>
     </van-action-sheet>
 
-        <!-- 已上报 -->
+    <!-- 已上报 -->
     <van-action-sheet v-model="finishShow">
-      <div class="action-content">
+      <div class="action-content bg-F8F8F8">
         <div class="a-title">
-          我要报平安
-          <span class="a-close" @click="show=false">x</span>
+          已上报学生
+          <span class="a-close" @click="finishShow=false">x</span>
         </div>
-        <div class="list">
-          <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code" @click="Report(item)">
-            <img class="icon" :src="getImg(ix)" alt />
-            <span class="elip">{{item.Name||''}}</span>
+        <div class="t-header">
+          <span>姓名</span>
+          <span>位置</span>
+          <span>上报时间</span>
+        </div>
+
+        <div class="tr" v-for="(it,ix) of finishSet" :key="ix">
+          <span class="td name">{{it.name}}</span>
+          <span class="td van-ellipsis">{{it.report_area}}</span>
+          <span class="td">{{it.reportTime}}</span>
+        </div>
+      </div>
+    </van-action-sheet>
+    <!-- 未上报 -->
+    <van-action-sheet v-model="unFinishShow">
+      <div class="action-content">
+        <div class="action-content bg-F8F8F8">
+          <div class="a-title">
+            未上报学生
+            <span class="a-close" @click="unFinishShow=false">x</span>
           </div>
+          <p class="unName">姓名</p>
+          <van-list>
+            <van-cell v-for="(item,ix) in unFinishSet" :key="ix" :title="item.name" />
+          </van-list>
         </div>
       </div>
     </van-action-sheet>
@@ -90,7 +118,7 @@
   .home-panel {
     margin: auto 16px;
     border-radius: 6px;
-    height: calc(~'100vh - 320px');
+    height: calc(~"100vh - 320px");
     overflow: auto;
   }
   .van-panel__header {
@@ -178,14 +206,19 @@
       text-align: center;
     }
   }
-
-  .action-content {
+  .select {
     background: #faf3e3;
     height: 300px;
     overflow: hidden;
     box-shadow: 0 -12px 24px 0 rgba(25, 70, 166, 0.2);
     border-radius: 12px 12px 0 0;
     border-radius: 12px 12px 0px 0px;
+  }
+  .bg-F8F8F8 {
+    background: #f8f8f8;
+  }
+  .action-content {
+    height: 300px;
     .a-title {
       font-family: PingFang-SC-Medium;
       font-size: 17px;
@@ -225,6 +258,42 @@
       }
     }
   }
+  .t-header {
+    span {
+      display: inline-block;
+      width: 30%;
+      font-family: PingFang-SC-Regular;
+      font-size: 14px;
+      color: #adadad;
+      letter-spacing: 0;
+      text-align: center;
+      line-height: 30px;
+    }
+  }
+  .tr {
+    .name {
+      color: #0f0f0f !important;
+      font-size: 15px !important;
+    }
+    .td {
+      width: 30%;
+      display: inline-block;
+      text-align: center;
+      font-family: PingFang-SC-Regular;
+      font-size: 14px;
+      color: #adadad;
+      letter-spacing: 0;
+      line-height: 30px;
+    }
+  }
+  .unName {
+    font-family: PingFang-SC-Regular;
+    font-size: 14px;
+    color: #adadad;
+    letter-spacing: 0;
+    margin-left: 30px;
+    line-height: 30px;
+  }
 }
 </style>
 <script>
@@ -233,9 +302,18 @@ import {
   QueryReportTopStatistics,
   onReport,
   QueryLastReport,
-  getConfig
+  getConfig,
+  getUserInfo,
+  QueryClassReportStudent,
+  ClassTodayStatistics,
+  ClassCumulativeStatistics
 } from "../../service/common.service";
-import { setAntTitle, debounce } from "../../lib/common";
+import {
+  setAntTitle,
+  debounce,
+  getBasicInfo,
+  formatDate
+} from "../../lib/common";
 
 export default {
   name: "home",
@@ -244,13 +322,22 @@ export default {
       dataSet: [],
       show: false,
       bizTypes: [],
+      finishSet: [],
+      unFinishSet: [],
+      Percent: "",
+      headObj: {
+        TotalCount: 0,
+        ReportCount: 0
+      },
+      sumTotalCountDes: "",
       LocationProvince: "",
       LocationCity: "",
       locationCount: 0,
       LocationCheck: true,
-      finishShow:false,
-      unFinishShow:false,
+      finishShow: false,
+      unFinishShow: false,
       serverUrl: "",
+      UserInfo: {},
       topObj: {
         AcademyAllCount: "",
         AcademyName: "",
@@ -269,13 +356,18 @@ export default {
     clearInterval(this.Interval);
   },
   created() {
-    this.QueryReport();
-    setAntTitle("我要报平安");
+    setAntTitle("平安上报");
     this.city();
-    this.Interval = setInterval(() => {
-      this.QueryReport();
-    }, 30000);
     this.getTopData();
+    /* 基本信息 */
+    getUserInfo().then(r => {
+      const re = r.data;
+      if (!re.FeedbackCode) {
+        this.UserInfo = re.Data || {};
+        this.updateRecord();
+        this.$store.commit("saveUserInfo", this.UserInfo);
+      }
+    });
     getBizCode("studentSafetyReport").then(r => {
       const res = r.data;
       if (!res.FeedbackCode) {
@@ -295,9 +387,62 @@ export default {
     });
   },
   methods: {
-    //去上报疫情
+    //去情况上报
     navReport() {
       this.$router.push({ path: "/report" });
+    },
+    updateRecord() {
+      this.QueryReport();
+      this.ClassTodayStatistics(this.UserInfo.ClassCode);
+      this.ClassCumulativeStatistics(this.UserInfo.ClassCode);
+    },
+    ClassCumulativeStatistics(ClassCode = "") {
+      ClassCumulativeStatistics({ ClassCode }).then(r => {
+        const res = r.data;
+        if (!res.FeedbackCode) {
+          this.sumTotalCountDes = `累计${res.Data.TotalCount}次`;
+          console.log("ClassCumulativeStatistics", res);
+        }
+      });
+    },
+    ClassTodayStatistics(ClassCode = "") {
+      ClassTodayStatistics({ ClassCode }).then(r => {
+        const res = r.data;
+        if (!res.FeedbackCode) {
+          this.headObj = res.Data || {};
+          const total = parseInt(this.headObj.TotalCount);
+          const report = parseInt(this.headObj.ReportCount);
+          if (report) {
+            this.Percent = parseInt((report * 100) / total);
+          } else {
+            this.Percent = 0;
+          }
+
+          console.log("ClassTodayStatistics", res);
+        }
+      });
+    },
+    /* 获取班级已上报,未上报 */
+    getReportStudent(type = 1) {
+      const date = new Date();
+      QueryClassReportStudent({
+        type,
+        report_time: formatDate(date, "yyyy-MM-dd"),
+        class_code: this.UserInfo.ClassCode
+      }).then(r => {
+        const res = r.data;
+        if (!res.FeedbackCode) {
+          const items = res.Data.list || [];
+          items.forEach(element => {
+            element.reportTime = formatDate(element.report_time, "MM-dd mm:ss");
+          });
+          if (type === 1) {
+            this.finishSet = items || [];
+          } else {
+            this.unFinishSet = items || [];
+          }
+        }
+      });
     },
     getImg(ix) {
       let ixx = ix;
@@ -313,6 +458,10 @@ export default {
         if (!res.FeedbackCode) {
           const item = res.Data;
           this.topObj = item || [];
+          getBasicInfo(data => {
+            this.topObj.UID = data.UserID || "";
+            console.log("sdk", data);
+          });
         }
       });
     },
@@ -355,7 +504,7 @@ export default {
       );
     },
     QueryReport(Count = 50) {
-      QueryLastReport({ Count }).then(r => {
+      QueryLastReport({ Count, ClassCode: this.UserInfo.ClassCode }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
           this.dataSet = res.Data;
@@ -370,14 +519,23 @@ export default {
           return;
         }
       }
-      const params = { ReportArea: this.LocationCity, ReportCode: item.Code };
+      if (!this.topObj.UID) {
+        this.$toast("无法识别当前登录人,不能上报!");
+        return;
+      }
+      const params = {
+        ReportArea: this.LocationCity,
+        ReportCode: item.Code,
+        UID: this.topObj.UID
+      };
       this.show = false;
       debounce(() => {
         onReport(params).then(r => {
           const res = r.data;
           if (!res.FeedbackCode) {
             this.$toast(res.FeedbackText);
-            this.getTopData();
+            //更新记录
+            this.updateRecord();
           }
         });
       }, 300);

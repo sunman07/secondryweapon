@@ -19,7 +19,7 @@
       </div>
       <div>
         <span class="label">班级</span>
-        <span class="lable value van-ellipsis">{{UserInfo.Class}}</span>
+        <span class="lable value van-ellipsis">{{UserInfo.ClassName}}</span>
       </div>
     </div>
     <!-- 地址信息 -->
@@ -139,25 +139,19 @@
 </style>
 <script>
 import { setAntTitle } from "../../lib/common";
-import { getUserInfo } from "../../service/common.service";
+import { mapState } from "vuex";
 export default {
   name: "reportdetail",
   data() {
     return {
       RecordID: "",
-      disabledUpdate: true,
-      UserInfo: {}
+      disabledUpdate: true
     };
   },
+    computed: mapState(["UserInfo"]),
   created() {
     this.RecordID = this.$route.query.RecordID;
     setAntTitle("疫情详情");
-    getUserInfo().then(r => {
-      const re = r.data;
-      if (!re.FeedbackCode) {
-        this.UserInfo = re.Data || {};
-      }
-    });
   },
   methods: {
     imageLoadOnError() {

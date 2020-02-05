@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive include="index">
+    <keep-alive include="report">
       <router-view />
     </keep-alive>
   </div>

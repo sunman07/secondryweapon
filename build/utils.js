@@ -2,9 +2,10 @@
 const cdnBaseHttp = "https://h5public.xiaoyuanjijiehao.com/vue/";
 //排除内容
 exports.externals = {
-    'vue': 'Vue',
-    'vue-router': 'VueRouter',
-    'axios': 'axios'
+  vue: "Vue",
+  "vue-router": "VueRouter",
+  "axios": "axios",
+  "vuex": "Vuex"
 };
 
 exports.cdn={
@@ -14,6 +15,7 @@ exports.cdn={
         `${cdnBaseHttp}vue.min.js`,
         `${cdnBaseHttp}vue-router.min.js`,
         `${cdnBaseHttp}axios.min.js`,
+        `${cdnBaseHttp}vuex.min.js`,
     ]
 };
 //获取版本号

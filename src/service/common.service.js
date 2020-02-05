@@ -47,7 +47,7 @@ export function onReport(params = {}) {
  */
 export function onStatusReport(params = {}) {
   return http.postJSON({
-    Router: `${api}report`,
+    Router: `${api}reportunusual`,
     Method: "POST",
     Body: params
   });
@@ -62,6 +62,46 @@ export function QueryLastReport(params = {}) {
     Body: params
   });
 }
+/**
+ * 获取最新 情况上报
+ */
+export function QueryStudentReportUnusual(params = {}) {
+  return http.postJSON({
+    Router: `${api}querystudentreportunusual`,
+    Method: "POST",
+    Body: params
+  });
+}
+/**
+ * 获取班级上报
+ */
+export function QueryClassReportStudent(params = {}) {
+  return http.postJSON({
+    Router: `/api/reportsafety2020/querystudents`,
+    Method: "POST",
+    Body: params
+  });
+}
+/**
+ * 获取班级情况上报数目
+ */
+export function ClassTodayStatistics(params = {}) {
+         return http.postJSON({
+           Router: `${api}/classtodaystatistics`,
+           Method: "POST",
+           Body: params
+         });
+       }
+/**
+ * 获取累计数目
+ */
+export function ClassCumulativeStatistics(params = {}) {
+         return http.postJSON({
+           Router: `${api}/classcumulativestatistics`,
+           Method: "POST",
+           Body: params
+         });
+       }
 /**
  * 获取配置
  */
@@ -83,9 +123,9 @@ export function getConfig() {
  * 获取用户信息
  */
 export function getUserInfo(IntelUserCode = "") {
-    return http.postJSON({
-        Router: '/api/system/myhead',
-        Method: 'POST',
-        Body: { IntelUserCode: IntelUserCode }
-    });
+  return http.postJSON({
+    Router: "/api/system/myhead",
+    Method: "POST",
+    Body: { IntelUserCode: IntelUserCode }
+  });
 }

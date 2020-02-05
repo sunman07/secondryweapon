@@ -34,6 +34,20 @@ function getSChoolCode(callback) {
         fail: () => {}
     });
 }
+/**
+ * 获取基本信息
+ * @param callback
+ */
+function getBasicInfo(callback) {
+    // eslint-disable-next-line
+    antlinker.getUserBasicInfo({
+        success: function(data) {
+            callback(data)
+            //设置右上角按钮成功
+        },
+        fail: () => {}
+    });
+}
 function setAntTitle(title = '校园集结号') {
     //eslint-disable-next-line
     antlinker.configTitle({
@@ -68,5 +82,13 @@ function formatDate(date3, fmt) {
     return fmt;
 }
 
-export { debounce,closeView, formatDate, setAntTitle, formater, getSChoolCode };
+export {
+  debounce,
+  closeView,
+  formatDate,
+  setAntTitle,
+  formater,
+  getSChoolCode,
+  getBasicInfo
+};
 

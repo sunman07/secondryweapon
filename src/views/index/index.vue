@@ -22,9 +22,11 @@
         :loop="barrageLoop"
       ></baberrage>
       <div class="footer">
-        <div class="status-submit" @click="navReport">
-          <img class="icon" src="@/assets/images/report1.png" alt />
-          <span>情况上报</span>
+        <div class="reported">
+          <div class="top">
+            <span style="font-size:24px">{{topObj.MyReportDay}}</span>天
+          </div>
+          <div class="finish">我已报</div>
         </div>
         <div class="submit" @click="show=true">
           <img class="icon" src="@/assets/images/report_icon.png" alt />
@@ -111,26 +113,37 @@
       width: 16px;
       margin-right: 6px;
     }
-    .status-submit {
-      width: 123px;
-      background: #FC5006;
-      height: 50px;
-      line-height: 52px;
+    .reported {
+      width: 80px;
+      margin-right: 16px;
+      background: #ffffff;
       border-radius: 30px;
       border-radius: 30px;
-      font-family: PingFang-SC-Medium;
-      font-size: 17px;
-      color: #ffffff;
-      letter-spacing: 0.73px;
-      text-align: center;
-      margin-right: 15px;
+      .top {
+        font-family: PingFang-SC-Medium;
+        font-size: 10px;
+        padding-top: 6px;
+        color: #fcb521;
+        letter-spacing: 0;
+        text-align: left;
+        line-height: 18px;
+        text-align: center;
+      }
+      .finish {
+        font-family: PingFangSC-Regular;
+        font-size: 11px;
+        color: #888888;
+        letter-spacing: 0;
+        text-align: left;
+        line-height: 16px;
+        text-align: center;
+      }
     }
- 
     .submit {
       width: 215px;
       background: #fcb521;
       height: 50px;
-      line-height: 52px;
+      line-height: 50px;
       border-radius: 30px;
       border-radius: 30px;
       font-family: PingFang-SC-Medium;
@@ -196,7 +209,7 @@ import {
   QueryLastReport,
   getConfig
 } from "../../service/common.service";
-import { setAntTitle, debounce, formatDate } from "../../lib/common";
+import { setAntTitle, debounce, formatDate,getBasicInfo } from "../../lib/common";
 import { MESSAGE_TYPE } from "../../components/baberrage/constants";
 import baberrage from "../../components/baberrage/vue-baberrage";
 
@@ -265,10 +278,6 @@ export default {
     });
   },
   methods: {
-    //去上报疫情
-    navReport(){
-      this.$router.push({path:'/report'})
-    },
     getImg(ix) {
       let ixx = ix;
       if (ix > 2) {
@@ -283,6 +292,10 @@ export default {
         if (!res.FeedbackCode) {
           const item = res.Data;
           this.topObj = item || [];
+          getBasicInfo(data=>{
+            this.topObj.UID=data.UserID||'';
+            console.log('sdk',data);
+          })
         }
       });
     },
@@ -340,7 +353,12 @@ export default {
           return;
         }
       }
-      const params = { ReportArea: this.LocationCity, ReportCode: item.Code };
+       if (!this.topObj.UID) {
+          this.$toast("无法识别当前登录人,不能上报!");
+          return;
+        }
+        console.log('uid',this.topObj.UID);
+      const params = { ReportArea: this.LocationCity, ReportCode: item.Code,UID:this.topObj.UID};
       this.show = false;
       debounce(() => {
         onReport(params).then(r => {
@@ -386,5 +404,3 @@ export default {
   }
 };
 </script>
-
-

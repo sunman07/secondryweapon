@@ -16,7 +16,8 @@ import {
   Panel,
   Step,
   Steps,
-  Tag
+  Tag,
+  List
 } from "vant";
 Vue.use(Dialog);
 Vue.use(Toast);
@@ -35,3 +36,4 @@ Vue.use(Panel);
 Vue.use(Step);
 Vue.use(Steps);
 Vue.use(Tag);
+Vue.use(List);
