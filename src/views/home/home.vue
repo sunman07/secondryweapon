@@ -299,19 +299,18 @@
 <script>
 import {
   getBizCode,
-  QueryReportTopStatistics,
   onReport,
   QueryLastReport,
   getConfig,
   getUserInfo,
   QueryClassReportStudent,
   ClassTodayStatistics,
-  ClassCumulativeStatistics
+  ClassCumulativeStatistics,
+  QueryStudentReportUnusual
 } from "../../service/common.service";
 import {
   setAntTitle,
   debounce,
-  getBasicInfo,
   formatDate
 } from "../../lib/common";
 
@@ -338,27 +337,20 @@ export default {
       unFinishShow: false,
       serverUrl: "",
       UserInfo: {},
-      topObj: {
-        AcademyAllCount: "",
-        AcademyName: "",
-        DayCount: "",
-        MyReportDay: "",
-        UID: "",
-        ClassName: ""
-      },
-      Interval: "",
-      myFlag: false
+      UID: "",
+      Steps: []
     };
   },
   components: {},
   mounted() {},
-  destroyed() {
-    clearInterval(this.Interval);
-  },
   created() {
     setAntTitle("平安上报");
     this.city();
-    this.getTopData();
+  /*   getBasicInfo(data => {
+      this.UID = data.UserID || "";
+      console.log("sdk", data);
+    }); */
+    //this.getTopData();
     /* 基本信息 */
     getUserInfo().then(r => {
       const re = r.data;
@@ -375,26 +367,35 @@ export default {
         this.bizTypes = item || [];
       }
     });
-    getConfig().then(r => {
-      const res = r.data;
-      if (!res.FeedbackCode) {
-        const config = res.Data.Params;
-        const item = config.find(item => item.Key == "Store.Public.Host");
-        if (item) {
-          this.serverUrl = item.Value;
-        }
-      }
-    });
   },
   methods: {
     //去情况上报
     navReport() {
+      if (this.Steps.length) {
+        this.$router.push({ path: "/reportdetail" });
+        return;
+      }
       this.$router.push({ path: "/report" });
+    },
+    /* 取全局配置 */
+    getConfig() {
+      getConfig().then(r => {
+        const res = r.data;
+        if (!res.FeedbackCode) {
+          const config = res.Data.Params;
+          const item = config.find(item => item.Key == "Store.Public.Host");
+          if (item) {
+            this.serverUrl = item.Value;
+          }
+        }
+      });
     },
     updateRecord() {
       this.QueryReport();
       this.ClassTodayStatistics(this.UserInfo.ClassCode);
       this.ClassCumulativeStatistics(this.UserInfo.ClassCode);
+      //提前查询跟踪记录
+      this.getFlowList();
     },
     ClassCumulativeStatistics(ClassCode = "") {
       ClassCumulativeStatistics({ ClassCode }).then(r => {
@@ -444,6 +445,16 @@ export default {
         }
       });
     },
+    getFlowList() {
+      QueryStudentReportUnusual().then(r => {
+        const re = r.data;
+        if (!re.FeedbackCode) {
+          this.$store.commit("saveFlowList", re.Data||[]);
+          this.Steps = re.Data||[];
+          console.log("QueryStudentReportUnusual", re.Data);
+        }
+      });
+    },
     getImg(ix) {
       let ixx = ix;
       if (ix > 2) {
@@ -451,19 +462,6 @@ export default {
       }
       const img = require(`../../assets/images/${ixx}.png`);
       return img;
-    },
-    getTopData() {
-      QueryReportTopStatistics().then(r => {
-        const res = r.data;
-        if (!res.FeedbackCode) {
-          const item = res.Data;
-          this.topObj = item || [];
-          getBasicInfo(data => {
-            this.topObj.UID = data.UserID || "";
-            console.log("sdk", data);
-          });
-        }
-      });
     },
     //定义获取城市方法
     city() {
@@ -519,14 +517,14 @@ export default {
           return;
         }
       }
-      if (!this.topObj.UID) {
+    /*   if (!this.UID) {
         this.$toast("无法识别当前登录人,不能上报!");
         return;
-      }
+      } */
       const params = {
         ReportArea: this.LocationCity,
         ReportCode: item.Code,
-        UID: this.topObj.UID
+        UID: this.UID
       };
       this.show = false;
       debounce(() => {

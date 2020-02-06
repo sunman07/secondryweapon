@@ -2,15 +2,24 @@
   <div class="report">
     <div class="h-title">基本信息</div>
     <van-cell-group>
-      <van-cell title-class="cell-title" value-class="cell-value" title="姓名" :value="UserInfo.Name" />
+      <van-cell
+        title-class="cell-title"
+        value-class="cell-value"
+        title="姓名"
+        :value="UserInfo.Name"
+      />
       <van-cell
         title-class="cell-title"
         value-class="cell-value"
         title="学号"
         :value="UserInfo.UserCode"
       />
-      <van-cell title-class="cell-title" value-class="cell-value" title="手机号" :value='UserInfo.Phone'>
-      </van-cell>
+      <van-cell
+        title-class="cell-title"
+        value-class="cell-value"
+        title="手机号"
+        :value="UserInfo.Phone"
+      ></van-cell>
     </van-cell-group>
 
     <div style="margin-top:12px">
@@ -35,7 +44,7 @@
           label="监护人电话"
           v-model="form.GuardianPhone"
           type="tel"
-           maxlength="16"
+          maxlength="16"
           placeholder="请输入监护人电话，非必填"
         />
       </van-cell-group>
@@ -131,7 +140,10 @@
 <script>
 import { setAntTitle } from "../../lib/common";
 import arealist from "../../lib/area";
-import { getBizCode, onStatusReport,QueryStudentReportUnusual} from "../../service/common.service";
+import {
+  getBizCode,
+  onStatusReport
+} from "../../service/common.service";
 import { mapState } from "vuex";
 export default {
   name: "report",
@@ -152,7 +164,7 @@ export default {
       }
     };
   },
-   computed: mapState(["UserInfo"]),
+  computed: mapState(["UserInfo", "FlowList"]),
   created() {
     setAntTitle("上报疫情");
     getBizCode("studentSafetyReport").then(r => {
@@ -162,26 +174,22 @@ export default {
         this.HealthStatuss = item || [];
       }
     });
-     QueryStudentReportUnusual().then(r => {
-      const re = r.data;
-      if (!re.FeedbackCode) {
-        //this.UserInfo = re.Data || {};
-        const _form=re.Data[0];
-        this.form.CurrentAddress=_form.CurrentAddress;
-        this.form.GuardianName=_form.GuardianName;
-        this.form.GuardianPhone=_form.GuardianPhone;
-        this.form.HealthStatus=_form.HealthStatus;
-        this.form.ReportContent=_form.ReportContent;
-        this.form.CurrentAddressCode=_form.CurrentAddressCode;
-        console.log('QueryStudentReportUnusual',re.Data)
-      }
-    });
+    /* 拿取流程 */
+    if(this.FlowList.length){
+    const _form = this.FlowList[0];
+    this.form.CurrentAddress = _form.CurrentAddress;
+    this.form.GuardianName = _form.GuardianName;
+    this.form.GuardianPhone = _form.GuardianPhone;
+    this.form.HealthStatus = _form.HealthStatus;
+    this.form.ReportContent = _form.ReportContent;
+    this.form.CurrentAddressCode = _form.CurrentAddressCode;
+    }
   },
   methods: {
     selectArea(e) {
       console.log(e);
       this.form.CurrentAddress = `${e[0].name}${e[1].name}${e[2].name}`;
-      this.form.CurrentAddressCode=e[2]
+      this.form.CurrentAddressCode = e[2];
       this.areaShow = false;
     },
     confirm(e) {
@@ -212,16 +220,15 @@ export default {
         .confirm({
           title: "提示",
           confirmButtonText: "立即上报",
-          confirmButtonColor:'#FBB200',
+          confirmButtonColor: "#FBB200",
           message: "该信息会推送给学校老师，请确认是要上报吗？"
         })
         .then(() => {
           onStatusReport(this.form).then(r => {
             const res = r.data;
             if (!res.FeedbackCode) {
-              this.$router.push({
-                path: "reportdetail",
-                query: { RecordID: "123" }
+              this.$router.replace({
+                path: "reportdetail"
               });
               this.$toast(res.FeedbackText);
             }

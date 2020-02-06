@@ -7,7 +7,7 @@
         <img class="icon" :src="UserInfo.Icon" @error="imageLoadOnError" alt />
         <span class="name">{{UserInfo.Name}}</span>
         <span class="sex">{{UserInfo.SexName}}</span>
-        <span class="status f-r">已确定</span>
+        <span class="status f-r">{{CurentSep.ConfirmStatusName||'待确定'}}</span>
       </div>
       <div>
         <span class="label">学号</span>
@@ -26,27 +26,32 @@
     <div class="box">
       <div>
         <span class="label">当前所在地</span>
-        <span class="lable value van-ellipsis">{{UserInfo.Class}}</span>
+        <span class="lable value van-ellipsis">{{CurentSep.CurrentAddress}}</span>
       </div>
       <div>
         <span class="label">监护人</span>
-        <span class="lable value van-ellipsis">{{UserInfo.Class}}</span>
-        <span class="lable value van-ellipsis">{{UserInfo.Class}}</span>
+        <span class="lable value van-ellipsis">{{CurentSep.GuardianName}}</span>
+        <span class="lable value van-ellipsis">{{CurentSep.GuardianPhone}}</span>
       </div>
     </div>
     <van-panel style="margin:auto 20px" title="上报跟踪">
       <van-steps direction="vertical">
-        <van-step>
-          <p>2月2日 10:50</p>
-          <div class="step-label">
-            老师已确定，标记
-            <span class="status">疑似</span>
+        <van-step v-for="(step,ix) of Septs" :key="ix">
+          <div v-if="step.ConfirmStatus">
+            <p>{{step.ReportTime}}</p>
+            <div class="step-label">
+              老师已确定，标记
+              <span class="status">{{step.ConfirmStatusName}}</span>
+            </div>
           </div>
-        </van-step>
-        <van-step>
-          <p class="time">2月2日 10:50</p>
-          <div class="step-label">上报疫情</div>
-          <div class="desc">这是学生上报的内容详情，这是学生上报的内容详情这是学生上报的内容详情，这是学生上报的内容详情这是学生上报的内容详情，这是学生上报的内容详情这是学生上报的内容详情</div>
+          <div v-else-if="step.mark">
+            <span class="status">{{step.ConfirmStatusName}}</span>
+          </div>
+          <div v-else>
+            <p class="time">{{step.ReportTime}}</p>
+            <div class="step-label">上报疫情</div>
+            <div class="desc">{{step.ReportContent}}</div>
+          </div>
         </van-step>
       </van-steps>
     </van-panel>
@@ -127,7 +132,7 @@
     color: #fbb200;
   }
   .desc {
-      margin-top: 5px;
+    margin-top: 5px;
     font-family: PingFang-SC-Regular;
     font-size: 14px;
     color: #333333;
@@ -139,26 +144,47 @@
 </style>
 <script>
 import { setAntTitle } from "../../lib/common";
+import { QueryStudentReportUnusual } from "../../service/common.service";
 import { mapState } from "vuex";
 export default {
   name: "reportdetail",
   data() {
     return {
       RecordID: "",
-      disabledUpdate: true
+      disabledUpdate: true,
+      Septs: [],
+      CurentSep: {}
     };
   },
-    computed: mapState(["UserInfo"]),
+  computed: mapState(["UserInfo"]),
   created() {
-    this.RecordID = this.$route.query.RecordID;
     setAntTitle("疫情详情");
+    this.getFlowList();
   },
   methods: {
     imageLoadOnError() {
       this.UserInfo.Icon = require("../../assets/images/user.jpg");
     },
+    getFlowList() {
+      QueryStudentReportUnusual().then(r => {
+        const re = r.data;
+        if (!re.FeedbackCode) {
+          this.Septs = re.Data || [];
+          this.CurentSep = re.Data[0];
+          if (this.CurentSep.ConfirmStatus) {
+            this.disabledUpdate = false;
+          }
+          if (!this.CurentSep.ConfirmStatus) {
+            this.Septs.unshift({ mark: true, ConfirmStatusName: "待确定" });
+          }
+
+          this.$store.commit("saveFlowList", this.Septs);
+        }
+      });
+    },
     statusReportUpdate() {
       console.log("statusReportUpdate");
+      this.$router.push({ path: "report" });
     }
   }
 };
