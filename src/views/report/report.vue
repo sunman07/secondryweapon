@@ -57,12 +57,13 @@
         </van-cell>
       </van-cell-group>
       <van-field
+        v-if="otherFlag"
         v-model="form.ReportContent"
         rows="4"
         autosize
         type="textarea"
         maxlength="200"
-        placeholder="填填写详细情况，必填"
+        placeholder="请填写详细情况，必填"
         show-word-limit
       />
     </van-radio-group>
@@ -140,10 +141,7 @@
 <script>
 import { setAntTitle } from "../../lib/common";
 import arealist from "../../lib/area";
-import {
-  getBizCode,
-  onStatusReport
-} from "../../service/common.service";
+import { getBizCode, onStatusReport } from "../../service/common.service";
 import { mapState } from "vuex";
 export default {
   name: "report",
@@ -155,6 +153,7 @@ export default {
       HealthStatuss: [],
       aggree: false,
       disabledSubmit: true,
+      otherFlag: false,
       form: {
         CurrentAddress: "",
         GuardianName: "",
@@ -175,14 +174,14 @@ export default {
       }
     });
     /* 拿取流程 */
-    if(this.FlowList.length){
-    const _form = this.FlowList[0];
-    this.form.CurrentAddress = _form.CurrentAddress;
-    this.form.GuardianName = _form.GuardianName;
-    this.form.GuardianPhone = _form.GuardianPhone;
-    this.form.HealthStatus = _form.HealthStatus;
-    this.form.ReportContent = _form.ReportContent;
-    this.form.CurrentAddressCode = _form.CurrentAddressCode;
+    if (this.FlowList.length) {
+      const _form = this.FlowList[0];
+      this.form.CurrentAddress = _form.CurrentAddress;
+      this.form.GuardianName = _form.GuardianName;
+      this.form.GuardianPhone = _form.GuardianPhone;
+      this.form.HealthStatus = _form.HealthStatus;
+      this.form.ReportContent = _form.ReportContent;
+      this.form.CurrentAddressCode = _form.CurrentAddressCode;
     }
   },
   methods: {
@@ -197,6 +196,12 @@ export default {
     },
     statusChange(e) {
       console.log("statusChange", e);
+      const item = this.HealthStatuss.find(r => r.Code == e);
+      if(item.Name=='其他情况'){
+        this.otherFlag=true;
+      }else{
+         this.otherFlag=false;
+      }
       this.form.HealthStatus = e;
     },
     statusReport() {
@@ -212,7 +217,7 @@ export default {
         this.$toast("请选择健康状态!");
         return;
       }
-      if (!this.form.ReportContent) {
+      if (this.otherFlag&&!this.form.ReportContent) {
         this.$toast("请填写详细信息!");
         return;
       }

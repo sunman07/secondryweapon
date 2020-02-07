@@ -23,7 +23,7 @@
         <li class="item f-s-14">上报率</li>
       </ul>
     </van-panel>
-    <van-panel class="home-panel" title="今日报平安" :status="sumTotalCountDes">
+    <van-panel class="home-panel" title="今日报平安" :status="'累计'+sumTotalCount+'次'">
       <van-steps direction="vertical" v-if="dataSet.length">
         <van-step v-for="item of dataSet" :key="item.RecordID">
           <div class="m-b-6">{{item.ReportTime}}</div>
@@ -81,7 +81,7 @@
         </div>
 
         <div class="tr" v-for="(it,ix) of finishSet" :key="ix">
-          <span class="td name">{{it.name}}</span>
+          <span class="td name van-ellipsis">{{it.name}}</span>
           <span class="td van-ellipsis">{{it.report_area}}</span>
           <span class="td">{{it.reportTime}}</span>
         </div>
@@ -284,6 +284,7 @@
       color: #adadad;
       letter-spacing: 0;
       line-height: 30px;
+      vertical-align: middle;
     }
   }
   .unName {
@@ -306,13 +307,9 @@ import {
   QueryClassReportStudent,
   ClassTodayStatistics,
   ClassCumulativeStatistics,
-  QueryStudentReportUnusual
+  CheckIsRu
 } from "../../service/common.service";
-import {
-  setAntTitle,
-  debounce,
-  formatDate
-} from "../../lib/common";
+import { setAntTitle, debounce, formatDate } from "../../lib/common";
 
 export default {
   name: "home",
@@ -328,7 +325,7 @@ export default {
         TotalCount: 0,
         ReportCount: 0
       },
-      sumTotalCountDes: "",
+      sumTotalCount: 0,
       LocationProvince: "",
       LocationCity: "",
       locationCount: 0,
@@ -338,7 +335,7 @@ export default {
       serverUrl: "",
       UserInfo: {},
       UID: "",
-      Steps: []
+      IsReport: ""
     };
   },
   components: {},
@@ -346,7 +343,7 @@ export default {
   created() {
     setAntTitle("平安上报");
     this.city();
-  /*   getBasicInfo(data => {
+    /*   getBasicInfo(data => {
       this.UID = data.UserID || "";
       console.log("sdk", data);
     }); */
@@ -356,10 +353,13 @@ export default {
       const re = r.data;
       if (!re.FeedbackCode) {
         this.UserInfo = re.Data || {};
-        this.updateRecord();
-        this.$store.commit("saveUserInfo", this.UserInfo);
+        this.$store.commit("saveUserInfo", re.Data);
+        this.ClassCumulativeStatistics(this.UserInfo.ClassCode);
+        this.QueryReport();
+        this.ClassTodayStatistics(this.UserInfo.ClassCode);
       }
     });
+    this.CheckIsRu();
     getBizCode("studentSafetyReport").then(r => {
       const res = r.data;
       if (!res.FeedbackCode) {
@@ -371,7 +371,7 @@ export default {
   methods: {
     //去情况上报
     navReport() {
-      if (this.Steps.length) {
+      if (this.IsReport == 1) {
         this.$router.push({ path: "/reportdetail" });
         return;
       }
@@ -393,15 +393,14 @@ export default {
     updateRecord() {
       this.QueryReport();
       this.ClassTodayStatistics(this.UserInfo.ClassCode);
-      this.ClassCumulativeStatistics(this.UserInfo.ClassCode);
-      //提前查询跟踪记录
-      this.getFlowList();
+      //手动增加总数
+      this.sumTotalCount++;
     },
     ClassCumulativeStatistics(ClassCode = "") {
       ClassCumulativeStatistics({ ClassCode }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
-          this.sumTotalCountDes = `累计${res.Data.TotalCount}次`;
+          this.sumTotalCount = res.Data.TotalCount;
           console.log("ClassCumulativeStatistics", res);
         }
       });
@@ -445,13 +444,13 @@ export default {
         }
       });
     },
-    getFlowList() {
-      QueryStudentReportUnusual().then(r => {
+    /* 检查是否情况上报过 */
+    CheckIsRu() {
+      CheckIsRu().then(r => {
         const re = r.data;
         if (!re.FeedbackCode) {
-          this.$store.commit("saveFlowList", re.Data||[]);
-          this.Steps = re.Data||[];
-          console.log("QueryStudentReportUnusual", re.Data);
+          this.IsReport = re.Data.Is;
+          console.log("ddddd方法", re);
         }
       });
     },
@@ -517,7 +516,7 @@ export default {
           return;
         }
       }
-    /*   if (!this.UID) {
+      /*   if (!this.UID) {
         this.$toast("无法识别当前登录人,不能上报!");
         return;
       } */

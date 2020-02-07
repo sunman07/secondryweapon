@@ -26,31 +26,32 @@
     <div class="box">
       <div>
         <span class="label">当前所在地</span>
-        <span class="lable value van-ellipsis">{{CurentSep.CurrentAddress}}</span>
+        <span class="lable value">{{ReportUnusual.CurrentAddress}}</span>
       </div>
       <div>
         <span class="label">监护人</span>
-        <span class="lable value van-ellipsis">{{CurentSep.GuardianName}}</span>
-        <span class="lable value van-ellipsis">{{CurentSep.GuardianPhone}}</span>
+        <span class="lable value van-ellipsis">{{ReportUnusual.GuardianName}}</span>
+        &nbsp;<span class="lable value van-ellipsis">{{ReportUnusual.GuardianPhone}}</span>
       </div>
     </div>
     <van-panel style="margin:auto 20px" title="上报跟踪">
       <van-steps direction="vertical">
         <van-step v-for="(step,ix) of Septs" :key="ix">
-          <div v-if="step.ConfirmStatus">
-            <p>{{step.ReportTime}}</p>
-            <div class="step-label">
-              老师已确定，标记
-              <span class="status">{{step.ConfirmStatusName}}</span>
+          <div v-if="step.OpType==2">
+            <div v-if="step.mark">{{step.FollowStatusName}}</div>
+            <div v-else>
+              <p>{{step.ReportTime}}</p>
+              <div class="step-label">
+                老师已确定，标记
+                <span class="status">{{step.FollowStatusName}}</span>
+              </div>
             </div>
           </div>
-          <div v-else-if="step.mark">
-            <span class="status">{{step.ConfirmStatusName}}</span>
-          </div>
-          <div v-else>
-            <p class="time">{{step.ReportTime}}</p>
+          <div v-if="step.OpType==1">
+            <p class="time">{{step.OpTime}}</p>
             <div class="step-label">上报疫情</div>
-            <div class="desc">{{step.ReportContent}}</div>
+            <div class="desc" v-if="step.ReportContent">{{step.ReportContent}}</div>
+            <div class="desc" v-if="!step.ReportContent">{{step.FollowStatusName}}</div>
           </div>
         </van-step>
       </van-steps>
@@ -153,7 +154,8 @@ export default {
       RecordID: "",
       disabledUpdate: true,
       Septs: [],
-      CurentSep: {}
+      CurentSep: {},
+      ReportUnusual: {}
     };
   },
   computed: mapState(["UserInfo"]),
@@ -169,16 +171,23 @@ export default {
       QueryStudentReportUnusual().then(r => {
         const re = r.data;
         if (!re.FeedbackCode) {
-          this.Septs = re.Data || [];
-          this.CurentSep = re.Data[0];
-          if (this.CurentSep.ConfirmStatus) {
+          const Data = re.Data;
+          this.ReportUnusual = Data.ReportUnusual;
+          this.Septs = Data.RUFollow || [];
+          console.log("this.Steps", this.Septs);
+          if (!this.Septs[0].TeachIntelUserCode) {
+            this.Septs.unshift({
+              mark: true,
+              OpType: 2,
+              FollowStatusName: "待确定"
+            });
+          }
+          /*  if (this.CurentSep.ConfirmStatus) {
             this.disabledUpdate = false;
           }
           if (!this.CurentSep.ConfirmStatus) {
             this.Septs.unshift({ mark: true, ConfirmStatusName: "待确定" });
-          }
-
-          this.$store.commit("saveFlowList", this.Septs);
+          } */
         }
       });
     },

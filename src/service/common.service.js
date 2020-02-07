@@ -67,9 +67,19 @@ export function QueryLastReport(params = {}) {
  */
 export function QueryStudentReportUnusual(params = {}) {
   return http.postJSON({
-    Router: `${api}querystudentreportunusual`,
+    Router: `${api}querystudentrufollow`,
     Method: "POST",
     Body: params
+  });
+}
+/**
+ * 获取是否上报过
+ */
+export function CheckIsRu() {
+  return http.postJSON({
+    Router: `${api}checkisru`,
+    Method: "POST",
+    Body: {}
   });
 }
 /**
