@@ -167,7 +167,7 @@ export default {
   computed: mapState(["UserInfo", "FlowList"]),
   created() {
     setAntTitle("上报疫情");
-    getBizCode("studentSafetyReport").then(r => {
+    getBizCode("StudentReportUnusualHealthStatus").then(r => {
       const res = r.data;
       if (!res.FeedbackCode) {
         const item = res.Data;
