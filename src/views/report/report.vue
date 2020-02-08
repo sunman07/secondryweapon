@@ -163,7 +163,7 @@ export default {
       }
     };
   },
-  computed: mapState(["UserInfo", "FlowList"]),
+  computed: mapState(["UserInfo"]),
   created() {
     setAntTitle("上报疫情");
     getBizCode("StudentReportUnusualHealthStatus").then(r => {
@@ -173,16 +173,15 @@ export default {
         this.HealthStatuss = item || [];
       }
     });
-    /* 拿取流程 */
-    if (this.FlowList.length) {
-      const _form = this.FlowList[0];
+  /*  
+    if (this.ReportUnusual.ReportTime) {
+      const _form = this.ReportUnusual;
       this.form.CurrentAddress = _form.CurrentAddress;
       this.form.GuardianName = _form.GuardianName;
       this.form.GuardianPhone = _form.GuardianPhone;
       this.form.HealthStatus = _form.HealthStatus;
       this.form.ReportContent = _form.ReportContent;
-      this.form.CurrentAddressCode = _form.CurrentAddressCode;
-    }
+    } */
   },
   methods: {
     selectArea(e) {

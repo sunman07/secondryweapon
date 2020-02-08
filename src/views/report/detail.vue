@@ -181,6 +181,8 @@ export default {
               OpType: 2,
               FollowStatusName: "待确定"
             });
+          }else{
+            this.disabledUpdate = false;
           }
           /*  if (this.CurentSep.ConfirmStatus) {
             this.disabledUpdate = false;

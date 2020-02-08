@@ -3,8 +3,7 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
-    UserInfo: {},
-    FlowList:[]
+    UserInfo: {}
   },
   mutations: {
     /* 保存用户信息 */
