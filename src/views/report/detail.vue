@@ -42,7 +42,7 @@
             <div v-else>
               <p>{{step.ReportTime}}</p>
               <div class="step-label">
-                老师已确定，标记
+                {{step.TeachName}}老师已确定，标记
                 <span class="status">{{step.FollowStatusName}}</span>
               </div>
             </div>
