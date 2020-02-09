@@ -333,6 +333,7 @@ export default {
       LocationCheck: true,
       finishShow: false,
       unFinishShow: false,
+      disabledSubmit:false,
       serverUrl: "",
       UserInfo: {},
       UID: "",
@@ -343,6 +344,7 @@ export default {
   mounted() {},
   created() {
     setAntTitle("平安上报");
+    this.disabledSubmit=false;
     this.city();
     /*   getBasicInfo(data => {
       this.UID = data.UserID || "";
@@ -511,6 +513,10 @@ export default {
     },
     /* 上报 */
     Report(item) {
+        if(this.disabledSubmit){
+        this.$toast("您已成功报平安,无需再报!");
+          return; 
+      }
       this.countClick++;
       if (this.LocationCheck&&this.countClick<=2) {
         if (!this.LocationCity) {
@@ -525,13 +531,14 @@ export default {
       const params = {
         ReportArea: this.LocationCity,
         ReportCode: item.Code,
-        UID: this.UID
+        UID: ''
       };
       this.show = false;
       debounce(() => {
         onReport(params).then(r => {
           const res = r.data;
           if (!res.FeedbackCode) {
+            this.disabledSubmit=true;
             this.$toast(res.FeedbackText);
             //更新记录
             this.updateRecord();
