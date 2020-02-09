@@ -329,11 +329,11 @@ export default {
       LocationProvince: "",
       LocationCity: "",
       locationCount: 0,
-      countClick:0,
+      countClick: 0,
       LocationCheck: true,
       finishShow: false,
       unFinishShow: false,
-      disabledSubmit:false,
+      disabledSubmit: false,
       serverUrl: "",
       UserInfo: {},
       UID: "",
@@ -344,7 +344,7 @@ export default {
   mounted() {},
   created() {
     setAntTitle("平安上报");
-    this.disabledSubmit=false;
+    this.disabledSubmit = false;
     this.city();
     /*   getBasicInfo(data => {
       this.UID = data.UserID || "";
@@ -513,17 +513,20 @@ export default {
     },
     /* 上报 */
     Report(item) {
-        if(this.disabledSubmit){
+      if (this.disabledSubmit) {
         this.$toast("您已成功报平安,无需再报!");
-          return; 
+        return;
       }
-      this.countClick++;
-      if (this.LocationCheck&&this.countClick<=2) {
-        if (!this.LocationCity) {
-          this.$toast("位置信息尚未获取,请稍等片刻报平安!");
-          return;
+      if (this.countClick <= 2) {
+        if (this.LocationCheck) {
+          if (!this.LocationCity) {
+            this.$toast("位置信息尚未获取,请稍等片刻报平安!");
+            return;
+          }
         }
       }
+
+      this.countClick++;
       /*   if (!this.UID) {
         this.$toast("无法识别当前登录人,不能上报!");
         return;
@@ -531,14 +534,14 @@ export default {
       const params = {
         ReportArea: this.LocationCity,
         ReportCode: item.Code,
-        UID: ''
+        UID: ""
       };
       this.show = false;
       debounce(() => {
         onReport(params).then(r => {
           const res = r.data;
           if (!res.FeedbackCode) {
-            this.disabledSubmit=true;
+            this.disabledSubmit = true;
             this.$toast(res.FeedbackText);
             //更新记录
             this.updateRecord();
