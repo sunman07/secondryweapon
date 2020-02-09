@@ -173,7 +173,7 @@ export default {
         this.HealthStatuss = item || [];
       }
     });
-  /*  
+    /*  
     if (this.ReportUnusual.ReportTime) {
       const _form = this.ReportUnusual;
       this.form.CurrentAddress = _form.CurrentAddress;
@@ -186,8 +186,14 @@ export default {
   methods: {
     selectArea(e) {
       console.log(e);
-      this.form.CurrentAddress = `${e[0].name}${e[1].name}${e[2].name}`;
-      this.form.CurrentAddressCode = e[2];
+      if (e[2]) {
+        this.form.CurrentAddress = `${e[0].name}${e[1].name}${e[2].name}`;
+        this.form.CurrentAddressCode = e[2];
+      } else {
+        this.form.CurrentAddress = `${e[0].name}${e[1].name}`;
+        this.form.CurrentAddressCode = e[1];
+      }
+
       this.areaShow = false;
     },
     confirm(e) {
@@ -196,10 +202,10 @@ export default {
     statusChange(e) {
       console.log("statusChange", e);
       const item = this.HealthStatuss.find(r => r.Code == e);
-      if(item.Name=='其他情况'){
-        this.otherFlag=true;
-      }else{
-         this.otherFlag=false;
+      if (item.Name == "其他情况") {
+        this.otherFlag = true;
+      } else {
+        this.otherFlag = false;
       }
       this.form.HealthStatus = e;
     },
@@ -224,7 +230,7 @@ export default {
         this.$toast("请选择健康状态!");
         return;
       }
-      if (this.otherFlag&&!this.form.ReportContent.trim()) {
+      if (this.otherFlag && !this.form.ReportContent.trim()) {
         this.$toast("请填写详细信息!");
         return;
       }
