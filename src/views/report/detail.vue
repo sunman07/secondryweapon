@@ -50,8 +50,8 @@
           <div v-if="step.OpType==1">
             <p class="time">{{step.OpTime}}</p>
             <div class="step-label">上报疫情</div>
-            <div class="desc" v-if="step.ReportContent">{{step.ReportContent}}</div>
-            <div class="desc" v-if="!step.ReportContent">{{step.FollowStatusName}}</div>
+            <div class="desc" v-if="step.FollowStatusName=='其他情况'">{{step.ReportContent}}</div>
+            <div class="desc"  v-if="step.FollowStatusName!='其他情况'">{{step.FollowStatusName}}</div>
           </div>
         </van-step>
       </van-steps>
