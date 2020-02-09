@@ -507,7 +507,7 @@ export default {
       QueryLastReport({ Count, ClassCode: this.UserInfo.ClassCode }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
-          this.dataSet = res.Data;
+          this.dataSet = res.Data||[];
         }
       });
     },

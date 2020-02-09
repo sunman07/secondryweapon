@@ -37,7 +37,7 @@
           label="监护人"
           maxlength="10"
           v-model="form.GuardianName"
-          placeholder="请输入监护人姓名，非必填"
+          placeholder="请输入监护人姓名，必填"
         />
         <van-field
           class="field"
@@ -45,7 +45,7 @@
           v-model="form.GuardianPhone"
           type="tel"
           maxlength="16"
-          placeholder="请输入监护人电话，非必填"
+          placeholder="请输入监护人电话，必填"
         />
       </van-cell-group>
     </div>
@@ -208,6 +208,14 @@ export default {
         this.$toast("请选择当前所在地!");
         return;
       }
+      if (!this.form.GuardianName.trim()) {
+        this.$toast("请填写监护人姓名!");
+        return;
+      }
+      if (!this.form.GuardianPhone.trim()) {
+        this.$toast("请填写监护人电话!");
+        return;
+      }
       if (!this.form.CurrentAddress) {
         this.$toast("请选择当前所在地!");
         return;
@@ -216,7 +224,7 @@ export default {
         this.$toast("请选择健康状态!");
         return;
       }
-      if (this.otherFlag&&!this.form.ReportContent) {
+      if (this.otherFlag&&!this.form.ReportContent.trim()) {
         this.$toast("请填写详细信息!");
         return;
       }
