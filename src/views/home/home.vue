@@ -329,6 +329,7 @@ export default {
       LocationProvince: "",
       LocationCity: "",
       locationCount: 0,
+      countClick:0,
       LocationCheck: true,
       finishShow: false,
       unFinishShow: false,
@@ -510,7 +511,8 @@ export default {
     },
     /* 上报 */
     Report(item) {
-      if (this.LocationCheck) {
+      this.countClick++;
+      if (this.LocationCheck&&this.countClick<=2) {
         if (!this.LocationCity) {
           this.$toast("位置信息尚未获取,请稍等片刻报平安!");
           return;
