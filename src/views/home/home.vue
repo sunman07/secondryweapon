@@ -437,7 +437,7 @@ export default {
         if (!res.FeedbackCode) {
           const items = res.Data.list || [];
           items.forEach(element => {
-            element.reportTime = formatDate(element.report_time, "MM-dd mm:ss");
+            element.reportTime = formatDate(element.report_time, "MM-dd hh:mm");
           });
           if (type === 1) {
             this.finishSet = items || [];
