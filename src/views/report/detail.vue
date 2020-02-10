@@ -1,5 +1,5 @@
 <template>
-  <div class="reportdetail">
+  <div class="detail">
     <div class="h-bg"></div>
     <!-- 头部信息 -->
     <div class="box" style="margin-top:-80px">
@@ -65,7 +65,7 @@
   </div>
 </template>
 <style scoped lang="less">
-.reportdetail {
+.detail {
   height: 100vh;
   overflow: auto;
   .h-bg {

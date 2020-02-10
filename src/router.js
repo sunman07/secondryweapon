@@ -22,7 +22,7 @@ export default new Router({
       name: "reportdetail",
       component: () =>
         import(
-          /* webpackChunkName: "reportdetail" */ "./views/report/detail.vue"
+          /* webpackChunkName: "detail" */ "./views/report/detail.vue"
         )
     }
   ]

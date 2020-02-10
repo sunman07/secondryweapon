@@ -5,7 +5,7 @@ const path = require("path");
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const productionGzip = true; // 是否使用gzip
 const productionGzipExtensions = ['js', 'css']; // 需要gzip压缩的文件后缀
-const token = "PV0V2CBUPC23VXWNXIFOBW";
+const token = "PV0VCBUPC23VXWNXIFOBW";
 // gzip --end
 module.exports = {
   /*基础地址*/
@@ -14,31 +14,6 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV !== "production",
   productionSourceMap: false,
   filenameHashing: true,
-
-  pwa: {
-    themeColor: "#FFC000",
-    msTileColor: "#000000",
-    appleMobileWebAppCapable: "yes",
-    appleMobileWebAppStatusBarStyle: "black",
-    workboxPluginMode: "GenerateSW",
-    workboxOptions: {
-      navigateFallback: "/index.html",
-      runtimeCaching: [
-        {
-          urlPattern: "/api",
-          handler: "networkFirst",
-          options: {
-            networkTimeoutSeconds: 20,
-            cacheName: "antlinker-api-cache",
-            cacheableResponse: {
-              statuses: [0, 200]
-            }
-          }
-        }
-      ]
-    }
-  },
-
   devServer: {
     port: 8081,
     overlay: {

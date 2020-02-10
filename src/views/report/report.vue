@@ -1,5 +1,5 @@
 <template>
-  <div class="report">
+  <div class="reportform">
     <div class="h-title">基本信息</div>
     <van-cell-group>
       <van-cell
@@ -91,7 +91,7 @@
   </div>
 </template>
 <style scoped lang="less">
-.report {
+.reportform {
   margin: auto 12px;
   height: 100vh;
   overflow: auto;
