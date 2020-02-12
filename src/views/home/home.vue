@@ -1,6 +1,9 @@
 <template>
   <div class="index">
     <div class="h-bg"></div>
+    <div class="address">
+      <van-loading v-if="position" size="24px">获取定位中...</van-loading>
+    </div>
     <van-panel class="h-header" :title="UserInfo.ClassName||''">
       <ul class="list" style="line-height:44px">
         <li class="item f-s-22" style="color: #0F0F0F;">{{headObj.TotalCount}}</li>
@@ -46,7 +49,7 @@
         <img class="icon" src="@/assets/images/report1.png" alt />
         <span>情况上报</span>
       </div>
-      <div class="submit1" @click="show=true">
+      <div class="submit1" @click="onSafe">
         <img class="icon" src="@/assets/images/report_icon.png" alt />
         <span>我要报平安</span>
       </div>
@@ -109,6 +112,12 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  .address {
+    position: absolute;
+    right: 4px;
+    bottom: 80px;
+    z-index: 4;
+  }
   .h-bg {
     background: url("../../assets/images/bg-image.png");
     background-size: contain;
@@ -317,6 +326,7 @@ export default {
     return {
       dataSet: [],
       show: false,
+      position: true,
       bizTypes: [],
       finishSet: [],
       unFinishSet: [],
@@ -346,6 +356,9 @@ export default {
     setAntTitle("平安上报");
     this.disabledSubmit = false;
     this.city();
+    setTimeout(() => {
+      this.position = false;
+    }, 6000);
     /*   getBasicInfo(data => {
       this.UID = data.UserID || "";
       console.log("sdk", data);
@@ -507,35 +520,11 @@ export default {
       QueryLastReport({ Count, ClassCode: this.UserInfo.ClassCode }).then(r => {
         const res = r.data;
         if (!res.FeedbackCode) {
-          this.dataSet = res.Data||[];
+          this.dataSet = res.Data || [];
         }
       });
     },
-    /* 上报 */
-    Report(item) {
-      if (this.disabledSubmit) {
-        this.$toast("您已成功报平安,无需再报!");
-        return;
-      }
-      if (this.countClick <= 2) {
-        if (this.LocationCheck) {
-          if (!this.LocationCity) {
-            this.$toast("位置信息尚未获取,请稍等片刻报平安!");
-            return;
-          }
-        }
-      }
-
-      this.countClick++;
-      /*   if (!this.UID) {
-        this.$toast("无法识别当前登录人,不能上报!");
-        return;
-      } */
-      const params = {
-        ReportArea: this.LocationCity,
-        ReportCode: item.Code,
-        UID: ""
-      };
+    submit(params = {}) {
       this.show = false;
       debounce(() => {
         onReport(params).then(r => {
@@ -548,6 +537,61 @@ export default {
           }
         });
       }, 300);
+    },
+    onSafe() {
+  /*     if (this.position) {
+        this.$toast("尚在获取定位中,不能上报!");
+        return;
+      } */
+      this.show = true;
+    },
+    /* 上报 */
+    Report(item) {
+      
+      if (this.disabledSubmit) {
+        this.$toast("您已成功报平安,无需再报!");
+        return;
+      }
+      if (!this.LocationCity) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "尚未定位到您的位置,是否继续报平安?"
+          })
+          .then(() => {
+            const params = {
+              ReportArea: this.LocationCity,
+              ReportCode: item.Code,
+              UID: ""
+            };
+            this.submit(params);
+          })
+          .catch(() => {
+            this.show = false;
+            // on cancel
+          });
+      } else {
+        const params = {
+          ReportArea: this.LocationCity,
+          ReportCode: item.Code,
+          UID: ""
+        };
+        this.submit(params);
+      }
+      /*      if (this.countClick <= 2) {
+        if (this.LocationCheck) {
+          if (!this.LocationCity) {
+            this.$toast("位置信息尚未获取,请稍等片刻报平安!");
+            return;
+          }
+        }
+      }
+
+      this.countClick++; */
+      /*   if (!this.UID) {
+        this.$toast("无法识别当前登录人,不能上报!");
+        return;
+      } */
     }
   }
 };

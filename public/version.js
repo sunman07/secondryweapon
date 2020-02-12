@@ -1,4 +1,4 @@
-var version = '1.0.7';
+var version = '1.0.8';
 var key = 'm_safereport';
 var HistoryVersion = localStorage.getItem(key);
 function clear() {
