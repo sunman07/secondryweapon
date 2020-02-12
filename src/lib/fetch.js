@@ -8,7 +8,6 @@ let req = {
             Body: JSON.stringify(Body) || "{}"
         })).then(r=>{
             const data=r.data;
-            console.log("r-status:", r);
             if(r.status==429){
                  Toast("服务器繁忙,请过会重试!");
                  return r;
