@@ -539,10 +539,10 @@ export default {
       }, 300);
     },
     onSafe() {
-  /*     if (this.position) {
+      if (this.position) {
         this.$toast("尚在获取定位中,不能上报!");
         return;
-      } */
+      }
       this.show = true;
     },
     /* 上报 */
