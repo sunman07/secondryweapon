@@ -358,7 +358,7 @@ export default {
     this.city();
     setTimeout(() => {
       this.position = false;
-    }, 6000);
+    }, 7000);
     /*   getBasicInfo(data => {
       this.UID = data.UserID || "";
       console.log("sdk", data);
