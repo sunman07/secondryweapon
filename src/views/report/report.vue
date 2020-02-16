@@ -66,32 +66,32 @@
         show-word-limit
       />
     </van-radio-group>
- <div class="h-title">其他信息</div>
-      <van-cell-group>
-        <van-cell title-class="cell-title" value-class="cell-value" title="当前所在地">
-          <template>
-            <div slot="default">
-              {{form.CurrentAddress}}
-              <span class="update f-r" @click="areaShow=true">修改</span>
-            </div>
-          </template>
-        </van-cell>
-        <van-field
-          class="field"
-          label="监护人"
-          maxlength="10"
-          v-model="form.GuardianName"
-          placeholder="请输入监护人姓名，必填"
-        />
-        <van-field
-          class="field"
-          label="监护人电话"
-          v-model="form.GuardianPhone"
-          type="tel"
-          maxlength="16"
-          placeholder="请输入监护人电话，必填"
-        />
-      </van-cell-group>
+    <div class="h-title">其他信息</div>
+    <van-cell-group>
+      <van-cell title-class="cell-title" value-class="cell-value" title="当前所在地">
+        <template>
+          <div slot="default">
+            {{form.CurrentAddress}}
+            <span class="update f-r" @click="areaShow=true">修改</span>
+          </div>
+        </template>
+      </van-cell>
+      <van-field
+        class="field"
+        label="监护人"
+        maxlength="10"
+        v-model="form.GuardianName"
+        placeholder="请输入监护人姓名，必填"
+      />
+      <van-field
+        class="field"
+        label="监护人电话"
+        v-model="form.GuardianPhone"
+        type="tel"
+        maxlength="16"
+        placeholder="请输入监护人电话，必填"
+      />
+    </van-cell-group>
     <van-checkbox
       class="agree"
       @change="confirm"
@@ -180,8 +180,11 @@
 <script>
 import { setAntTitle, formatDate } from "../../lib/common";
 import arealist from "../../lib/area";
-import { getBizCode, onStatusReport } from "../../service/common.service";
-import { mapState } from "vuex";
+import {
+  getBizCode,
+  onStatusReport,
+  getUserInfo
+} from "../../service/common.service";
 export default {
   name: "report",
   data() {
@@ -190,18 +193,19 @@ export default {
       areaShow: false,
       dateShow: false,
       areaList: arealist,
-      Statuss:[],
+      Statuss: [],
       HealthStatuss: [],
       SituationMeasures: [],
       aggree: false,
       disabledSubmit: true,
       otherFlag: false,
-      IntelUserCode:'',
+      UserInfo: {},
+      IntelUserCode: "",
       form: {
         CurrentAddress: "",
         GuardianName: "",
         GuardianPhone: "",
-        HealthStatus:'',
+        HealthStatus: "",
         SituationStatus: "",
         ReportContent: "",
         SituationDate: "",
@@ -212,10 +216,9 @@ export default {
       currentDate: new Date()
     };
   },
-  computed: mapState(["UserInfo"]),
   created() {
-    this.IntelUserCode=this.$route.query.IntelUserCode||'';
-    console.log('this.IntelUserCode',this.IntelUserCode);
+    this.IntelUserCode = this.$route.query.IntelUserCode || "";
+    console.log("this.IntelUserCode", this.IntelUserCode);
     setAntTitle("上报疫情");
     getBizCode("StudentReportUnusualHealthStatus").then(r => {
       const res = r.data;
@@ -232,6 +235,18 @@ export default {
         this.SituationMeasures = item || [];
       }
     });
+    if (this.IntelUserCode) {
+      /* 基本信息 */
+      getUserInfo(this.IntelUserCode).then(r => {
+        const re = r.data;
+        if (!re.FeedbackCode) {
+          this.UserInfo = re.Data || {};
+        }
+      });
+    } else {
+      console.log(this.$store)
+      this.UserInfo = this.$store.state.UserInfo;
+    }
     /*  
     if (this.ReportUnusual.ReportTime) {
       const _form = this.ReportUnusual;
@@ -283,8 +298,8 @@ export default {
         }
       });
       this.form.SituationStatus = e.join();
-       console.log("statusChange", e);
-       console.log("this.form.SituationStatus", this.form.SituationStatus);
+      console.log("statusChange", e);
+      console.log("this.form.SituationStatus", this.form.SituationStatus);
     },
     MeasureChange(e) {
       this.form.SituationMeasure = e;
@@ -334,11 +349,11 @@ export default {
           message: "该信息会推送给学校老师，请确认是要上报吗？"
         })
         .then(() => {
-          const form={...this.form};
+          const form = { ...this.form };
           //老师代替上报
-          form.IntelUserCode=this.IntelUserCode||'';
+          form.IntelUserCode = this.IntelUserCode || "";
           delete form.CurrentAddressCode;
-          console.log('form',form)
+          console.log("form", form);
           onStatusReport(form).then(r => {
             const res = r.data;
             if (!res.FeedbackCode) {

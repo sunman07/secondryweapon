@@ -53,7 +53,7 @@
           <!-- 老师确定疫情/跟踪疫情 -->
           <div v-if="step.OpType==2">
             <div>
-              <p>{{$moment(step.ReportTime).format('MM月DD日 hh:mm')}}</p>
+              <p>{{$moment(step.OpTime).format('MM月DD日 hh:mm')}}</p>
               <div class="step-label">
                 <span :style="{color:step.Color}">{{step.FollowStatusName}}</span> 辅导员已核实
               </div>
@@ -66,13 +66,13 @@
           </div>
           <!-- 未上报 -->
           <div v-if="step.OpType==5">
-            <p>{{$moment(step.ReportTime).format('MM月DD日')}}</p>
+            <p>{{$moment(step.OpTime).format('MM月DD日')}}</p>
 
             <div class="step-label">未上报</div>
           </div>
           <!-- 未跟踪 -->
           <div v-if="step.OpType==6">
-            <p>{{$moment(step.ReportTime).format('MM月DD日')}}</p>
+            <p>{{$moment(step.OpTime).format('MM月DD日')}}</p>
             <div class="step-label">未跟踪</div>
           </div>
         </van-step>
