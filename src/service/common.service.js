@@ -75,23 +75,23 @@ export function QueryLastReport(params = {}) {
 /**
  * 获取最新 情况上报
  */
-export function QueryStudentReportUnusual(params = {}) {
-  return http.postJSON({
-    Router: `${api}querystudentrufollow`,
-    Method: "POST",
-    Body: params
-  });
-}
+export function QueryStudentReportUnusual(IntelUserCode = '') {
+         return http.postJSON({
+           Router: `${api}querystudentrufollow`,
+           Method: "POST",
+           Body: { IntelUserCode }
+         });
+       }
 /**
  * 获取时间线
  */
-export function TimeLine(params = {}) {
-  return http.postJSON({
-    Router: `${api}timeline`,
-    Method: "POST",
-    Body: params
-  });
-}
+export function TimeLine(UID = '') {
+         return http.postJSON({
+           Router: `${api}timeline`,
+           Method: "POST",
+           Body: { UID }
+         });
+       }
 /**
  * 获取是否上报过
  */

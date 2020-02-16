@@ -241,6 +241,7 @@ export default {
         const re = r.data;
         if (!re.FeedbackCode) {
           this.UserInfo = re.Data || {};
+           this.$store.commit("saveUserInfo", re.Data);
         }
       });
     } else {
@@ -358,7 +359,8 @@ export default {
             const res = r.data;
             if (!res.FeedbackCode) {
               this.$router.replace({
-                path: "reportdetail"
+                path: "reportdetail",
+                query:{IntelUserCode:this.IntelUserCode}
               });
               this.$toast(res.FeedbackText);
             }

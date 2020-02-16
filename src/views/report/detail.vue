@@ -174,7 +174,7 @@
 </style>
 <script>
 import { setAntTitle } from "../../lib/common";
-import { TimeLine } from "../../service/common.service";
+import { TimeLine, QueryStudentReportUnusual } from "../../service/common.service";
 import { mapState } from "vuex";
 export default {
   name: "reportdetail",
@@ -184,20 +184,30 @@ export default {
       disabledUpdate: true,
       Septs: [],
       CurentSep: {},
-      ReportUnusual: {}
+      ReportUnusual: {},
+      IntelUserCode: ""
     };
   },
   computed: mapState(["UserInfo"]),
   created() {
     setAntTitle("疫情详情");
-    this.getFlowList();
+    this.IntelUserCode = this.$route.query.IntelUserCode || "";
+    //情况上报信息
+    QueryStudentReportUnusual(this.IntelUserCode).then(r => {
+      const re = r.data;
+      if (!re.FeedbackCode) {
+        const Data = re.Data;
+        this.ReportUnusual = Data.ReportUnusual || {};
+      }
+    });
+    this.getFlowList(this.IntelUserCode);
   },
   methods: {
     imageLoadOnError() {
       this.UserInfo.Icon = require("../../assets/images/user.jpg");
     },
-    getFlowList() {
-      TimeLine().then(r => {
+    getFlowList(IntelUserCode) {
+      TimeLine(IntelUserCode).then(r => {
         const re = r.data;
         if (!re.FeedbackCode) {
           const Data = re.Data;
