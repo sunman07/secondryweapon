@@ -196,6 +196,7 @@ export default {
       aggree: false,
       disabledSubmit: true,
       otherFlag: false,
+      IntelUserCode:'',
       form: {
         CurrentAddress: "",
         GuardianName: "",
@@ -213,6 +214,8 @@ export default {
   },
   computed: mapState(["UserInfo"]),
   created() {
+    this.IntelUserCode=this.$route.query.IntelUserCode||'';
+    console.log('this.IntelUserCode',this.IntelUserCode);
     setAntTitle("上报疫情");
     getBizCode("StudentReportUnusualHealthStatus").then(r => {
       const res = r.data;
@@ -332,6 +335,8 @@ export default {
         })
         .then(() => {
           const form={...this.form};
+          //老师代替上报
+          form.IntelUserCode=this.IntelUserCode||'';
           delete form.CurrentAddressCode;
           console.log('form',form)
           onStatusReport(form).then(r => {

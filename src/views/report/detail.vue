@@ -43,7 +43,7 @@
             <p class="time">{{$moment(step.ReportTime).format('MM月DD日 hh:mm')}}</p>
             <div class="step-label">情况上报</div>
             <div class="desc">发生日期: {{$moment(step.SituationDate).format('MM月DD日')}}</div>
-            <div class="desc">情况说明: {{step.SituationStatus}}</div>
+            <div class="desc">情况说明: {{step.SituationStatusName}}</div>
             <div
               class="desc"
               v-if="step.SituationStatusName.split().includes('其他情况')"
@@ -54,8 +54,10 @@
           <div v-if="step.OpType==2">
             <div>
               <p>{{$moment(step.ReportTime).format('MM月DD日 hh:mm')}}</p>
-              <div class="step-label" ><span :style="{color:step.Color}">{{step.FollowStatusName}}</span>  辅导员已核实</div>
-            </div> 
+              <div class="step-label">
+                <span :style="{color:step.Color}">{{step.FollowStatusName}}</span> 辅导员已核实
+              </div>
+            </div>
           </div>
           <!-- 上报平安 -->
           <div v-if="step.OpType==4">
@@ -64,10 +66,13 @@
           </div>
           <!-- 未上报 -->
           <div v-if="step.OpType==5">
+            <p>{{$moment(step.ReportTime).format('MM月DD日')}}</p>
+
             <div class="step-label">未上报</div>
           </div>
           <!-- 未跟踪 -->
           <div v-if="step.OpType==6">
+            <p>{{$moment(step.ReportTime).format('MM月DD日')}}</p>
             <div class="step-label">未跟踪</div>
           </div>
         </van-step>
