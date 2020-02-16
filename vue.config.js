@@ -1,11 +1,11 @@
-const {externals, cdn} = require("./build/utils");
+const { externals, cdn } = require("./build/utils");
 const autoprefixer = require("autoprefixer");
-const path = require("path");
+const webpack = require("webpack");
 // gzip --start
-const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const CompressionWebpackPlugin = require("compression-webpack-plugin");
 const productionGzip = true; // 是否使用gzip
-const productionGzipExtensions = ['js', 'css']; // 需要gzip压缩的文件后缀
-const token = "6UWP0CBTMH-O-QDCN0GZNW";
+const productionGzipExtensions = ["js", "css"]; // 需要gzip压缩的文件后缀
+const token = "SBNA5EJ0PSCZPIUIJP7_EA";
 // gzip --end
 module.exports = {
   /*基础地址*/
@@ -56,6 +56,28 @@ module.exports = {
           })
         );
     }
+  /*   config.optimization = {
+      runtimeChunk: "single",
+      splitChunks: {
+        chunks: "all",
+        maxInitialRequests: Infinity,
+        minSize: 20000,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module) {
+              // get the name. E.g. node_modules/packageName/not/this/part.js
+              // or node_modules/packageName
+              const packageName = module.context.match(
+                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+              )[1];
+              // npm package names are URL-safe, but some servers don't like @ symbols
+              return `npm.${packageName.replace("@", "")}`;
+            }
+          }
+        }
+      }
+    }; */
     if (process.env.NODE_ENV === "development") {
       console.log("开发模式");
     }
@@ -72,6 +94,9 @@ module.exports = {
     });
     config.output // Modify output settings
       .filename("main.js");
+    [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)],
+      config.output // Modify output settings
+        .filename("main.js");
     return config;
   },
 

@@ -5,8 +5,13 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+    { path: "/", redirect: "home" },
     {
-      path: "/",
+      path: "*",
+      redirect: "/home"
+    },
+    {
+      path: "/home",
       name: "home",
       component: () =>
         import(/* webpackChunkName: "home" */ "./views/home/home.vue")
@@ -21,9 +26,7 @@ export default new Router({
       path: "/reportdetail",
       name: "reportdetail",
       component: () =>
-        import(
-          /* webpackChunkName: "detail" */ "./views/report/detail.vue"
-        )
+        import(/* webpackChunkName: "detail" */ "./views/report/detail.vue")
     }
   ]
 });

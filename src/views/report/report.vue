@@ -22,7 +22,51 @@
       ></van-cell>
     </van-cell-group>
 
-    <div style="margin-top:12px">
+    <div class="h-title">情况说明（多选）</div>
+    <van-checkbox-group v-model="Statuss" @change="statusChange">
+      <van-cell-group>
+        <van-cell v-for="(health,index) in HealthStatuss" :key="index">
+          <van-checkbox checked-color="#FBB200" :name="health.Code">{{health.Name}}</van-checkbox>
+        </van-cell>
+      </van-cell-group>
+      <van-field
+        v-if="otherFlag"
+        v-model="form.ReportContent"
+        rows="4"
+        autosize
+        type="textarea"
+        maxlength="200"
+        placeholder="请填写详细情况，必填"
+        show-word-limit
+      />
+    </van-checkbox-group>
+
+    <div class="h-title">以上情况发生的日期</div>
+    <van-cell-group>
+      <van-cell is-link @click="dateShow=true">
+        <div>{{form.SituationDate||'请选择日期'}}</div>
+      </van-cell>
+    </van-cell-group>
+
+    <div class="h-title">已采取措施</div>
+    <van-radio-group v-model="form.SituationMeasure" @change="MeasureChange">
+      <van-cell-group>
+        <van-cell v-for="(Measure,index) in SituationMeasures" :key="index">
+          <van-radio checked-color="#FBB200" :name="Measure.Code">{{Measure.Name}}</van-radio>
+        </van-cell>
+      </van-cell-group>
+      <van-field
+        v-if="otherFlag"
+        v-model="form.ReportContent"
+        rows="4"
+        autosize
+        type="textarea"
+        maxlength="200"
+        placeholder="请填写详细情况，必填"
+        show-word-limit
+      />
+    </van-radio-group>
+ <div class="h-title">其他信息</div>
       <van-cell-group>
         <van-cell title-class="cell-title" value-class="cell-value" title="当前所在地">
           <template>
@@ -48,25 +92,6 @@
           placeholder="请输入监护人电话，必填"
         />
       </van-cell-group>
-    </div>
-    <div class="h-title">健康状况</div>
-    <van-radio-group v-model="form.HealthStatus" @change="statusChange">
-      <van-cell-group>
-        <van-cell v-for="(health,index) in HealthStatuss" :key="index">
-          <van-radio checked-color="#FBB200" :name="health.Code">{{health.Name}}</van-radio>
-        </van-cell>
-      </van-cell-group>
-      <van-field
-        v-if="otherFlag"
-        v-model="form.ReportContent"
-        rows="4"
-        autosize
-        type="textarea"
-        maxlength="200"
-        placeholder="请填写详细情况，必填"
-        show-word-limit
-      />
-    </van-radio-group>
     <van-checkbox
       class="agree"
       @change="confirm"
@@ -87,6 +112,20 @@
 
     <van-popup v-model="areaShow" position="bottom" title="当前所在地" :style="{ height: '40%' }">
       <van-area :area-list="areaList" @cancel="areaShow=false" @confirm="selectArea" />
+    </van-popup>
+
+    <!-- 发生日期 -->
+
+    <van-popup v-model="dateShow" position="bottom" title="发生日期" :style="{ height: '40%' }">
+      <van-datetime-picker
+        v-model="currentDate"
+        type="date"
+        :min-date="minDate"
+        :max-date="maxDate"
+        :formatter="formatter"
+        @cancel="dateShow=false"
+        @confirm="selectDate"
+      />
     </van-popup>
   </div>
 </template>
@@ -139,7 +178,7 @@
 }
 </style>
 <script>
-import { setAntTitle } from "../../lib/common";
+import { setAntTitle, formatDate } from "../../lib/common";
 import arealist from "../../lib/area";
 import { getBizCode, onStatusReport } from "../../service/common.service";
 import { mapState } from "vuex";
@@ -149,8 +188,11 @@ export default {
     return {
       numShow: false,
       areaShow: false,
+      dateShow: false,
       areaList: arealist,
+      Statuss:[],
       HealthStatuss: [],
+      SituationMeasures: [],
       aggree: false,
       disabledSubmit: true,
       otherFlag: false,
@@ -158,9 +200,15 @@ export default {
         CurrentAddress: "",
         GuardianName: "",
         GuardianPhone: "",
-        HealthStatus: "",
-        ReportContent: ""
-      }
+        HealthStatus:'',
+        SituationStatus: "",
+        ReportContent: "",
+        SituationDate: "",
+        SituationMeasure: ""
+      },
+      minDate: new Date(2019, 8),
+      maxDate: new Date(),
+      currentDate: new Date()
     };
   },
   computed: mapState(["UserInfo"]),
@@ -171,6 +219,14 @@ export default {
       if (!res.FeedbackCode) {
         const item = res.Data;
         this.HealthStatuss = item || [];
+      }
+    });
+    //采取措施
+    getBizCode("StudentRNFollowSituationMeasures").then(r => {
+      const res = r.data;
+      if (!res.FeedbackCode) {
+        const item = res.Data;
+        this.SituationMeasures = item || [];
       }
     });
     /*  
@@ -184,6 +240,21 @@ export default {
     } */
   },
   methods: {
+    formatter(type, val) {
+      if (type === "year") {
+        return `${val}年`;
+      } else if (type === "month") {
+        return `${val}月`;
+      } else if (type === "day") {
+        return `${val}日`;
+      }
+      return val;
+    },
+    selectDate(t) {
+      console.log(t);
+      this.form.SituationDate = formatDate(t, "yyyy-MM-dd");
+      this.dateShow = false;
+    },
     selectArea(e) {
       console.log(e);
       if (e[2]) {
@@ -200,16 +271,34 @@ export default {
       this.disabledSubmit = !e;
     },
     statusChange(e) {
-      console.log("statusChange", e);
-      const item = this.HealthStatuss.find(r => r.Code == e);
-      if (item.Name == "其他情况") {
-        this.otherFlag = true;
-      } else {
-        this.otherFlag = false;
-      }
-      this.form.HealthStatus = e;
+      e.forEach(i => {
+        const item = this.HealthStatuss.find(r => r.Code == i);
+        if (item.Name == "其他情况") {
+          this.otherFlag = true;
+        } else {
+          this.otherFlag = false;
+        }
+      });
+      this.form.SituationStatus = e.join();
+       console.log("statusChange", e);
+       console.log("this.form.SituationStatus", this.form.SituationStatus);
+    },
+    MeasureChange(e) {
+      this.form.SituationMeasure = e;
     },
     statusReport() {
+      if (!this.form.SituationStatus) {
+        this.$toast("情况说明是必选的!");
+        return;
+      }
+      if (!this.form.SituationDate) {
+        this.$toast("情况发生日期是必填的!");
+        return;
+      }
+      if (!this.form.SituationMeasure) {
+        this.$toast("已采取措施是必选的!");
+        return;
+      }
       if (!this.form.CurrentAddress) {
         this.$toast("请选择当前所在地!");
         return;
@@ -226,10 +315,10 @@ export default {
         this.$toast("请选择当前所在地!");
         return;
       }
-      if (!this.form.HealthStatus) {
+      /*  if (!this.form.HealthStatus) {
         this.$toast("请选择健康状态!");
         return;
-      }
+      } */
       if (this.otherFlag && !this.form.ReportContent.trim()) {
         this.$toast("请填写详细信息!");
         return;
@@ -242,7 +331,10 @@ export default {
           message: "该信息会推送给学校老师，请确认是要上报吗？"
         })
         .then(() => {
-          onStatusReport(this.form).then(r => {
+          const form={...this.form};
+          delete form.CurrentAddressCode;
+          console.log('form',form)
+          onStatusReport(form).then(r => {
             const res = r.data;
             if (!res.FeedbackCode) {
               this.$router.replace({

@@ -7,7 +7,7 @@
         <img class="icon" :src="UserInfo.Icon" @error="imageLoadOnError" alt />
         <span class="name">{{UserInfo.Name}}</span>
         <span class="sex">{{UserInfo.SexName}}</span>
-        <span class="status f-r">{{CurentSep.ConfirmStatusName||'待确定'}}</span>
+        <span class="status f-r">{{CurentSep.ConfirmStatusName||'未核实'}}</span>
       </div>
       <div>
         <span class="label">学号</span>
@@ -31,27 +31,44 @@
       <div>
         <span class="label">监护人</span>
         <span class="lable value van-ellipsis">{{ReportUnusual.GuardianName}}</span>
-        &nbsp;<span class="lable value van-ellipsis">{{ReportUnusual.GuardianPhone}}</span>
+        &nbsp;
+        <span class="lable value van-ellipsis">{{ReportUnusual.GuardianPhone}}</span>
       </div>
     </div>
     <van-panel style="margin:auto 20px" title="上报跟踪">
       <van-steps direction="vertical">
         <van-step v-for="(step,ix) of Septs" :key="ix">
-          <div v-if="step.OpType==2">
-            <div v-if="step.mark">{{step.FollowStatusName}}</div>
-            <div v-else>
-              <p>{{step.ReportTime}}</p>
-              <div class="step-label">
-                {{step.TeachName}}老师已确定，标记
-                <span class="status">{{step.FollowStatusName}}</span>
-              </div>
-            </div>
-          </div>
+          <!-- 上报疫情 -->
           <div v-if="step.OpType==1">
-            <p class="time">{{step.OpTime}}</p>
-            <div class="step-label">上报疫情</div>
-            <div class="desc" v-if="step.FollowStatusName=='其他情况'">{{step.FollowContent}}</div>
-            <div class="desc"  v-if="step.FollowStatusName!='其他情况'">{{step.FollowStatusName}}</div>
+            <p class="time">{{$moment(step.ReportTime).format('MM月DD日 hh:mm')}}</p>
+            <div class="step-label">情况上报</div>
+            <div class="desc">发生日期: {{$moment(step.SituationDate).format('MM月DD日')}}</div>
+            <div class="desc">情况说明: {{step.SituationStatus}}</div>
+            <div
+              class="desc"
+              v-if="step.SituationStatusName.split().includes('其他情况')"
+            >{{step.FollowContent}}</div>
+            <div class="desc">采取措施: {{step.SituationMeasureName}}</div>
+          </div>
+          <!-- 老师确定疫情/跟踪疫情 -->
+          <div v-if="step.OpType==2">
+            <div>
+              <p>{{$moment(step.ReportTime).format('MM月DD日 hh:mm')}}</p>
+              <div class="step-label" ><span :style="{color:step.Color}">{{step.FollowStatusName}}</span>  辅导员已核实</div>
+            </div> 
+          </div>
+          <!-- 上报平安 -->
+          <div v-if="step.OpType==4">
+            <p>{{$moment(step.ReportTime).format('MM月DD日 hh:mm')}}</p>
+            <div class="step-label">上报平安</div>
+          </div>
+          <!-- 未上报 -->
+          <div v-if="step.OpType==5">
+            <div class="step-label">未上报</div>
+          </div>
+          <!-- 未跟踪 -->
+          <div v-if="step.OpType==6">
+            <div class="step-label">未跟踪</div>
           </div>
         </van-step>
       </van-steps>
@@ -132,11 +149,18 @@
   .status {
     color: #fbb200;
   }
+  .htitle {
+    font-family: PingFang-SC-Medium;
+    font-size: 16px;
+    color: #0f0f0f;
+    letter-spacing: 0;
+    text-align: left;
+  }
   .desc {
     margin-top: 5px;
     font-family: PingFang-SC-Regular;
     font-size: 14px;
-    color: #333333;
+    color: #666666;
     letter-spacing: 0;
     text-align: left;
     line-height: 21px;
@@ -145,7 +169,7 @@
 </style>
 <script>
 import { setAntTitle } from "../../lib/common";
-import { QueryStudentReportUnusual } from "../../service/common.service";
+import { TimeLine } from "../../service/common.service";
 import { mapState } from "vuex";
 export default {
   name: "reportdetail",
@@ -168,20 +192,13 @@ export default {
       this.UserInfo.Icon = require("../../assets/images/user.jpg");
     },
     getFlowList() {
-      QueryStudentReportUnusual().then(r => {
+      TimeLine().then(r => {
         const re = r.data;
         if (!re.FeedbackCode) {
           const Data = re.Data;
-          this.ReportUnusual = Data.ReportUnusual;
-          this.Septs = Data.RUFollow || [];
+          this.Septs = Data || [];
           console.log("this.Steps", this.Septs);
-          if (!this.Septs[0].TeachIntelUserCode) {
-            this.Septs.unshift({
-              mark: true,
-              OpType: 2,
-              FollowStatusName: "待确定"
-            });
-          }else{
+          if (this.Septs[0].TeachIntelUserCode) {
             this.disabledUpdate = false;
           }
           /*  if (this.CurentSep.ConfirmStatus) {

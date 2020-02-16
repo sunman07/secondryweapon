@@ -316,8 +316,10 @@ import {
   QueryClassReportStudent,
   ClassTodayStatistics,
   ClassCumulativeStatistics,
-  CheckIsRu
+  CheckIsRu,
+  CheckIsNeedSafeReport
 } from "../../service/common.service";
+import moment from "moment";
 import { setAntTitle, debounce, formatDate } from "../../lib/common";
 
 export default {
@@ -326,6 +328,7 @@ export default {
     return {
       dataSet: [],
       show: false,
+      Need:true,
       position: true,
       bizTypes: [],
       finishSet: [],
@@ -359,6 +362,7 @@ export default {
     setTimeout(() => {
       this.position = false;
     }, 7000);
+    this.CheckIsNeedSafeReport();
     /*   getBasicInfo(data => {
       this.UID = data.UserID || "";
       console.log("sdk", data);
@@ -450,7 +454,9 @@ export default {
         if (!res.FeedbackCode) {
           const items = res.Data.list || [];
           items.forEach(element => {
-            element.reportTime = formatDate(element.report_time, "MM-dd hh:mm");
+            element.reportTime = moment(element.report_time).format(
+              "MM-DD hh:mm"
+            );
           });
           if (type === 1) {
             this.finishSet = items || [];
@@ -469,6 +475,13 @@ export default {
           console.log("ddddd方法", re);
         }
       });
+    },
+    //检查是否可以上报平安
+    CheckIsNeedSafeReport(){
+      CheckIsNeedSafeReport().then(r=>{
+        const res=r.data;
+        this.Need=res.Data.Need;
+      })
     },
     getImg(ix) {
       let ixx = ix;
@@ -539,6 +552,11 @@ export default {
       }, 300);
     },
     onSafe() {
+      if (!this.Need) {
+        this.$toast("目前所处状态,不能上报平安!");
+        return;
+      }
+
       if (this.position) {
         this.$toast("尚在获取定位中,不能上报!");
         return;
@@ -547,11 +565,10 @@ export default {
     },
     /* 上报 */
     Report(item) {
-      
-      if (this.disabledSubmit) {
+    /*   if (this.disabledSubmit) {
         this.$toast("您已成功报平安,无需再报!");
         return;
-      }
+      } */
       if (!this.LocationCity) {
         this.$dialog
           .confirm({

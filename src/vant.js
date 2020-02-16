@@ -12,13 +12,15 @@ import {
   Radio,
   RadioGroup,
   Checkbox,
+  CheckboxGroup,
   Button,
   Panel,
   Step,
   Steps,
   Tag,
   List,
-  Loading
+  Loading,
+  DatetimePicker
 } from "vant";
 Vue.use(Dialog);
 Vue.use(Toast);
@@ -32,6 +34,7 @@ Vue.use(Field);
 Vue.use(Radio);
 Vue.use(RadioGroup);
 Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
 Vue.use(Button);
 Vue.use(Panel);
 Vue.use(Step);
@@ -39,3 +42,4 @@ Vue.use(Steps);
 Vue.use(Tag);
 Vue.use(List);
 Vue.use(Loading);
+Vue.use(DatetimePicker);

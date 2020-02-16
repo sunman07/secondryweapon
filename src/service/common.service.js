@@ -43,6 +43,16 @@ export function onReport(params = {}) {
   });
 }
 /**
+ * 检查是否需要上报平安
+ */
+export function CheckIsNeedSafeReport(IntelUserCode = "") {
+  return http.postJSON({
+    Router: `${api}checkisneedsafereport`,
+    Method: "POST",
+    Body: { IntelUserCode }
+  });
+}
+/**
  * 情况上报
  */
 export function onStatusReport(params = {}) {
@@ -73,6 +83,16 @@ export function QueryStudentReportUnusual(params = {}) {
   });
 }
 /**
+ * 获取时间线
+ */
+export function TimeLine(params = {}) {
+  return http.postJSON({
+    Router: `${api}timeline`,
+    Method: "POST",
+    Body: params
+  });
+}
+/**
  * 获取是否上报过
  */
 export function CheckIsRu() {
@@ -96,22 +116,22 @@ export function QueryClassReportStudent(params = {}) {
  * 获取班级情况上报数目
  */
 export function ClassTodayStatistics(params = {}) {
-         return http.postJSON({
-           Router: `${api}/classtodaystatistics`,
-           Method: "POST",
-           Body: params
-         });
-       }
+  return http.postJSON({
+    Router: `${api}/classtodaystatistics`,
+    Method: "POST",
+    Body: params
+  });
+}
 /**
  * 获取累计数目
  */
 export function ClassCumulativeStatistics(params = {}) {
-         return http.postJSON({
-           Router: `${api}/classcumulativestatistics`,
-           Method: "POST",
-           Body: params
-         });
-       }
+  return http.postJSON({
+    Router: `${api}/classcumulativestatistics`,
+    Method: "POST",
+    Body: params
+  });
+}
 /**
  * 获取配置
  */
