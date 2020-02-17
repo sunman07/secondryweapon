@@ -55,16 +55,6 @@
           <van-radio checked-color="#FBB200" :name="Measure.Code">{{Measure.Name}}</van-radio>
         </van-cell>
       </van-cell-group>
-      <van-field
-        v-if="otherFlag"
-        v-model="form.ReportContent"
-        rows="4"
-        autosize
-        type="textarea"
-        maxlength="200"
-        placeholder="请填写详细情况，必填"
-        show-word-limit
-      />
     </van-radio-group>
     <div class="h-title">其他信息</div>
     <van-cell-group>
