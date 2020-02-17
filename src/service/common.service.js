@@ -63,6 +63,16 @@ export function onStatusReport(params = {}) {
   });
 }
 /**
+ * 老师更改学生状态上报
+ */
+export function createFollowForUnusual(params = {}) {
+         return http.postJSON({
+           Router: `/api/reportsafety2020/createfollowforunusual`,
+           Method: "POST",
+           Body: params
+         });
+       }
+/**
  * 获取最新上报
  */
 export function QueryLastReport(params = {}) {

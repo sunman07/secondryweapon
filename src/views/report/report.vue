@@ -173,7 +173,8 @@ import arealist from "../../lib/area";
 import {
   getBizCode,
   onStatusReport,
-  getUserInfo
+  getUserInfo,
+  createFollowForUnusual
 } from "../../service/common.service";
 export default {
   name: "report",
@@ -191,6 +192,9 @@ export default {
       otherFlag: false,
       UserInfo: {},
       IntelUserCode: "",
+      name: "",
+      code: "",
+      color: "",
       form: {
         CurrentAddress: "",
         GuardianName: "",
@@ -208,7 +212,11 @@ export default {
   },
   created() {
     this.IntelUserCode = this.$route.query.IntelUserCode || "";
+    this.name = this.$route.query.name || "";
+    this.code = this.$route.query.code || "";
+    this.color = this.$route.query.color || "";
     console.log("this.IntelUserCode", this.IntelUserCode);
+    console.log("this.code", this.code);
     setAntTitle("上报疫情");
     getBizCode("StudentReportUnusualHealthStatus").then(r => {
       const res = r.data;
@@ -351,24 +359,46 @@ export default {
         })
         .then(() => {
           const form = { ...this.form };
-          //老师代替上报
+          //老师代替上报增加内部
           form.IntelUserCode = this.IntelUserCode || "";
           delete form.CurrentAddressCode;
           console.log("form", form);
           onStatusReport(form).then(r => {
             const res = r.data;
             if (!res.FeedbackCode) {
-              this.$router.replace({
-                path: "reportdetail",
-                query: { IntelUserCode: this.IntelUserCode }
-              });
               this.$toast(res.FeedbackText);
+              console.log("this.code", this.code);
+              if (this.code) {
+                this.createFollowForUnusual(this.code);
+              } else {
+                 this.$router.replace({
+                  path: "reportdetail",
+                  query: { IntelUserCode: this.IntelUserCode }
+                })
+              }
             }
           });
         })
         .catch(() => {
           // on cancel
         });
+    },
+    createFollowForUnusual(code) {
+      const params = {
+        intel_user_code: this.IntelUserCode,
+        status_code: code,
+        follow_content: ""
+      };
+      createFollowForUnusual(params).then(() => {
+        this.$router.replace({
+          path: "reportdetail",
+          query: {
+            IntelUserCode: this.IntelUserCode,
+            name: this.name,
+            color: this.color
+          }
+        });
+      });
     }
   }
 };

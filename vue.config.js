@@ -22,8 +22,8 @@ module.exports = {
     },
     proxy: {
       "/api": {
-        //target: "https://dev.xiaoyuanjijiehao.com:10010/",
-        target: "https://h5apitest.xiaoyuanjijiehao.com:9999/",
+        target: "https://dev.xiaoyuanjijiehao.com:10010/",
+        //target: "https://h5apitest.xiaoyuanjijiehao.com:9999/",
         //target: 'http://127.0.0.1:9085',
         pathRewrite: {
           "^/api": "api"

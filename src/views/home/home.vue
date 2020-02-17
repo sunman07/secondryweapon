@@ -553,7 +553,7 @@ export default {
     },
     onSafe() {
       if (!this.Need) {
-        this.$toast("目前所处状态,不能上报平安!");
+        this.$toast("您今天已报平安，或您今天无需报平安!");
         return;
       }
 

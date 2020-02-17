@@ -1,13 +1,13 @@
 <template>
   <div class="detail">
-    <div class="h-bg"></div>
+    <div class="h-bg" :style="{background:ReportUnusual.Color}"></div>
     <!-- 头部信息 -->
     <div class="box" style="margin-top:-80px">
-      <div class="header">
+      <div class="header" >
         <img class="icon" :src="UserInfo.Icon" @error="imageLoadOnError" alt />
         <span class="name">{{UserInfo.Name}}</span>
         <span class="sex">{{UserInfo.SexName}}</span>
-        <span class="status f-r">{{CurentSep.ConfirmStatusName||'未核实'}}</span>
+        <span class="status f-r">{{ReportUnusual.ConfirmStatusName||'未核实'}}</span>
       </div>
       <div>
         <span class="label">学号</span>
@@ -55,7 +55,7 @@
             <div>
               <p>{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
               <div class="step-label">
-                <span :style="{color:step.Color}">{{step.FollowStatusName}}</span> 辅导员已核实
+                <span :style="{color:step.Color}">{{step.FollowStatusName}}</span> <span v-if="code">  辅导员新增上报</span> <span v-if="!code">  辅导员已核实</span>
               </div>
             </div>
           </div>
@@ -79,15 +79,14 @@
       </van-steps>
     </van-panel>
     <div class="footer">
-         <van-button
-      class="submit"
-      @click="statusReportUpdate"
-      :disabled="disabledUpdate"
-      type="primary"
-      icon="add-o"
-    >新增情况上报</van-button>
+      <van-button
+        class="submit"
+        @click="statusReportUpdate"
+        :disabled="disabledUpdate"
+        type="primary"
+        icon="add-o"
+      >新增情况上报</van-button>
     </div>
- 
   </div>
 </template>
 <style scoped lang="less">
@@ -169,10 +168,10 @@
   .footer {
     position: fixed;
     width: 100%;
-    left:50%;
-    background: #FFFFFF;
+    left: 50%;
+    background: #ffffff;
     transform: translateX(-50%);
-    margin:0 0 10px 0;
+    margin: 0 0 10px 0;
     bottom: 0px;
   }
   .htitle {
@@ -206,6 +205,9 @@ export default {
     return {
       RecordID: "",
       disabledUpdate: true,
+      name:"",
+      code:'',
+      color:'',
       Septs: [],
       CurentSep: {},
       ReportUnusual: {},
@@ -216,6 +218,11 @@ export default {
   created() {
     setAntTitle("疫情详情");
     this.IntelUserCode = this.$route.query.IntelUserCode || "";
+    this.name = this.$route.query.name || "";
+    this.code = this.$route.query.code || "";
+    this.color = this.$route.query.color || "";
+    console.log('this.color',this.color);
+    console.log('his.$route.query',this.$route.query);
     //情况上报信息
     QueryStudentReportUnusual(this.IntelUserCode).then(r => {
       const re = r.data;
@@ -244,8 +251,8 @@ export default {
                 s.SituationStatusNameArrStr = arrs
                   .splice(0, arrs.length - 1)
                   .join();
-              }else{
-                s.SituationStatusNameArrStr=arrs.join();
+              } else {
+                s.SituationStatusNameArrStr = arrs.join();
               }
             }
           });
