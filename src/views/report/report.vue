@@ -280,14 +280,16 @@ export default {
       this.disabledSubmit = !e;
     },
     statusChange(e) {
+      let arrs = [];
       e.forEach(i => {
         const item = this.HealthStatuss.find(r => r.Code == i);
-        if (item.Name == "其他情况") {
-          this.otherFlag = true;
-        } else {
-          this.otherFlag = false;
-        }
+        arrs.push(item);
       });
+      if (arrs.find(item => item.Name == "其他情况")) {
+        this.otherFlag = true;
+      } else {
+        this.otherFlag = false;
+      }
       this.form.SituationStatus = e.join();
       console.log("statusChange", e);
       console.log("this.form.SituationStatus", this.form.SituationStatus);
@@ -296,7 +298,7 @@ export default {
       this.form.SituationMeasure = e;
     },
     checkPhone(phone) {
-      return /^1[3-9]\d{9}$/.test(phone)
+      return /^1[3-9]\d{9}$/.test(phone);
     },
     statusReport() {
       if (!this.form.SituationStatus) {
