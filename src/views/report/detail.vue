@@ -35,7 +35,7 @@
         <span class="lable value van-ellipsis">{{ReportUnusual.GuardianPhone}}</span>
       </div>
     </div>
-    <van-panel style="margin:auto 20px 65px auto" title="上报跟踪">
+    <van-panel style="margin:auto 20px 95px 20px" title="上报跟踪">
       <van-steps direction="vertical">
         <van-step v-for="(step,ix) of Septs" :key="ix">
           <!-- 上报疫情 -->
@@ -78,13 +78,16 @@
         </van-step>
       </van-steps>
     </van-panel>
-    <van-button
-      class="submit footer"
+    <div class="footer">
+         <van-button
+      class="submit"
       @click="statusReportUpdate"
       :disabled="disabledUpdate"
       type="primary"
       icon="add-o"
     >新增情况上报</van-button>
+    </div>
+ 
   </div>
 </template>
 <style scoped lang="less">
@@ -165,9 +168,11 @@
   }
   .footer {
     position: fixed;
+    width: 100%;
     left:50%;
+    background: #FFFFFF;
     transform: translateX(-50%);
-    margin-bottom: 10px;
+    margin:0 0 10px 0;
     bottom: 0px;
   }
   .htitle {
@@ -239,6 +244,8 @@ export default {
                 s.SituationStatusNameArrStr = arrs
                   .splice(0, arrs.length - 1)
                   .join();
+              }else{
+                s.SituationStatusNameArrStr=arrs.join();
               }
             }
           });

@@ -241,11 +241,11 @@ export default {
         const re = r.data;
         if (!re.FeedbackCode) {
           this.UserInfo = re.Data || {};
-           this.$store.commit("saveUserInfo", re.Data);
+          this.$store.commit("saveUserInfo", re.Data);
         }
       });
     } else {
-      console.log(this.$store)
+      console.log(this.$store);
       this.UserInfo = this.$store.state.UserInfo;
     }
     /*  
@@ -305,6 +305,9 @@ export default {
     MeasureChange(e) {
       this.form.SituationMeasure = e;
     },
+    checkPhone(phone) {
+      return /^1[3-9]\d{9}$/.test(phone)
+    },
     statusReport() {
       if (!this.form.SituationStatus) {
         this.$toast("情况说明是必选的!");
@@ -330,6 +333,11 @@ export default {
         this.$toast("请填写监护人电话!");
         return;
       }
+      if (!this.checkPhone(parseInt(this.form.GuardianPhone))) {
+        this.$toast("监护人电话格式不正确!");
+        return;
+      }
+
       if (!this.form.CurrentAddress) {
         this.$toast("请选择当前所在地!");
         return;
@@ -360,7 +368,7 @@ export default {
             if (!res.FeedbackCode) {
               this.$router.replace({
                 path: "reportdetail",
-                query:{IntelUserCode:this.IntelUserCode}
+                query: { IntelUserCode: this.IntelUserCode }
               });
               this.$toast(res.FeedbackText);
             }
