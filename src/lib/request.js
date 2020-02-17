@@ -4,13 +4,15 @@ import axios from 'axios';
 //axios.defaults.baseURL = 'https://api.example.com';
 //axios.defaults.headers.common['Authorization'] = 'eee';
 //axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.headers.common['AccessToken'] = window["__AppWebkey"] || 'BS2CQJI0MP2CTTW28HICFG';
-
+/* axios.defaults.headers.common["AccessToken"] =
+  window["__AppWebkey"] || "PB0ABGJMMYC9MUTJYUICPQ";
+ */
 // 添加请求拦截器
 axios.interceptors.request.use(function(config) {
     // 在发送请求之前做些什么
     console.debug('发出请求');
-     config.headers.AccessToken = window["__AppWebkey"];
+     config.headers.AccessToken =
+       window["__AppWebkey"] || "IEQWSJ8QOOEWD_YV03F1FA";
     return config;
 }, function(error) {
     // 对请求错误做些什么

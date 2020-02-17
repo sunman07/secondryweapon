@@ -35,7 +35,7 @@
         <span class="lable value van-ellipsis">{{ReportUnusual.GuardianPhone}}</span>
       </div>
     </div>
-    <van-panel style="margin:auto 20px" title="上报跟踪">
+    <van-panel style="margin:auto 20px 65px auto" title="上报跟踪">
       <van-steps direction="vertical">
         <van-step v-for="(step,ix) of Septs" :key="ix">
           <!-- 上报疫情 -->
@@ -43,11 +43,11 @@
             <p class="time">{{$moment(step.ReportTime).format('MM月DD日 hh:mm')}}</p>
             <div class="step-label">情况上报</div>
             <div class="desc">发生日期: {{$moment(step.SituationDate).format('MM月DD日')}}</div>
-            <div class="desc">情况说明: {{step.SituationStatusName}}</div>
+            <div class="desc">情况说明: {{step.SituationStatusNameArrStr}}</div>
             <div
               class="desc"
-              v-if="step.SituationStatusName.split().includes('其他情况')"
-            >{{step.FollowContent}}</div>
+              v-if="step.SituationStatusName.split(',').includes('其他情况')"
+            >其他情况:{{step.FollowContent}}</div>
             <div class="desc">采取措施: {{step.SituationMeasureName}}</div>
           </div>
           <!-- 老师确定疫情/跟踪疫情 -->
@@ -79,17 +79,26 @@
       </van-steps>
     </van-panel>
     <van-button
-      class="submit"
+      class="submit footer"
       @click="statusReportUpdate"
       :disabled="disabledUpdate"
       type="primary"
-    >更新状态</van-button>
+      icon="add-o"
+    >新增情况上报</van-button>
   </div>
 </template>
 <style scoped lang="less">
 .detail {
   height: 100vh;
   overflow: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch; /* 解决ios滑动不流畅问题 */
+
   .h-bg {
     background: #fbb200;
     height: 114.5px;
@@ -154,6 +163,13 @@
   .status {
     color: #fbb200;
   }
+  .footer {
+    position: fixed;
+    left:50%;
+    transform: translateX(-50%);
+    margin-bottom: 10px;
+    bottom: 0px;
+  }
   .htitle {
     font-family: PingFang-SC-Medium;
     font-size: 16px;
@@ -174,7 +190,10 @@
 </style>
 <script>
 import { setAntTitle } from "../../lib/common";
-import { TimeLine, QueryStudentReportUnusual } from "../../service/common.service";
+import {
+  TimeLine,
+  QueryStudentReportUnusual
+} from "../../service/common.service";
 import { mapState } from "vuex";
 export default {
   name: "reportdetail",
@@ -213,6 +232,16 @@ export default {
           const Data = re.Data;
           this.Septs = Data || [];
           console.log("this.Steps", this.Septs);
+          this.Septs.forEach(s => {
+            if (s.OpType == 1) {
+              const arrs = s.SituationStatusName.split(",");
+              if (arrs.includes("其他情况")) {
+                s.SituationStatusNameArrStr = arrs
+                  .splice(0, arrs.length - 1)
+                  .join();
+              }
+            }
+          });
           if (this.Septs[0].TeachIntelUserCode) {
             this.disabledUpdate = false;
           }
