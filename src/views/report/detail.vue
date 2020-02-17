@@ -40,7 +40,7 @@
         <van-step v-for="(step,ix) of Septs" :key="ix">
           <!-- 上报疫情 -->
           <div v-if="step.OpType==1">
-            <p class="time">{{$moment(step.OpTime).format('MM月DD日 hh:mm')}}</p>
+            <p class="time">{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
             <div class="step-label">情况上报</div>
             <div class="desc">发生日期: {{$moment(step.SituationDate).format('MM月DD日')}}</div>
             <div class="desc">情况说明: {{step.SituationStatusNameArrStr}}</div>
@@ -53,7 +53,7 @@
           <!-- 老师确定疫情/跟踪疫情 -->
           <div v-if="step.OpType==2">
             <div>
-              <p>{{$moment(step.OpTime).format('MM月DD日 hh:mm')}}</p>
+              <p>{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
               <div class="step-label">
                 <span :style="{color:step.Color}">{{step.FollowStatusName}}</span> 辅导员已核实
               </div>
@@ -61,7 +61,7 @@
           </div>
           <!-- 上报平安 -->
           <div v-if="step.OpType==4">
-            <p>{{$moment(step.OpTime).format('MM月DD日 hh:mm')}}</p>
+            <p>{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
             <div class="step-label">上报平安</div>
           </div>
           <!-- 未上报 -->

@@ -12,7 +12,7 @@ axios.interceptors.request.use(function(config) {
     // 在发送请求之前做些什么
     console.debug('发出请求');
      config.headers.AccessToken =
-       window["__AppWebkey"] || "IEQWSJ8QOOEWD_YV03F1FA";
+       window["__AppWebkey"] || "QAKB4K2FOWQ176G6FFL78Q";
     return config;
 }, function(error) {
     // 对请求错误做些什么
