@@ -27,7 +27,7 @@
       </ul>
     </van-panel>
     <van-panel class="home-panel" title="今日报平安" :status="'累计'+sumTotalCount+'次'">
-      <van-steps direction="vertical" v-if="dataSet.length">
+      <van-steps direction="vertical" active-color='#969799' v-if="dataSet.length">
         <van-step v-for="item of dataSet" :key="item.RecordID">
           <div class="m-b-6">{{item.ReportTime}}</div>
           <div class="step-label m-b-6">{{item.Name}}</div>

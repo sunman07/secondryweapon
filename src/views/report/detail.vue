@@ -41,7 +41,7 @@
           <!-- 上报疫情 -->
           <div v-if="step.OpType==1">
             <p class="time">{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
-            <div class="step-label">情况上报</div>
+            <div class="step-label">学生情况上报</div>
             <div class="desc">发生日期: {{$moment(step.SituationDate).format('MM月DD日')}}</div>
             <div class="desc">情况说明: {{step.SituationStatusNameArrStr}}</div>
             <div
@@ -62,18 +62,19 @@
           <!-- 上报平安 -->
           <div v-if="step.OpType==4">
             <p>{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
-            <div class="step-label">上报平安</div>
+            <div class="step-label"  v-if="step.IsFollowed==1">老师代上报平安</div>
+            <div class="step-label"  v-else>学生上报平安</div>
           </div>
           <!-- 未上报 -->
           <div v-if="step.OpType==5">
             <p>{{$moment(step.OpTime).format('MM月DD日')}}</p>
 
-            <div class="step-label">未上报</div>
+            <div class="step-label">学生未上报</div>
           </div>
           <!-- 未跟踪 -->
           <div v-if="step.OpType==6">
             <p>{{$moment(step.OpTime).format('MM月DD日')}}</p>
-            <div class="step-label">未跟踪</div>
+            <div class="step-label">辅导员未跟踪</div>
           </div>
         </van-step>
       </van-steps>
