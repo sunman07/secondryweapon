@@ -3,11 +3,14 @@
     <div class="h-bg" :style="{background:ReportUnusual.Color}"></div>
     <!-- 头部信息 -->
     <div class="box" style="margin-top:-80px">
-      <div class="header" >
+      <div class="header">
         <img class="icon" :src="UserInfo.Icon" @error="imageLoadOnError" alt />
         <span class="name">{{UserInfo.Name}}</span>
         <span class="sex">{{UserInfo.SexName}}</span>
-        <span class="status f-r" :style="{color:ReportUnusual.Color}">{{ReportUnusual.ConfirmStatusName||'未核实'}}</span>
+        <span
+          class="status f-r"
+          :style="{color:ReportUnusual.Color}"
+        >{{ReportUnusual.ConfirmStatusName||'未核实'}}</span>
       </div>
       <div>
         <span class="label">学号</span>
@@ -35,8 +38,10 @@
         <span class="lable value van-ellipsis">{{ReportUnusual.GuardianPhone}}</span>
       </div>
     </div>
-    <van-panel style="margin:auto 20px 95px 20px" title="上报跟踪">
-      <van-steps direction="vertical">
+    <div class="box" style="padding:0">
+      <div class="record">上报记录</div>
+      <div class="van-hairline--bottom"></div>
+      <van-steps direction="vertical" active-color="#969799">
         <van-step v-for="(step,ix) of Septs" :key="ix">
           <!-- 上报疫情 -->
           <div v-if="step.OpType==1">
@@ -53,32 +58,34 @@
           <!-- 老师确定疫情/跟踪疫情 -->
           <div v-if="step.OpType==2">
             <div>
-              <p>{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
+              <p class="time">{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
               <div class="step-label">
-                <span :style="{color:step.Color}">{{step.FollowStatusName}}</span> <span v-if="code">  辅导员新增上报</span> <span v-if="!code">  辅导员已核实</span>
+                <span :style="{color:step.Color}">{{step.FollowStatusName}}  </span>
+                <span v-if="code">辅导员新增上报</span>
+                <span v-if="!code">辅导员已核实</span>
               </div>
             </div>
           </div>
           <!-- 上报平安 -->
           <div v-if="step.OpType==4">
-            <p>{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
-            <div class="step-label"  v-if="step.IsFollowed==1">老师代上报平安</div>
-            <div class="step-label"  v-else>学生上报平安</div>
+            <p class="time">{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
+            <div class="step-label" v-if="step.IsFollowed==1">老师代上报平安</div>
+            <div class="step-label" v-else>学生上报平安</div>
           </div>
           <!-- 未上报 -->
           <div v-if="step.OpType==5">
-            <p>{{$moment(step.OpTime).format('MM月DD日')}}</p>
+            <p class="time">{{$moment(step.OpTime).format('MM月DD日')}}</p>
 
             <div class="step-label">学生未上报</div>
           </div>
           <!-- 未跟踪 -->
           <div v-if="step.OpType==6">
-            <p>{{$moment(step.OpTime).format('MM月DD日')}}</p>
+            <p class="time">{{$moment(step.OpTime).format('MM月DD日')}}</p>
             <div class="step-label">辅导员未跟踪</div>
           </div>
         </van-step>
       </van-steps>
-    </van-panel>
+    </div>
     <div class="footer">
       <van-button
         class="submit"
@@ -112,6 +119,15 @@
     border-radius: 6px;
     padding: 16px 12px;
   }
+  .record {
+    font-family: PingFang-SC-Regular;
+    font-size: 14px;
+    color: #7b7b7b;
+    letter-spacing: 0;
+    text-align: left;
+    line-height: 42px;
+    margin-left: 12px;
+  }
   .header {
     .name {
       font-family: PingFang-SC-Medium;
@@ -121,7 +137,7 @@
       text-align: left;
       line-height: 36px;
       margin-right: 6px;
-      vertical-align: super;
+      vertical-align: middle;
     }
     .sex {
       font-family: PingFang-SC-Regular;
@@ -130,14 +146,14 @@
       letter-spacing: 0;
       text-align: left;
       line-height: 36px;
-      vertical-align: super;
+      vertical-align: middle;
     }
     .icon {
       margin-right: 10px;
       border-radius: 18px;
       width: 36px;
       height: 36px;
-      vertical-align: sub;
+      vertical-align: middle;
     }
     .status {
       font-family: PingFang-SC-Medium;
@@ -146,6 +162,7 @@
       letter-spacing: 0;
       text-align: left;
       line-height: 36px;
+      margin-top: 5px;
     }
   }
   .label {
@@ -162,6 +179,7 @@
   }
   .time {
     color: #7b7b7b;
+    margin-top: 0px;
   }
   .status {
     color: #fbb200;
@@ -206,9 +224,9 @@ export default {
     return {
       RecordID: "",
       disabledUpdate: true,
-      name:"",
-      code:'',
-      color:'',
+      name: "",
+      code: "",
+      color: "",
       Septs: [],
       CurentSep: {},
       ReportUnusual: {},
@@ -222,8 +240,8 @@ export default {
     this.name = this.$route.query.name || "";
     this.code = this.$route.query.code || "";
     this.color = this.$route.query.color || "";
-    console.log('this.color',this.color);
-    console.log('his.$route.query',this.$route.query);
+    console.log("this.color", this.color);
+    console.log("his.$route.query", this.$route.query);
     //情况上报信息
     QueryStudentReportUnusual(this.IntelUserCode).then(r => {
       const re = r.data;

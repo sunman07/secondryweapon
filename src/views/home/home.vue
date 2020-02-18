@@ -127,7 +127,7 @@
   .home-panel {
     margin: auto 16px;
     border-radius: 6px;
-    height: calc(~"100vh - 320px");
+    height: calc(~"100vh - 330px");
     overflow: auto;
   }
   .van-panel__header {
@@ -181,6 +181,9 @@
     justify-content: center;
     align-items: center;
     bottom: 16px;
+        width: 100%;
+    background: #fff;
+    padding-top: 10px;
     .icon {
       height: 16px;
       width: 16px;
