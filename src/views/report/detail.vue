@@ -217,7 +217,7 @@ export default {
   },
   computed: mapState(["UserInfo"]),
   created() {
-    setAntTitle("疫情详情");
+    setAntTitle("上报详情");
     this.IntelUserCode = this.$route.query.IntelUserCode || "";
     this.name = this.$route.query.name || "";
     this.code = this.$route.query.code || "";
