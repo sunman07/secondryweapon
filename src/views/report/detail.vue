@@ -7,7 +7,7 @@
         <img class="icon" :src="UserInfo.Icon" @error="imageLoadOnError" alt />
         <span class="name">{{UserInfo.Name}}</span>
         <span class="sex">{{UserInfo.SexName}}</span>
-        <span class="status f-r">{{ReportUnusual.ConfirmStatusName||'未核实'}}</span>
+        <span class="status f-r" :style="{color:ReportUnusual.Color}">{{ReportUnusual.ConfirmStatusName||'未核实'}}</span>
       </div>
       <div>
         <span class="label">学号</span>

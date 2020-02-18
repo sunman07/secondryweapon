@@ -27,7 +27,7 @@
       </ul>
     </van-panel>
     <van-panel class="home-panel" title="今日报平安" :status="'累计'+sumTotalCount+'次'">
-      <van-steps direction="vertical" active-color='#969799' v-if="dataSet.length">
+      <van-steps direction="vertical" active-color="#969799" v-if="dataSet.length">
         <van-step v-for="item of dataSet" :key="item.RecordID">
           <div class="m-b-6">{{item.ReportTime}}</div>
           <div class="step-label m-b-6">{{item.Name}}</div>
@@ -328,7 +328,7 @@ export default {
     return {
       dataSet: [],
       show: false,
-      Need:true,
+      Need: true,
       position: true,
       bizTypes: [],
       finishSet: [],
@@ -358,10 +358,17 @@ export default {
   created() {
     setAntTitle("平安上报");
     this.disabledSubmit = false;
-    this.city();
-    setTimeout(() => {
-      this.position = false;
-    }, 7000);
+    const location = this.$store.state.Location;
+    console.log('this.$store.state',this.$store.state)
+    if (location) {
+      this.LocationCity = location;
+       this.position = false;
+    } else {
+      this.city();
+      setTimeout(() => {
+        this.position = false;
+      }, 7000);
+    }
     this.CheckIsNeedSafeReport();
     /*   getBasicInfo(data => {
       this.UID = data.UserID || "";
@@ -477,11 +484,11 @@ export default {
       });
     },
     //检查是否可以上报平安
-    CheckIsNeedSafeReport(){
-      CheckIsNeedSafeReport().then(r=>{
-        const res=r.data;
-        this.Need=res.Data.Need;
-      })
+    CheckIsNeedSafeReport() {
+      CheckIsNeedSafeReport().then(r => {
+        const res = r.data;
+        this.Need = res.Data.Need;
+      });
     },
     getImg(ix) {
       let ixx = ix;
@@ -506,7 +513,8 @@ export default {
             console.log("city", position);
             _this.LocationProvince = address.province;
             _this.LocationCity = address.city;
-          } else {
+            _this.$store.commit("saveLocation", _this.LocationCity);
+          } /* else {
             if (_this.locationCount >= 2) {
               _this.LocationCheck = false;
               _this.$toast("多次定位无法获取位置,请直接报平安!");
@@ -524,7 +532,7 @@ export default {
               .catch(() => {
                 // on cancel
               });
-          }
+          } */
         },
         { provider: "baidu" }
       );
@@ -565,7 +573,7 @@ export default {
     },
     /* 上报 */
     Report(item) {
-    /*   if (this.disabledSubmit) {
+      /*   if (this.disabledSubmit) {
         this.$toast("您已成功报平安,无需再报!");
         return;
       } */
