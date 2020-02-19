@@ -8,15 +8,19 @@
       <ul class="list" style="line-height:44px">
         <li class="item f-s-22" style="color: #0F0F0F;">{{headObj.TotalCount}}</li>
         <li
+          v-if="headObj.ReportCount!='NULL'"
           class="item f-s-22"
           style="color: #066BFC;"
           @click="finishShow=true;getReportStudent(1)"
         >{{headObj.ReportCount}}</li>
+        <li v-if="headObj.ReportCount=='NULL'" class="item f-s-22" style="color: #066BFC;">0</li>
         <li
+          v-if="headObj.ReportCount!='NULL'"
           class="item f-s-22"
           style="color: #FBB200;"
           @click="unFinishShow=true;getReportStudent(2)"
         >{{parseInt(headObj.TotalCount||0)-parseInt(headObj.ReportCount||0)}}</li>
+        <li v-if="headObj.ReportCount=='NULL'" class="item f-s-22" style="color: #FBB200;">0</li>
         <li class="item f-s-22" style="color: #F24724;">{{Percent}}%</li>
       </ul>
       <ul class="list" style="line-height:24px;margin-top:-6px;padding-bottom:12px">
@@ -182,7 +186,7 @@
     align-items: center;
     bottom: 0;
     padding-bottom: 10px;
-        width: 100%;
+    width: 100%;
     background: #fff;
     padding-top: 10px;
     .icon {
@@ -363,10 +367,10 @@ export default {
     setAntTitle("平安上报");
     this.disabledSubmit = false;
     const location = this.$store.state.Location;
-    console.log('this.$store.state',this.$store.state)
+    console.log("this.$store.state", this.$store.state);
     if (location) {
       this.LocationCity = location;
-       this.position = false;
+      this.position = false;
     } else {
       this.city();
       setTimeout(() => {

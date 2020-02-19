@@ -143,6 +143,16 @@ export function ClassCumulativeStatistics(params = {}) {
   });
 }
 /**
+ * 获取学生状态
+ */
+export function QueryStudentStatus(uid = '') {
+         return http.postJSON({
+           Router: `/api/bigdata/querystudentstatus`,
+           Method: "POST",
+           Body: {uid}
+         });
+       }
+/**
  * 获取配置
  */
 export function getConfig() {
