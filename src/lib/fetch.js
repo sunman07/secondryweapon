@@ -13,11 +13,12 @@ let req = {
                  return r;
             }
             if(data.FeedbackCode===1){
-                 Toast("接口访问异常!");
+                 Toast(`${Router}接口访问失败!`);
             }else{
                 return r;
             }
         }).catch(()=>{
+
             Toast('接口访问异常!');
         })
     },
