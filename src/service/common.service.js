@@ -127,7 +127,7 @@ export function QueryClassReportStudent(params = {}) {
  */
 export function ClassTodayStatistics(params = {}) {
   return http.postJSON({
-    Router: `${api}/classtodaystatistics`,
+    Router: `${api}classtodaystatistics`,
     Method: "POST",
     Body: params
   });
@@ -137,7 +137,7 @@ export function ClassTodayStatistics(params = {}) {
  */
 export function ClassCumulativeStatistics(params = {}) {
   return http.postJSON({
-    Router: `${api}/classcumulativestatistics`,
+    Router: `${api}classcumulativestatistics`,
     Method: "POST",
     Body: params
   });
