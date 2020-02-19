@@ -57,7 +57,7 @@
       </van-cell-group>
     </van-radio-group>
     <div class="h-title">其他信息</div>
-    <van-cell-group>
+    <van-cell-group style="margin-bottom:100px">
       <van-cell title-class="cell-title" value-class="cell-value" title="当前所在地">
         <template>
           <div slot="default">
@@ -82,15 +82,21 @@
         placeholder="请输入监护人电话，必填"
       />
     </van-cell-group>
-    <van-checkbox
+    <!--     <van-checkbox
       class="agree"
       @change="confirm"
       checked-color="#FBB200"
       icon-size="16px"
       v-model="aggree"
-    >我承诺以上信息属实</van-checkbox>
-
-    <van-button class="submit" @click="statusReport" :disabled="disabledSubmit" type="primary">确定上报</van-button>
+    >我承诺以上信息属实</van-checkbox>-->
+    <div class="footer">
+      <van-button
+        class="submit"
+        @click="statusReport"
+        :disabled="disabledSubmit"
+        type="primary"
+      >确定上报</van-button>
+    </div>
     <!-- 手机号数字键盘 -->
     <van-number-keyboard
       v-model="form.phone"
@@ -156,6 +162,15 @@
       margin-left: 46px;
     }
   }
+  .footer {
+    position: fixed;
+    width: 100%;
+    left: 50%;
+    background: #ffffff;
+    transform: translateX(-50%);
+    padding: 0 0 10px 0;
+    bottom: 0px;
+  }
   .agree {
     font-family: PingFang-SC-Regular;
     font-size: 14px;
@@ -188,7 +203,7 @@ export default {
       HealthStatuss: [],
       SituationMeasures: [],
       aggree: false,
-      disabledSubmit: true,
+      disabledSubmit: false,
       otherFlag: false,
       UserInfo: {},
       IntelUserCode: "",
@@ -373,7 +388,7 @@ export default {
               }
             });
           });
-          return;
+        return;
       }
       this.$dialog
         .confirm({
@@ -410,7 +425,7 @@ export default {
           query: {
             IntelUserCode: this.IntelUserCode,
             name: this.name,
-            code:this.code,
+            code: this.code,
             color: this.color
           }
         });
