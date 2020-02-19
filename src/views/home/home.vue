@@ -180,7 +180,8 @@
     width: 100%;
     justify-content: center;
     align-items: center;
-    bottom: 16px;
+    bottom: 0;
+    padding-bottom: 10px;
         width: 100%;
     background: #fff;
     padding-top: 10px;

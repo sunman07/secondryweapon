@@ -41,7 +41,7 @@
     <div class="box" style="padding:0">
       <div class="record">上报记录</div>
       <div class="van-hairline--bottom"></div>
-      <van-steps direction="vertical" active-color="#969799">
+      <van-steps direction="vertical" style="margin-bottom: 100px;" active-color="#969799">
         <van-step v-for="(step,ix) of Septs" :key="ix">
           <!-- 上报疫情 -->
           <div v-if="step.OpType==1">
@@ -190,7 +190,7 @@
     left: 50%;
     background: #ffffff;
     transform: translateX(-50%);
-    margin: 0 0 10px 0;
+    padding: 0 0 10px 0;
     bottom: 0px;
   }
   .htitle {
