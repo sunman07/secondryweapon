@@ -249,7 +249,7 @@ export default {
         const Data = re.Data;
         this.ReportUnusual = Data.ReportUnusual || {};
         //状态为空可以上报
-        if(!this.ReportUnusual.ConfirmStatusName){
+        if(this.ReportUnusual.ConfirmStatus){
           this.disabledUpdate = false;
         }
       }
