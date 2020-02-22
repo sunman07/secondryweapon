@@ -60,7 +60,7 @@
             <div>
               <p class="time">{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
               <div class="step-label">
-                <span :style="{color:step.Color}">{{step.FollowStatusName}}  </span>
+                <span :style="{color:step.Color}">{{step.FollowStatusName}}</span>
                 <span v-if="code">辅导员新增上报</span>
                 <span v-if="!code">辅导员已核实</span>
               </div>
@@ -249,7 +249,10 @@ export default {
         const Data = re.Data;
         this.ReportUnusual = Data.ReportUnusual || {};
         //状态为空可以上报
-        if(this.ReportUnusual.ConfirmStatus){
+        if (!this.ReportUnusual) {
+          this.disabledUpdate = false;
+        }
+        if (this.ReportUnusual && this.ReportUnusual.ConfirmStatus) {
           this.disabledUpdate = false;
         }
       }
@@ -279,7 +282,7 @@ export default {
               }
             }
           });
-         /*  if (this.Septs[0].TeachIntelUserCode) {
+          /*  if (this.Septs[0].TeachIntelUserCode) {
             this.disabledUpdate = false;
           } */
           /*  if (this.CurentSep.ConfirmStatus) {
