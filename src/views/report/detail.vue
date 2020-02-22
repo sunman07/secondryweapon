@@ -248,6 +248,10 @@ export default {
       if (!re.FeedbackCode) {
         const Data = re.Data;
         this.ReportUnusual = Data.ReportUnusual || {};
+        //状态为空可以上报
+        if(!this.ReportUnusual.ConfirmStatusName){
+          this.disabledUpdate = false;
+        }
       }
     });
     this.getFlowList(this.IntelUserCode);
@@ -275,9 +279,9 @@ export default {
               }
             }
           });
-          if (this.Septs[0].TeachIntelUserCode) {
+         /*  if (this.Septs[0].TeachIntelUserCode) {
             this.disabledUpdate = false;
-          }
+          } */
           /*  if (this.CurentSep.ConfirmStatus) {
             this.disabledUpdate = false;
           }
