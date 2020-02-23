@@ -6,7 +6,8 @@ exports.externals = {
   "vue-router": "VueRouter",
   "axios": "axios",
   "vuex": "Vuex",
-  "moment": "moment"
+  "moment": "moment",
+//   'element-ui': 'element-ui',
 };
 
 exports.cdn = {
@@ -17,7 +18,8 @@ exports.cdn = {
     `${cdnBaseHttp}vue/vue-router.min.js`,
     `${cdnBaseHttp}vue/axios.min.js`,
     `${cdnBaseHttp}vue/vuex.min.js`,
-    `${cdnBaseHttp}moment/moment.min.js`
+    `${cdnBaseHttp}moment/moment.min.js`,
+    // `https://unpkg.com/element-ui/lib/index.js`
   ]
 };
 //获取版本号

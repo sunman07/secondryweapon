@@ -21,6 +21,13 @@
         :value="UserInfo.Phone"
       ></van-cell>
     </van-cell-group>
+    <div class="h-title">当天实测体温</div>
+    <div class="tem">
+      <div :style="{'font-size': '16px','text-align':'center',color:temcolor }">{{temdata}}</div>
+      <el-slider v-model="value2" :marks="marks" 
+      :color='temcolor'
+      :show-tooltip="false" :change="temp()"></el-slider>
+    </div>
 
     <div class="h-title">情况说明（多选）</div>
     <van-checkbox-group v-model="Statuss" @change="statusChange">
@@ -180,6 +187,12 @@
     line-height: 32px;
     margin: 10px auto;
   }
+  .tem {
+    height: 70px;
+    background: #fff;
+    padding: 10px 15px;
+    // line-height: 100px
+  }
 }
 </style>
 <script>
@@ -218,11 +231,25 @@ export default {
         SituationStatus: "",
         ReportContent: "",
         SituationDate: "",
-        SituationMeasure: ""
+        SituationMeasure: "",
+        Temperature:""
       },
       minDate: new Date(2019, 8),
       maxDate: new Date(),
-      currentDate: new Date()
+      currentDate: new Date(),
+      value2: 0,
+      marks: {
+        20: "37°C",
+        40: "37.3°C",
+        70: "38°C",
+        98: "39°C"
+        
+      },
+      temdata: "",
+      temcode: "",
+      temcolor: "",
+      bizColor: Number,
+      repsub: ""
     };
   },
   created() {
@@ -302,6 +329,26 @@ export default {
     confirm(e) {
       this.disabledSubmit = !e;
     },
+    temp() {
+      if (this.value2 < 20) {
+        this.temdata = "< 37°C";
+        this.form.Temperature = "0";
+        this.temcolor = "#67c23a";
+      } else if (this.value2 >= 20 && this.value2 < 40) {
+        this.temdata = "37°C ～ 37.3°C";
+        this.form.Temperature = "1";
+        this.temcolor = "#67c23a";
+      } else if (this.value2 >= 40 && this.value2 < 70) {
+        this.temdata = "37.3°C ~ 38°C";
+        this.form.Temperature = "2";
+        this.temcolor = "#f56c6c";
+      } else {
+        this.temdata = "38°C ~ 39°C";
+        this.form.Temperature = "3";
+        this.temcolor = "#f10303";
+      }
+      console.log(this.temdata);
+    },
     statusChange(e) {
       let arrs = [];
       e.forEach(i => {
@@ -324,6 +371,10 @@ export default {
       return /^1[3-9]\d{9}$/.test(phone);
     },
     statusReport() {
+      if (!this.form.Temperature) {
+        this.$toast("请选择体温!");
+        return;
+      } 
       if (!this.form.SituationStatus) {
         this.$toast("情况说明是必选的!");
         return;
@@ -357,10 +408,7 @@ export default {
         this.$toast("请选择当前所在地!");
         return;
       }
-      /*  if (!this.form.HealthStatus) {
-        this.$toast("请选择健康状态!");
-        return;
-      } */
+      
       if (this.otherFlag && !this.form.ReportContent.trim()) {
         this.$toast("请填写详细信息!");
         return;

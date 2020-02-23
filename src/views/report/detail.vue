@@ -47,6 +47,15 @@
           <div v-if="step.OpType==1">
             <p class="time">{{$moment(step.OpTime).format('MM月DD日 HH:mm')}}</p>
             <div class="step-label">学生情况上报</div>
+             <div v-if="step.Temperature" class="desc">当天实测体温: <span :style="{color:
+               step.Temperature == '0' ?'#67c23a': 
+               step.Temperature == '1' ? '#67c23a' : 
+               step.Temperature == '2' ? '#f56c6c' :
+               step.Temperature == '3' ? '#f10303' : ''
+               }">{{ step.Temperature == '0' ? "小于37°C": 
+               step.Temperature == '1' ? '37°C ～ 37.3°C' : 
+               step.Temperature == '2' ? '37.3°C ~ 38°C' :
+               step.Temperature == '3' ? '38°C ~ 39°C' : ''}}</span></div>
             <div class="desc">发生日期: {{$moment(step.SituationDate).format('MM月DD日')}}</div>
             <div class="desc">情况说明: {{step.SituationStatusNameArrStr}}</div>
             <div

@@ -63,12 +63,34 @@
       <div class="action-content select">
         <div class="a-title">
           我要报平安
-          <span class="a-close" @click="show=false">x</span>
+          <span
+            class="a-close"
+            @click="show=false, bizColor = Number, value2 =0,temdata = '', temcode = ''"
+          >x</span>
         </div>
         <div class="list">
-          <div class="item" v-for="(item,ix) of bizTypes" :key="item.Code" @click="Report(item)">
+          <div
+            class="item"
+            v-for="(item,ix) of bizTypes"
+            :key="item.Code"
+            @click="Report(item)"
+            :style="{background: ix === bizColor ? '#fbb200': ''}"
+          >
             <img class="icon" :src="getImg(ix)" alt />
             <span class="elip">{{item.Name||''}}</span>
+          </div>
+          <p style="font-size: 16px">当天实测体温</p>
+          <div class="sliders">
+            <div :style="{'font-size': '16px','text-align':'center',color:color }">{{temdata}}</div>
+            <el-slider
+              v-model="value2"
+              :marks="marks"
+              :show-tooltip="false"
+              :change="temperature()"
+            ></el-slider>
+          </div>
+          <div style="margin-top:20px">
+            <van-button color="#fbb200" round type="primary" block @click="reportSubmit">确定</van-button>
           </div>
         </div>
       </div>
@@ -235,7 +257,7 @@
     background: #f8f8f8;
   }
   .action-content {
-    height: 300px;
+    height: 500px;
     .a-title {
       font-family: PingFang-SC-Medium;
       font-size: 17px;
@@ -251,7 +273,7 @@
     }
     .list {
       margin: 10px 20px;
-      max-height: 235px;
+      // max-height: 400px;
       overflow: auto;
       .item {
         background: #ffffff;
@@ -274,6 +296,19 @@
         }
       }
     }
+  }
+  .sliders {
+    background: #ffffff;
+    // display: flex;
+    margin: 10px auto;
+    width: auto;
+    align-items: center;
+    padding: 15px 13px;
+    font-family: PingFangSC-Regular;
+    font-size: 17px;
+    color: #333333;
+    letter-spacing: 0.73px;
+    text-align: left;
   }
   .t-header {
     span {
@@ -358,7 +393,20 @@ export default {
       serverUrl: "",
       UserInfo: {},
       UID: "",
-      IsReport: ""
+      IsReport: "",
+      value2: 0,
+      marks: {
+        20: "37°C",
+        40: "37.3°C",
+        70: "38°C",
+        98: "39°C"
+
+      },
+      temdata: "",
+      temcode: "",
+      color: "",
+      bizColor: Number,
+      repsub:''
     };
   },
   components: {},
@@ -553,6 +601,43 @@ export default {
         }
       });
     },
+    temperature() {
+      if (this.value2 < 20) {
+        this.temdata = "体温正常";
+        this.temcode = "0";
+        this.color = "#67c23a";
+      } else if (this.value2 >= 20 && this.value2 < 40) {
+        this.temdata = "37°C ～ 37.3°C";
+        this.temcode = "1";
+        this.color = "#67c23a";
+      } else 
+      // if (this.value2 >= 40 && this.value2 < 70) {
+      //   this.temdata = "37.3°C ~ 38°C";
+      //   this.temcode = "2";
+      //   this.color = "#f56c6c";
+      // } else {
+        {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "您的体温处于异常状态，需要去填写情况上报",
+            confirmButtonText:'情况上报',
+            confirmButtonColor: '#fbb200',
+            cancelButtonText: '我手滑了',
+            cancelButtonColor: '#7B7B7B'
+          })
+          .then(() => {
+            this.show = false;
+            this.$router.push({ path: "/report" });
+          })
+          .catch(() => {
+            this.show = false;
+            // on cancel
+            this.value2 = 0
+          });
+      }
+      console.log(this.temdata);
+    },
     submit(params = {}) {
       this.show = false;
       debounce(() => {
@@ -568,10 +653,10 @@ export default {
       }, 300);
     },
     onSafe() {
-      if (!this.Need) {
-        this.$toast("您今天已报平安，或您今天无需报平安!");
-        return;
-      }
+      // if (!this.Need) {
+      //   this.$toast("您今天已报平安，或您今天无需报平安!");
+      //   return;
+      // }
 
       if (this.position) {
         this.$toast("尚在获取定位中,不能上报!");
@@ -581,36 +666,21 @@ export default {
     },
     /* 上报 */
     Report(item) {
-      /*   if (this.disabledSubmit) {
+      this.repsub = item;
+        if (this.disabledSubmit) {
         this.$toast("您已成功报平安,无需再报!");
         return;
-      } */
-      if (!this.LocationCity) {
-        this.$dialog
-          .confirm({
-            title: "提示",
-            message: "尚未定位到您的位置,是否继续报平安?"
-          })
-          .then(() => {
-            const params = {
-              ReportArea: this.LocationCity,
-              ReportCode: item.Code,
-              UID: ""
-            };
-            this.submit(params);
-          })
-          .catch(() => {
-            this.show = false;
-            // on cancel
-          });
-      } else {
-        const params = {
-          ReportArea: this.LocationCity,
-          ReportCode: item.Code,
-          UID: ""
-        };
-        this.submit(params);
       }
+      this.bizTypes.forEach((items, i) => {
+        if (item == items) {
+          console.log(i);
+          this.bizColor = i;
+        }
+      });
+      // console.log(i);
+
+      // console.log(i);
+
       /*      if (this.countClick <= 2) {
         if (this.LocationCheck) {
           if (!this.LocationCity) {
@@ -625,6 +695,38 @@ export default {
         this.$toast("无法识别当前登录人,不能上报!");
         return;
       } */
+    },
+    reportSubmit() {
+      if (!this.LocationCity) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "尚未定位到您的位置,是否继续报平安?"
+          })
+          .then(() => {
+            const params = {
+              ReportArea: this.LocationCity,
+              ReportCode: this.repsub.Code,
+              UID: "",
+              Temperature: this.temcode
+            };
+
+            this.submit(params);
+          })
+          .catch(() => {
+            this.show = false;
+            // on cancel
+          });
+      } else {
+        const params = {
+          ReportArea: this.LocationCity,
+          ReportCode: this.repsub.Code,
+          UID: "",
+          Temperature: this.temcode
+        };
+        
+        this.submit(params);
+      }
     }
   }
 };
