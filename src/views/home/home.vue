@@ -505,6 +505,7 @@ export default {
         }
       });
     },
+    
     /* 获取班级已上报,未上报 */
     getReportStudent(type = 1) {
       const date = new Date();
