@@ -24,9 +24,13 @@
     <div class="h-title">当天实测体温</div>
     <div class="tem">
       <div :style="{'font-size': '16px','text-align':'center',color:temcolor }">{{temdata}}</div>
-      <el-slider v-model="value2" :marks="marks" 
-      :color='temcolor'
-      :show-tooltip="false" :change="temp()"></el-slider>
+      <el-slider
+        v-model="value2"
+        :marks="marks"
+        :color="temcolor"
+        :show-tooltip="false"
+        :change="temp()"
+      ></el-slider>
     </div>
 
     <div class="h-title">情况说明（多选）</div>
@@ -232,18 +236,17 @@ export default {
         ReportContent: "",
         SituationDate: "",
         SituationMeasure: "",
-        Temperature:""
+        Temperature: ""
       },
       minDate: new Date(2019, 8),
       maxDate: new Date(),
       currentDate: new Date(),
       value2: 0,
       marks: {
-        20: "37°C",
-        40: "37.3°C",
-        70: "38°C",
-        98: "39°C"
-        
+        15: "37°C",
+        30: "37.3°C",
+        60: "38°C",
+        85: "39°C"
       },
       temdata: "",
       temcode: "",
@@ -330,23 +333,32 @@ export default {
       this.disabledSubmit = !e;
     },
     temp() {
-      if (this.value2 < 20) {
+       if (this.value2 > 0 && this.value2 < 15) {
         this.temdata = "< 37°C";
-        this.form.Temperature = "0";
-        this.temcolor = "#67c23a";
-      } else if (this.value2 >= 20 && this.value2 < 40) {
-        this.temdata = "37°C ～ 37.3°C";
         this.form.Temperature = "1";
         this.temcolor = "#67c23a";
-      } else if (this.value2 >= 40 && this.value2 < 70) {
-        this.temdata = "37.3°C ~ 38°C";
+      } else if (this.value2 >= 15 && this.value2 < 30) {
+        this.temdata = "37°C ～ 37.3°C";
         this.form.Temperature = "2";
-        this.temcolor = "#f56c6c";
-      } else {
-        this.temdata = "38°C ~ 39°C";
+        this.temcolor = "#fbb200";
+      } else if (this.value2 >= 30 && this.value2 < 60) {
+        this.temdata = "37.3°C ~ 38°C";
         this.form.Temperature = "3";
-        this.temcolor = "#f10303";
+        this.temcolor = "#fb9700";
+      } else if (this.value2 >= 60 && this.value2 < 85) {
+        this.temdata = "38°C ~ 39°C";
+        this.form.Temperature = "4";
+        this.temcolor = "#fb5100";
+      } else if (this.value2 >= 85 && this.value2 <= 100) {
+        this.temdata = "> 39°C";
+        this.form.Temperature = "5";
+        this.temcolor = "#ee0a24";
+      } else {
+        this.temdata = "请选择体温";
+        this.temcolor = "#ee0a24";
+        this.form.Temperature = "";
       }
+      console.log(this.temdata);
       console.log(this.temdata);
     },
     statusChange(e) {
@@ -374,7 +386,7 @@ export default {
       if (!this.form.Temperature) {
         this.$toast("请选择体温!");
         return;
-      } 
+      }
       if (!this.form.SituationStatus) {
         this.$toast("情况说明是必选的!");
         return;
@@ -408,7 +420,7 @@ export default {
         this.$toast("请选择当前所在地!");
         return;
       }
-      
+
       if (this.otherFlag && !this.form.ReportContent.trim()) {
         this.$toast("请填写详细信息!");
         return;

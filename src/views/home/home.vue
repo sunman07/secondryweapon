@@ -65,7 +65,7 @@
           我要报平安
           <span
             class="a-close"
-            @click="show=false, bizColor = Number, value2 =0,temdata = '', temcode = ''"
+            @click="show=false, bizColor = Number, value2 =0,temdata = '', temcode = '0'"
           >x</span>
         </div>
         <div class="list">
@@ -90,7 +90,8 @@
             ></el-slider>
           </div>
           <div style="margin-top:20px">
-            <van-button color="#fbb200" round type="primary" block @click="reportSubmit">确定</van-button>
+            <van-button color="#fbb200"  
+            round type="primary" block @click="reportSubmit">确定</van-button>
           </div>
         </div>
       </div>
@@ -396,14 +397,13 @@ export default {
       IsReport: "",
       value2: 0,
       marks: {
-        20: "37°C",
-        40: "37.3°C",
-        70: "38°C",
-        98: "39°C"
-
+        15: "37°C",
+        30: "37.3°C",
+        60: "38°C",
+        85: "39°C",
       },
       temdata: "",
-      temcode: "",
+      temcode: "0",
       color: "",
       bizColor: Number,
       repsub:''
@@ -603,15 +603,19 @@ export default {
       });
     },
     temperature() {
-      if (this.value2 < 20) {
-        this.temdata = "体温正常";
-        this.temcode = "0";
-        this.color = "#67c23a";
-      } else if (this.value2 >= 20 && this.value2 < 40) {
-        this.temdata = "37°C ～ 37.3°C";
+      if (this.value2 > 0&&this.value2 < 15) {
+        this.temdata = "<37°C";
         this.temcode = "1";
         this.color = "#67c23a";
-      } else 
+      } else if (this.value2 >= 15 && this.value2 < 30) {
+        this.temdata = "37°C ～ 37.3°C";
+        this.temcode = "2";
+        this.color = "#fbb200";
+      } else if(this.value2 == 0){
+        this.temdata = "请选择温度";
+        this.temcode = "0";
+        this.color = "red";
+      }else
       // if (this.value2 >= 40 && this.value2 < 70) {
       //   this.temdata = "37.3°C ~ 38°C";
       //   this.temcode = "2";
@@ -637,7 +641,7 @@ export default {
             this.value2 = 0
           });
       }
-      console.log(this.temdata);
+      console.log(this.temcode);
     },
     submit(params = {}) {
       this.show = false;
@@ -648,6 +652,12 @@ export default {
             this.disabledSubmit = true;
             this.$toast(res.FeedbackText);
             //更新记录
+            console.log(23123);
+            
+            this.bizColor = Number;
+            this.value2 = 0; 
+            this.temdata = '';
+            this.temcode = '0'
             this.updateRecord();
           }
         });
@@ -698,7 +708,11 @@ export default {
       } */
     },
     reportSubmit() {
-      if (!this.LocationCity) {
+      if (!this.repsub.Code) {
+        this.$toast('请选择口号！')
+      }else if (!this.temcode) {
+        this.$toast('请选择要上报的体温！')
+      }else if (!this.LocationCity) {
         this.$dialog
           .confirm({
             title: "提示",
