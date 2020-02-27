@@ -19,7 +19,7 @@ exports.cdn = {
     `${cdnBaseHttp}vue/axios.min.js`,
     `${cdnBaseHttp}vue/vuex.min.js`,
     `${cdnBaseHttp}moment/moment.min.js`,
-    // `https://unpkg.com/element-ui/lib/index.js`
+    
   ]
 };
 //获取版本号
