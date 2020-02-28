@@ -519,8 +519,10 @@ export default {
           const items = res.Data.list || [];
           items.forEach(element => {
             element.reportTime = moment(element.report_time).format(
-              "MM-DD hh:mm"
+              "MM-DD HH:mm"
             );
+            console.log(element);
+            
           });
           if (type === 1) {
             this.finishSet = items || [];
@@ -708,9 +710,11 @@ export default {
       } */
     },
     reportSubmit() {
+      console.log(this.temcode);
+      
       if (!this.repsub.Code) {
         this.$toast('请选择口号！')
-      }else if (!this.temcode) {
+      }else if (Number(this.temcode)<=0) {
         this.$toast('请选择要上报的体温！')
       }else if (!this.LocationCity) {
         this.$dialog

@@ -71,7 +71,7 @@
               <div class="step-label">
                 <span :style="{color:step.Color}">{{step.FollowStatusName}}</span>
                 <span v-if="code">辅导员新增上报</span>
-                <span v-if="!code">辅导员已核实</span>
+                <span v-if="!code"> 辅导员已核实</span>
               </div>
             </div>
           </div>

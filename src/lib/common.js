@@ -64,6 +64,8 @@ function setAntTitle(title = '校园集结号') {
 
 function formatDate(date3, fmt) {
     const date = new Date(date3);
+    console.log(date.getHours());
+    
     var o = {
         "M+": date.getMonth() + 1,                 //月份
         "d+": date.getDate(),                    //日
