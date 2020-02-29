@@ -666,10 +666,10 @@ export default {
       }, 300);
     },
     onSafe() {
-      // if (!this.Need) {
-      //   this.$toast("您今天已报平安，或您今天无需报平安!");
-      //   return;
-      // }
+      if (!this.Need) {
+        this.$toast("您今天已报平安，或您今天无需报平安!");
+        return;
+      }
 
       if (this.position) {
         this.$toast("尚在获取定位中,不能上报!");
