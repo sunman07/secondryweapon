@@ -50,20 +50,20 @@
              <div v-if="step.Temperature" class="desc">当天实测体温:
               <span
                 :style="{color:
-                item.Temperature == '0' ?'#409eff':
-               item.Temperature == '1' ?'#67c23a': 
-               item.Temperature == '2' ? '#67c23a' : 
-               item.Temperature == '3' ? '#f56c6c' :
-               item.Temperature == '4' ? '#f10303' : 
-               item.Temperature == '5' ? '#f10303' :''
+                step.Temperature == '0' ?'#409eff':
+               step.Temperature == '1' ?'#67c23a': 
+               step.Temperature == '2' ? '#67c23a' : 
+               step.Temperature == '3' ? '#f56c6c' :
+               step.Temperature == '4' ? '#f10303' : 
+               step.Temperature == '5' ? '#f10303' :''
                }"
               >
-                {{item.Temperature == '0' ? "暂无数据":
-                item.Temperature == '1' ? "小于37°C":
-                item.Temperature == '2' ? '37°C ～ 37.3°C' :
-                item.Temperature == '3' ? '37.3°C ~ 38°C' :
-                item.Temperature == '4' ? '38°C ~ 39°C' :
-                item.Temperature == '5' ? '高于39°C' : ''}}
+                {{step.Temperature == '0' ? "暂无数据":
+                step.Temperature == '1' ? "小于37°C":
+                step.Temperature == '2' ? '37°C ～ 37.3°C' :
+                step.Temperature == '3' ? '37.3°C ~ 38°C' :
+                step.Temperature == '4' ? '38°C ~ 39°C' :
+                step.Temperature == '5' ? '高于39°C' : ''}}
               </span></div>
             <div class="desc">发生日期: {{$moment(step.SituationDate).format('MM月DD日')}}</div>
             <div class="desc">情况说明: {{step.SituationStatusNameArrStr}}</div>
