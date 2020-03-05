@@ -358,7 +358,7 @@ export default {
         this.temcolor = "#ee0a24";
         this.form.Temperature = "";
       }
-      console.log(this.temdata);
+      console.log(this.form.Temperature);
       console.log(this.temdata);
     },
     statusChange(e) {
