@@ -179,3 +179,14 @@ export function getUserInfo(IntelUserCode = "") {
     Body: { IntelUserCode: IntelUserCode }
   });
 }
+
+/**
+ * 获取用户信息
+ */
+export function getAddress() {
+  return http.postJSON({
+    Router: `${api}getstudentsafetyreportunique`,
+    Method: "POST",
+    Body: {}
+  });
+}

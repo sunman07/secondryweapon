@@ -65,7 +65,8 @@
           我要报平安
           <span
             class="a-close"
-            @click="show=false, bizColor = Number, value2 =0,temdata = '', temcode = '0'"
+            @click="show=false, bizColor = Number, value2 =0, temdata = '', 
+            temcode = '0', CurrentAddress = '', CurrentAddressCode = ''"
           >x</span>
         </div>
         <div class="list">
@@ -80,7 +81,7 @@
             <span class="elip">{{item.Name||''}}</span>
           </div>
           <p style="font-size: 16px">当天实测体温</p>
-          <div class="sliders">
+          <div class="sliders" style="padding: 15px 13px;">
             <div :style="{'font-size': '16px','text-align':'center',color:color }">{{temdata}}</div>
             <el-slider
               v-model="value2"
@@ -89,12 +90,34 @@
               :change="temperature()"
             ></el-slider>
           </div>
+          <p style="font-size: 16px">当前所在位置</p>
+          <div class="sliders" style="padding: 2px 3px;">
+            <!-- <van-cell title-class="cell-title" value-class="cell-value" title="当前所在地">
+              <template>
+                <div slot="default">
+                  {{CurrentAddress}}
+                  <span class="update f-r" @click="areaShow=true">修改</span>
+                </div>
+              </template>
+            </van-cell>-->
+            <van-cell
+              :title="CurrentAddress? CurrentAddress:'请选择所在位置'"
+              icon="location-o"
+              is-link
+              @click="areaShow=true"
+            />
+          </div>
           <div style="margin-top:20px">
             <van-button color="#fbb200" round type="primary" block @click="reportSubmit()">确定</van-button>
           </div>
         </div>
       </div>
     </van-action-sheet>
+    <!-- 省市县 -->
+
+    <van-popup v-model="areaShow" position="bottom" :style="{ height: '40%' }">
+      <van-area :area-list="areaList" title="当前位置" @cancel="areaShow=false" @confirm="selectArea" />
+    </van-popup>
 
     <!-- 已上报 -->
     <van-action-sheet v-model="finishShow" style="height:80%">
@@ -303,12 +326,13 @@
     margin: 10px auto;
     width: auto;
     align-items: center;
-    padding: 15px 13px;
+    // padding: 15px 13px;
     font-family: PingFangSC-Regular;
     font-size: 17px;
     color: #333333;
     letter-spacing: 0.73px;
     text-align: left;
+    border-radius: 7px;
   }
   .t-header {
     span {
@@ -360,9 +384,11 @@ import {
   ClassTodayStatistics,
   ClassCumulativeStatistics,
   CheckIsRu,
-  CheckIsNeedSafeReport
+  CheckIsNeedSafeReport,
+  getAddress
 } from "../../service/common.service";
 import moment from "moment";
+import arealist from "../../lib/area";
 import { setAntTitle, debounce, formatDate } from "../../lib/common";
 
 export default {
@@ -390,6 +416,8 @@ export default {
       finishShow: false,
       unFinishShow: false,
       disabledSubmit: false,
+      areaShow: false,
+      areaList: arealist,
       serverUrl: "",
       UserInfo: {},
       UID: "",
@@ -405,7 +433,10 @@ export default {
       temcode: "0",
       color: "",
       bizColor: Number,
-      repsub: ""
+      repsub: "",
+      CurrentAddress: "",
+      CurrentAddressCode: "",
+      point: ""
     };
   },
   components: {},
@@ -451,6 +482,19 @@ export default {
     });
   },
   methods: {
+    // 手动增加位置
+    selectArea(e) {
+      console.log(e);
+      if (e[2]) {
+        this.CurrentAddress = `${e[0].name}${e[1].name}${e[2].name}`;
+        this.CurrentAddressCode = e[2];
+      } else {
+        this.CurrentAddress = `${e[0].name}${e[1].name}`;
+        this.CurrentAddressCode = e[1];
+      }
+
+      this.areaShow = false;
+    },
     //去情况上报
     navReport() {
       if (this.IsReport == 1) {
@@ -567,6 +611,9 @@ export default {
           console.log("status", this.getStatus());
           if (this.getStatus() == 0) {
             const address = position.address;
+            _this.point = JSON.stringify(position.point);
+            console.log(_this.point);
+
             console.log("city", position);
             _this.LocationProvince = address.province;
             _this.LocationCity = address.city;
@@ -635,8 +682,6 @@ export default {
             this.value2 = 0;
           });
       }
-      console.log(this.temcode);
-      console.log(this.value2);
     },
     submit(params = {}) {
       this.show = false;
@@ -647,28 +692,35 @@ export default {
             this.disabledSubmit = true;
             this.$toast(res.FeedbackText);
             //更新记录
-            console.log(23123);
-
             this.bizColor = Number;
             this.value2 = 0;
             this.temdata = "";
             this.temcode = "0";
+            this.CurrentAddress = '';
+            this.CurrentAddressCode = '';
             this.updateRecord();
+            this.CheckIsNeedSafeReport();
           }
         });
       }, 300);
     },
     onSafe() {
-      // if (!this.Need) {
-      //   this.$toast("您今天已报平安，或您今天无需报平安!");
-      //   return;
-      // }
-
+      console.log(!this.Need);
+      if (!this.Need) {
+        this.$toast("您今天已报平安，或您今天无需报平安!");
+        return;
+      }
       if (this.position) {
         this.$toast("尚在获取定位中,不能上报!");
         return;
       }
       this.show = true;
+      getAddress().then(r => {
+        if (r.data.Data) {
+          this.CurrentAddressCode = r.data.Data.ReportAreaChoiceCode;
+          this.CurrentAddress = r.data.Data.ReportAreaChoiceName;
+        }
+      });
     },
     /* 上报 */
     Report(item) {
@@ -703,12 +755,15 @@ export default {
         } */
     },
     reportSubmit() {
-      console.log(this.temcode);
-
+      console.log(this.CurrentAddressCode);
+      console.log(this.CurrentAddress);
+      console.log(this.point);
       if (!this.repsub.Code) {
         this.$toast("请选择口号！");
       } else if (Number(this.temcode) <= 0) {
         this.$toast("请选择要上报的体温！");
+      } else if (!this.CurrentAddress && !this.CurrentAddressCode) {
+        this.$toast("请选择地址！");
       } else if (!this.LocationCity) {
         this.$dialog
           .confirm({
@@ -720,9 +775,12 @@ export default {
               ReportArea: this.LocationCity,
               ReportCode: this.repsub.Code,
               UID: "",
-              Temperature: this.temcode
+              Temperature: this.temcode,
+              ReportAreaLat: this.point,
+              ReportAreaChoiceCode: this.CurrentAddressCode.code,
+              ReportAreaChoiceName: this.CurrentAddress
             };
-
+            console.log(params);
             this.submit(params);
           })
           .catch(() => {
@@ -734,11 +792,13 @@ export default {
           ReportArea: this.LocationCity,
           ReportCode: this.repsub.Code,
           UID: "",
-          Temperature: this.temcode
+          Temperature: this.temcode,
+          ReportAreaLat: this.point,
+          ReportAreaChoiceCode: this.CurrentAddressCode.code,
+          ReportAreaChoiceName: this.CurrentAddress
         };
-console.log(params);
-
-        // this.submit(params);
+        console.log(params);
+        this.submit(params);
       }
     }
   }
