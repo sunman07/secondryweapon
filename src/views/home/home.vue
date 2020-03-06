@@ -6,21 +6,24 @@
     </div>
     <van-panel class="h-header" :title="UserInfo.ClassName||''">
       <ul class="list" style="line-height:44px">
-        <li class="item f-s-22" style="color: #0F0F0F;">{{headObj.TotalCount}}</li>
+        <li class="item f-s-22" style="color: #0F0F0F;">
+          {{
+          parseInt(headObj.ReportCount||0) + parseInt(headObj.UnReportCount||0)}}
+        </li>
         <li
           v-if="headObj.ReportCount!='NULL'"
           class="item f-s-22"
           style="color: #066BFC;"
-          @click="finishShow=true;getReportStudent(1)"
+          @click="finishShow=true"
         >{{headObj.ReportCount}}</li>
         <li v-if="headObj.ReportCount=='NULL'" class="item f-s-22" style="color: #066BFC;">0</li>
         <li
-          v-if="headObj.ReportCount!='NULL'"
+          v-if="headObj.UnReportCount!='NULL'"
           class="item f-s-22"
           style="color: #FBB200;"
-          @click="unFinishShow=true;getReportStudent(2)"
-        >{{parseInt(headObj.TotalCount||0)-parseInt(headObj.ReportCount||0)}}</li>
-        <li v-if="headObj.ReportCount=='NULL'" class="item f-s-22" style="color: #FBB200;">0</li>
+          @click="unFinishShow=true"
+        >{{parseInt(headObj.UnReportCount||0)}}</li>
+        <li v-if="headObj.UnReportCount=='NULL'" class="item f-s-22" style="color: #FBB200;">0</li>
         <li class="item f-s-22" style="color: #F24724;">{{Percent}}%</li>
       </ul>
       <ul class="list" style="line-height:24px;margin-top:-6px;padding-bottom:12px">
@@ -59,7 +62,7 @@
       </div>
     </div>
     <!-- action -->
-    <van-action-sheet v-model="show" >
+    <van-action-sheet v-model="show">
       <div class="action-content select">
         <div class="a-title">
           我要报平安
@@ -126,17 +129,10 @@
           已上报学生
           <span class="a-close" @click="finishShow=false">x</span>
         </div>
-        <div class="t-header">
-          <span>姓名</span>
-          <span>位置</span>
-          <span>上报时间</span>
-        </div>
-
-        <div class="tr" v-for="(it,ix) of finishSet" :key="ix">
-          <span class="td name van-ellipsis">{{it.name}}</span>
-          <span class="td van-ellipsis">{{it.report_area}}</span>
-          <span class="td">{{it.reportTime}}</span>
-        </div>
+        <p class="unName">姓名</p>
+        <van-list>
+          <van-cell v-for="(item,i) in finishSet" :key="i" :title="item.Name" />
+        </van-list>
       </div>
     </van-action-sheet>
     <!-- 未上报 -->
@@ -149,7 +145,7 @@
           </div>
           <p class="unName">姓名</p>
           <van-list>
-            <van-cell v-for="(item,ix) in unFinishSet" :key="ix" :title="item.name" />
+            <van-cell v-for="(item,ix) in unFinishSet" :key="ix" :title="item.Name" />
           </van-list>
         </div>
       </div>
@@ -380,16 +376,14 @@ import {
   QueryLastReport,
   getConfig,
   getUserInfo,
-  QueryClassReportStudent,
   ClassTodayStatistics,
   ClassCumulativeStatistics,
   CheckIsRu,
   CheckIsNeedSafeReport,
   getAddress
 } from "../../service/common.service";
-import moment from "moment";
 import arealist from "../../lib/area";
-import { setAntTitle, debounce, formatDate } from "../../lib/common";
+import { setAntTitle, debounce } from "../../lib/common";
 
 export default {
   name: "home",
@@ -531,49 +525,29 @@ export default {
         }
       });
     },
+    // 加载总人数已上报未上报
     ClassTodayStatistics(ClassCode = "") {
       ClassTodayStatistics({ ClassCode }).then(r => {
         const res = r.data;
+        console.log(res);
         if (!res.FeedbackCode) {
           this.headObj = res.Data || {};
-          const total = parseInt(this.headObj.TotalCount);
-          const report = parseInt(this.headObj.ReportCount);
-          if (report) {
-            this.Percent = parseInt((report * 100) / total);
+          // 已上报列表
+          this.finishSet = res.Data.ReportData || [];
+          // 未上报列表
+          this.unFinishSet = res.Data.UnReportData || [];
+          const UnReportCount = this.headObj.UnReportCount;
+          const report = this.headObj.ReportCount;
+          const cover = report / (report + UnReportCount);
+          if (cover) {
+            this.Percent = Math.floor(cover * 10000) / 100;
           } else {
             this.Percent = 0;
           }
-
-          console.log("ClassTodayStatistics", res);
         }
       });
     },
 
-    /* 获取班级已上报,未上报 */
-    getReportStudent(type = 1) {
-      const date = new Date();
-      QueryClassReportStudent({
-        type,
-        report_time: formatDate(date, "yyyy-MM-dd"),
-        class_code: this.UserInfo.ClassCode
-      }).then(r => {
-        const res = r.data;
-        if (!res.FeedbackCode) {
-          const items = res.Data.list || [];
-          items.forEach(element => {
-            element.reportTime = moment(element.report_time).format(
-              "MM-DD HH:mm"
-            );
-            console.log(element);
-          });
-          if (type === 1) {
-            this.finishSet = items || [];
-          } else {
-            this.unFinishSet = items || [];
-          }
-        }
-      });
-    },
     /* 检查是否情况上报过 */
     CheckIsRu() {
       CheckIsRu().then(r => {
@@ -696,8 +670,8 @@ export default {
             this.value2 = 0;
             this.temdata = "";
             this.temcode = "0";
-            this.CurrentAddress = '';
-            this.CurrentAddressCode = '';
+            this.CurrentAddress = "";
+            this.CurrentAddressCode = "";
             this.updateRecord();
             this.CheckIsNeedSafeReport();
           }
