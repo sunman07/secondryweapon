@@ -59,7 +59,7 @@
       </div>
     </div>
     <!-- action -->
-    <van-action-sheet v-model="show">
+    <van-action-sheet v-model="show" >
       <div class="action-content select">
         <div class="a-title">
           我要报平安
@@ -270,8 +270,8 @@
   }
   .select {
     background: #faf3e3;
-    height: 100%;
-    overflow: hidden;
+    height: 600px;
+    // overflow: auto;
     box-shadow: 0 -12px 24px 0 rgba(25, 70, 166, 0.2);
     border-radius: 12px 12px 0 0;
     border-radius: 12px 12px 0px 0px;
@@ -297,7 +297,7 @@
     .list {
       margin: 10px 20px;
       // max-height: 400px;
-      overflow: auto;
+      // overflow: auto;
       .item {
         background: #ffffff;
         display: flex;
