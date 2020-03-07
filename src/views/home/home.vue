@@ -95,14 +95,6 @@
           </div>
           <p style="font-size: 16px">当前所在位置</p>
           <div class="sliders" style="padding: 2px 3px;">
-            <!-- <van-cell title-class="cell-title" value-class="cell-value" title="当前所在地">
-              <template>
-                <div slot="default">
-                  {{CurrentAddress}}
-                  <span class="update f-r" @click="areaShow=true">修改</span>
-                </div>
-              </template>
-            </van-cell>-->
             <van-cell
               :title="CurrentAddress? CurrentAddress:'请选择所在位置'"
               icon="location-o"
@@ -129,16 +121,19 @@
           已上报学生
           <span class="a-close" @click="finishShow=false">x</span>
         </div>
-        <!-- <p class="unName">姓名</p>
+        <!-- <div class="t-header">
+          <span>姓名</span>
+          <span>位置</span>
+       </div>
         <van-list>
-          <van-cell v-for="(item,i) in finishSet" :key="i" :title="item.Name" />
-        </van-list> -->
+          <van-cell v-for="(item,i) in finishSet" :key="i" :title="item.Name" :value="item.ReportAreaChoiceName"/>
+        </van-list>-->
         <div class="t-header">
           <span>姓名</span>
           <span>位置</span>
-        </div>  
-        <div class="tr" v-for="(it,ix) of finishSet" :key="ix">
-          <span class="td name van-ellipsis">{{it.Name}}</span>
+        </div>
+        <div class="tr tables" v-for="(it,ix) of finishSet" :key="ix">
+          <span class="name van-ellipsis">{{it.Name}}</span>
           <span class="td van-ellipsis">{{it.ReportAreaChoiceName}}</span>
         </div>
       </div>
@@ -350,19 +345,28 @@
       line-height: 30px;
     }
   }
+  .tables {
+    background: #fff;
+    border-bottom: 1px solid #f2f6fc;
+    padding: 5px 0px;
+  }
   .tr {
+    font-family: PingFang-SC-Regular;
+    letter-spacing: 0;
     .name {
       color: #0f0f0f !important;
       font-size: 15px !important;
-    }
-    .td {
       width: 30%;
       display: inline-block;
       text-align: center;
-      font-family: PingFang-SC-Regular;
+      line-height: 30px;
+      vertical-align: middle;
+    }
+    .td {
+      width: 70%;
+      display: inline-block;
       font-size: 14px;
       color: #adadad;
-      letter-spacing: 0;
       line-height: 30px;
       vertical-align: middle;
     }
