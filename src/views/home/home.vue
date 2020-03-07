@@ -129,10 +129,18 @@
           已上报学生
           <span class="a-close" @click="finishShow=false">x</span>
         </div>
-        <p class="unName">姓名</p>
+        <!-- <p class="unName">姓名</p>
         <van-list>
           <van-cell v-for="(item,i) in finishSet" :key="i" :title="item.Name" />
-        </van-list>
+        </van-list> -->
+        <div class="t-header">
+          <span>姓名</span>
+          <span>位置</span>
+        </div>  
+        <div class="tr" v-for="(it,ix) of finishSet" :key="ix">
+          <span class="td name van-ellipsis">{{it.Name}}</span>
+          <span class="td van-ellipsis">{{it.ReportAreaChoiceName}}</span>
+        </div>
       </div>
     </van-action-sheet>
     <!-- 未上报 -->
