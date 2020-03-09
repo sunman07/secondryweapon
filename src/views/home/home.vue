@@ -99,7 +99,7 @@
               :title="CurrentAddress? CurrentAddress:'请选择所在位置'"
               icon="location-o"
               is-link
-              @click="areaShow=true"
+              @click="address()"
             />
           </div>
           <div style="margin-top:20px">
@@ -392,9 +392,9 @@ import {
   ClassCumulativeStatistics,
   CheckIsRu,
   CheckIsNeedSafeReport,
-  getAddress
+  getAddress,
+  getArealist
 } from "../../service/common.service";
-import arealist from "../../lib/area";
 import { setAntTitle, debounce } from "../../lib/common";
 
 export default {
@@ -423,7 +423,7 @@ export default {
       unFinishShow: false,
       disabledSubmit: false,
       areaShow: false,
-      areaList: arealist,
+      areaList: '',
       serverUrl: "",
       UserInfo: {},
       UID: "",
@@ -634,6 +634,16 @@ export default {
           this.dataSet = res.Data || [];
         }
       });
+    },
+    // 加载位置
+    address(){
+      getArealist().then(res => {
+        console.log(res);
+        if (res.data.FeedbackCode === 0) {
+          this.areaList = res.data.Data;
+           this.areaShow = true;
+        }
+      })
     },
     temperature() {
       if (this.value2 > 0 && this.value2 < 15) {

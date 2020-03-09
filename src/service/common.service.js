@@ -190,3 +190,11 @@ export function getAddress() {
     Body: {}
   });
 }
+// 加载位置
+export function getArealist() {
+  return http.postJSON({
+    Router: `/api/system/geographyall`,
+    Method: "POST",
+    Body: {}
+  });
+}

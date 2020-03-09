@@ -73,7 +73,7 @@
         <template>
           <div slot="default">
             {{form.CurrentAddress}}
-            <span class="update f-r" @click="areaShow=true">修改</span>
+            <span class="update f-r" @click="address()">修改</span>
           </div>
         </template>
       </van-cell>
@@ -201,12 +201,13 @@
 </style>
 <script>
 import { setAntTitle, formatDate } from "../../lib/common";
-import arealist from "../../lib/area";
+
 import {
   getBizCode,
   onStatusReport,
   getUserInfo,
-  createFollowForUnusual
+  createFollowForUnusual,
+  getArealist
 } from "../../service/common.service";
 export default {
   name: "report",
@@ -215,7 +216,7 @@ export default {
       numShow: false,
       areaShow: false,
       dateShow: false,
-      areaList: arealist,
+      areaList: '',
       Statuss: [],
       HealthStatuss: [],
       SituationMeasures: [],
@@ -472,6 +473,16 @@ export default {
         .catch(() => {
           // on cancel
         });
+    },
+    // 加载位置列表
+    address(){
+      getArealist().then(res => {
+        console.log(res);
+        if (res.data.FeedbackCode === 0) {
+          this.areaList = res.data.Data;
+           this.areaShow = true;
+        }
+      })
     },
     createFollowForUnusual(code) {
       const params = {
