@@ -493,12 +493,11 @@ export default {
       console.log(e);
       if (e[2]) {
         this.CurrentAddress = `${e[0].name}${e[1].name}${e[2].name}`;
-        this.CurrentAddressCode = e[2];
+        this.CurrentAddressCode = e[2].code;
       } else {
         this.CurrentAddress = `${e[0].name}${e[1].name}`;
-        this.CurrentAddressCode = e[1];
+        this.CurrentAddressCode = e[1].code;
       }
-
       this.areaShow = false;
     },
     //去情况上报
@@ -773,7 +772,7 @@ export default {
               UID: "",
               Temperature: this.temcode,
               ReportAreaLat: this.point,
-              ReportAreaChoiceCode: this.CurrentAddressCode.code,
+              ReportAreaChoiceCode: this.CurrentAddressCode,
               ReportAreaChoiceName: this.CurrentAddress
             };
             console.log(params);
@@ -790,7 +789,7 @@ export default {
           UID: "",
           Temperature: this.temcode,
           ReportAreaLat: this.point,
-          ReportAreaChoiceCode: this.CurrentAddressCode.code,
+          ReportAreaChoiceCode: this.CurrentAddressCode,
           ReportAreaChoiceName: this.CurrentAddress
         };
         console.log(params);
