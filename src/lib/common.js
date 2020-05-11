@@ -48,6 +48,15 @@ function getBasicInfo(callback) {
         fail: () => {}
     });
 }
+function onTel(phone, name = "") {
+	// eslint-disable-next-line
+	antlinker.onTel({
+		tel: phone,
+		text: "您确定要拨打:" + name + "吗?",
+		success: () => {},
+		fail: () => {}
+	});
+}
 function setAntTitle(title = '校园集结号') {
     //eslint-disable-next-line
     antlinker.configTitle({
@@ -91,6 +100,7 @@ export {
   setAntTitle,
   formater,
   getSChoolCode,
-  getBasicInfo
+  getBasicInfo,
+  onTel
 };
 

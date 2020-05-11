@@ -1,29 +1,23 @@
-# m_campusdata
+# 项目名称
 
-## Project setup
+## 安装依赖
 ```
 yarn install
+
+or 
+ 
+ npm install
 ```
 
-### Compiles and hot-reloads for development
+### 开发启动命令
 ```
 yarn run serve
 ```
 
-### Compiles and minifies for production
+### 打包命令
 ```
 yarn run build
 ```
 
-### Run your tests
-```
-yarn run test
-```
+### 注：如使用npm命令同上
 
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

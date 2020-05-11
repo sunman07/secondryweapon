@@ -1,45 +1,40 @@
 import Vue from "vue";
+
+// 按需加载
+
 import {
   Toast,
-  Dialog,
+  Col,
+  Row,
+  Search,
   Cell,
-  CellGroup,
-  ActionSheet,
-  NumberKeyboard,
-  Area,
-  Popup,
-  Field,
-  Radio,
-  RadioGroup,
-  Checkbox,
-  CheckboxGroup,
-  Button,
-  Panel,
+  Image,
   Step,
   Steps,
-  Tag,
-  List,
-  Loading,
-  DatetimePicker
+  Skeleton,
+  Collapse,
+  CollapseItem,
+  Button,
+  ActionSheet,
+  Popup,
+  Dialog,
+  Calendar,
+  Field
 } from "vant";
-Vue.use(Dialog);
 Vue.use(Toast);
-Vue.use(ActionSheet);
+Vue.use(Col);
+Vue.use(Row);
+Vue.use(Search);
 Vue.use(Cell);
-Vue.use(CellGroup);
-Vue.use(NumberKeyboard);
-Vue.use(Area);
-Vue.use(Popup);
-Vue.use(Field);
-Vue.use(Radio);
-Vue.use(RadioGroup);
-Vue.use(Checkbox);
-Vue.use(CheckboxGroup);
-Vue.use(Button);
-Vue.use(Panel);
+Vue.use(Image);
 Vue.use(Step);
 Vue.use(Steps);
-Vue.use(Tag);
-Vue.use(List);
-Vue.use(Loading);
-Vue.use(DatetimePicker);
+Vue.use(Skeleton);
+Vue.use(Collapse);
+Vue.use(CollapseItem);
+Vue.use(Button);
+Vue.use(ActionSheet);
+Vue.use(Popup);
+Vue.use(Dialog);
+Vue.use(Calendar);
+Vue.use(Field);

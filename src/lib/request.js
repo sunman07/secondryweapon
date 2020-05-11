@@ -11,8 +11,9 @@ import axios from 'axios';
 axios.interceptors.request.use(function(config) {
     // 在发送请求之前做些什么
     console.debug('发出请求');
+    /* 开发需手动更换token */
      config.headers.AccessToken =
-       window["__AppWebkey"] || "CPZKPAB_MXM9TJF74HQAEW";
+       window["__AppWebkey"] || "QNP6YHPZMWAUDGQBLN9CSG";
     return config;
 }, function(error) {
     // 对请求错误做些什么

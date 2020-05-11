@@ -5,8 +5,7 @@ const webpack = require("webpack");
 const CompressionWebpackPlugin = require("compression-webpack-plugin");
 const productionGzip = true; // 是否使用gzip
 const productionGzipExtensions = ["js", "css"]; // 需要gzip压缩的文件后缀
-//const token = "A4QK8AK9PAW_RBXXFETEHA";
-// gzip --end
+
 module.exports = {
   /*基础地址*/
   publicPath: "./",
@@ -20,18 +19,13 @@ module.exports = {
       warnings: true,
       errors: true
     },
+    // 反向代理
     proxy: {
       "/api": {
         target: "https://dev.xiaoyuanjijiehao.com:10010/",
-        // target: "https://h5apitest.xiaoyuanjijiehao.com:9999/",
-        //target: 'http://127.0.0.1:9085',
         pathRewrite: {
           "^/api": "api"
-        }/* ,
-        onProxyReq: proxyReq => {
-          proxyReq.setHeader("AccessToken", token);
-          // or log the req,
-        } */
+        }
       }
     }
     //disableHostCheck: true
