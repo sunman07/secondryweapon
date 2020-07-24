@@ -6,7 +6,19 @@ let req = {
             Router: Router,
             Method: Method || 'POST',
             Body: JSON.stringify(Body) || "{}"
-        })).catch(()=>{
+        })).then(r=>{
+            const data=r.data;
+            if(r.status==429){
+                 Toast("服务器繁忙,请过会重试!");
+                 return r;
+            }
+            if(data.FeedbackCode===1){
+                 Toast(`${Router}接口访问失败!`);
+            }else{
+                return r;
+            }
+        }).catch(()=>{
+
             Toast('接口访问异常!');
         })
     },

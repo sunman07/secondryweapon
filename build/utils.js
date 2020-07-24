@@ -1,21 +1,26 @@
 //cdn地址
-const cdnBaseHttp = 'https://cdn.bootcss.com/';
+const cdnBaseHttp = "https://h5public.xiaoyuanjijiehao.com/";
 //排除内容
 exports.externals = {
-    'vue': 'Vue',
-    'vue-router': 'VueRouter',
-    'axios': 'axios'
+  vue: "Vue",
+  "vue-router": "VueRouter",
+  "axios": "axios",
+  "vuex": "Vuex",
+  "moment": "moment",
+//   'element-ui': 'element-ui',
 };
 
-exports.cdn={
-    css: [],
-    js: [
-        /*放插件的cdn地址(国内比较常用的bootcdn.com)*/
-        `${cdnBaseHttp}vue/2.6.7/vue.min.js`,
-        `${cdnBaseHttp}vue-router/3.0.1/vue-router.min.js`,
-        `${cdnBaseHttp}axios/0.18.0/axios.min.js`,
-        `${cdnBaseHttp}vuex/3.1.1/vuex.min.js`
-    ]
+exports.cdn = {
+  css: [],
+  js: [
+    /*放插件的cdn地址(国内比较常用的bootcdn.com)*/
+    `${cdnBaseHttp}vue/vue.min.js`,
+    `${cdnBaseHttp}vue/vue-router.min.js`,
+    `${cdnBaseHttp}vue/axios.min.js`,
+    `${cdnBaseHttp}vue/vuex.min.js`,
+    `${cdnBaseHttp}moment/moment.min.js`,
+    
+  ]
 };
 //获取版本号
 exports.getModulesVersion = () => {

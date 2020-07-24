@@ -1,14 +1,32 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
-    routes: [
-        {
-            path: '/',
-            name: 'index',
-            component: () => import( /* webpackChunkName: "index" */ './views/index/index.vue')
-        }
-    ]
-})
+  routes: [
+    { path: "/", redirect: "home" },
+    {
+      path: "*",
+      redirect: "/home"
+    },
+    {
+      path: "/home",
+      name: "home",
+      component: () =>
+        import("./views/demo/scan-home.vue")
+    },
+    {
+      path: "/studentlist",
+      name: "studentlist",
+      component: () =>
+        import("./views/demo/studentlist.vue")
+    },
+    {
+      path: "/scandetails",
+      name: "scandetails",
+      component: () =>
+        import("./views/demo/scandetails.vue")
+    }
+  ]
+});

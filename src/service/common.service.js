@@ -1,71 +1,170 @@
 import http from "../lib/fetch";
-const api = "/api/studentsafetyreport/";
 
-/**
- * 获取学校信息
- */
-export function getSchoolInfo() {
-  return http.postJSON({
-    Router: "/api/yxinfofill/getschoollogoandname",
-    Method: "POST",
-    Body: {}
-  });
+// 校级-院级-班级 一级页面 二级页面 6合1
+export function getschoolbackinfo(level, id, type) {
+	return http.postJSON({
+		Router: '/api/studentncpback/getschoolbackinfo',
+		Method: 'POST',
+		Body: {
+			level: level,
+			Id: id,
+			usertype: type
+		}
+	});
 }
-/**
- * 获取上报类型
- */
-export function getBizCode(CodeType = "") {
-  return http.postJSON({
-    Router: "/api/system/bizcode",
-    Method: "POST",
-    Body: { CodeType }
-  });
-}
-/**
- * 获取头部数据
- */
-export function QueryReportTopStatistics() {
-  return http.postJSON({
-    Router: `${api}queryreporttopstatistics`,
-    Method: "POST",
-    Body: {}
-  });
+export function getclasschart(code) {
+	return http.postJSON({
+		Router: '/api/studentncpback/GetClassBackInfoPie',
+		Method: 'POST',
+		Body: {
+			class: code
+		}
+	});
 }
 
-/**
- * 上报平安
- */
-export function onReport(params = {}) {
-  return http.postJSON({
-    Router: `${api}report`,
-    Method: "POST",
-    Body: params
-  });
+export function getclassuser(code, i) {
+	return http.postJSON({
+		Router: '/api/studentncpback/GetClassBackInfoUser',
+		Method: 'POST',
+		Body: {
+			class: code,
+			status: i
+		}
+	});
 }
-/**
- * 获取最新上报
- */
-export function QueryLastReport(params = {}) {
-  return http.postJSON({
-    Router: `${api}querylastreport`,
-    Method: "POST",
-    Body: params
-  });
+// 学生详情
+export function getstudentinfo(code) {
+	return http.postJSON({
+		Router: '/api/studentncpback/GetStudentInfo',
+		Method: 'POST',
+		Body: {
+			user: code,
+		}
+	});
 }
-/**
- * 获取配置
- */
-export function getConfig() {
-  return http.postJSON(
-    {
-      Router: "/app/client/config",
-      Method: "POST",
-      Body: {
-        DEVICETYPE: "Web",
-        DEVICEID: "Web",
-        VERSION: "1.1"
-      }
-    },
-    "/api/appsrv/interface"
-  );
+// 审批进度
+export function approval(code) {
+	return http.postJSON({
+		Router: '/api/studentncpback/GetOldStudentInfo',
+		Method: 'POST',
+		Body: {
+			user: code,
+		}
+	});
+}
+// 申请通过
+export function adopt(code) {
+	return http.postJSON({
+		Router: '/api/studentncpback/AgreeApply',
+		Method: 'POST',
+		Body: {
+			user: code,
+		}
+	});
+}
+// 申请驳回
+export function Reject(code, mess) {
+	return http.postJSON({
+		Router: '/api/studentncpback/DisAgreeApply',
+		Method: 'POST',
+		Body: {
+			user: code,
+			rejectreason: mess
+		}
+	});
+}
+// 承诺书
+export function promiss() {
+	return http.postJSON({
+		Router: '/api/studentncpback/GetStudentBackCommitment',
+		Method: 'POST',
+		Body: {
+
+		}
+	});
+}
+// 告知书
+export function notifybook() {
+	return http.postJSON({
+		Router: '/api/system/getsystemparams',
+		Method: 'POST',
+		Body: {
+			SGroup: 'function',
+			SType: 'StudentNCPBack',
+			vName: 'Notifi'
+		}
+	});
+}
+// 查承诺书签字
+export function queryphotourl(u) {
+	return http.postJSON({
+		Router: '/api/system/queryphotourl',
+		Method: 'POST',
+		Body: {
+			Ids: u,
+		}
+	});
+}
+// 历史体温
+export function temperature(code, date) {
+	return http.postJSON({
+		Router: '/api/studentncpback/OldTemperature',
+		Method: 'POST',
+		Body: {
+			user: code,
+			date: date
+		}
+	});
+}
+// 扫码学生详情
+export function getstu(code) {
+	return http.postJSON({
+		Router: '/api/studentncpback/GetStudentBackQRInfo',
+		Method: 'POST',
+		Body: {
+			user: code
+		}
+	});
+}
+// 体温上报 
+export function reporttem(code, t) {
+	return http.postJSON({
+		Router: '/api/studentncpback/PutTemperature',
+		Method: 'POST',
+		Body: {
+			user: code,
+			temperature: t
+		}
+	});
+}
+// 允许进校
+export function permitschool(code) {
+	return http.postJSON({
+		Router: '/api/studentncpback/AgreeStudentIn',
+		Method: 'POST',
+		Body: {
+			user: code,
+		}
+	});
+}
+// 隔离 isolation
+export function isolation(code, mess) {
+	return http.postJSON({
+		Router: '/api/studentncpback/IsolateReason',
+		Method: 'POST',
+		Body: {
+			user: code,
+			reason: mess
+		}
+	});
+}
+// 扫码返校-搜索
+export function SearchStudent(code) {
+	return http.postJSON({
+		Router: '/api/studentncpback/SearchStudent',
+		Method: 'POST',
+		Body: {
+			user: code
+		}
+	});
 }

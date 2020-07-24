@@ -1,11 +1,11 @@
-const {externals, cdn} = require("./build/utils");
+const { externals, cdn } = require("./build/utils");
 const autoprefixer = require("autoprefixer");
+const webpack = require("webpack");
 // gzip --start
-const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const CompressionWebpackPlugin = require("compression-webpack-plugin");
 const productionGzip = true; // 是否使用gzip
-const productionGzipExtensions = ['js', 'css']; // 需要gzip压缩的文件后缀
-const token = "NXOBLCXHO-O5W8UMYGOOKQ";
-// gzip --end
+const productionGzipExtensions = ["js", "css"]; // 需要gzip压缩的文件后缀
+
 module.exports = {
   /*基础地址*/
   publicPath: "./",
@@ -13,47 +13,18 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV !== "production",
   productionSourceMap: false,
   filenameHashing: true,
-
-  pwa: {
-    themeColor: "#FFC000",
-    msTileColor: "#000000",
-    appleMobileWebAppCapable: "yes",
-    appleMobileWebAppStatusBarStyle: "black",
-    workboxPluginMode: "GenerateSW",
-    workboxOptions: {
-      navigateFallback: "/index.html",
-      runtimeCaching: [
-        {
-          urlPattern: "/api",
-          handler: "networkFirst",
-          options: {
-            networkTimeoutSeconds: 20,
-            cacheName: "antlinker-api-cache",
-            cacheableResponse: {
-              statuses: [0, 200]
-            }
-          }
-        }
-      ]
-    }
-  },
-
   devServer: {
     port: 8081,
     overlay: {
       warnings: true,
       errors: true
     },
+    // 反向代理
     proxy: {
       "/api": {
         target: "https://dev.xiaoyuanjijiehao.com:10010/",
-        //target: 'http://127.0.0.1:9085',
         pathRewrite: {
           "^/api": "api"
-        },
-        onProxyReq: proxyReq => {
-          proxyReq.setHeader("AccessToken", token);
-          // or log the req,
         }
       }
     }
@@ -79,6 +50,28 @@ module.exports = {
           })
         );
     }
+  /*   config.optimization = {
+      runtimeChunk: "single",
+      splitChunks: {
+        chunks: "all",
+        maxInitialRequests: Infinity,
+        minSize: 20000,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module) {
+              // get the name. E.g. node_modules/packageName/not/this/part.js
+              // or node_modules/packageName
+              const packageName = module.context.match(
+                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+              )[1];
+              // npm package names are URL-safe, but some servers don't like @ symbols
+              return `npm.${packageName.replace("@", "")}`;
+            }
+          }
+        }
+      }
+    }; */
     if (process.env.NODE_ENV === "development") {
       console.log("开发模式");
     }
@@ -95,6 +88,9 @@ module.exports = {
     });
     config.output // Modify output settings
       .filename("main.js");
+    [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)],
+      config.output // Modify output settings
+        .filename("main.js");
     return config;
   },
 
@@ -102,8 +98,24 @@ module.exports = {
     loaderOptions: {
       postcss: {
         plugins: [
-          autoprefixer()
+          autoprefixer(),
+          require("postcss-pxtorem")({
+            // 把px单位换算成rem单位
+            rootValue: 37.5, // vant官方使用的是37.5
+            selectorBlackList: ["vant"], // 忽略转换正则匹配项
+            propList: ["*"]
+          })
         ]
+      },
+      less: {
+        modifyVars: {
+          "font-size-sm": "13px",
+          "font-size-md": "15px",
+          "font-size-lg": "17px",
+          "button-primary-background-color": "#FC5006",
+          "button-primary-border-color": "#FC5006",
+          green: "#FBB200"
+        }
       }
     }
   }

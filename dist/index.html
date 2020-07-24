@@ -1,64 +1,71 @@
-<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><!--[if IE]><link rel="icon" href="favicon.ico"><![endif]--><title>校园数据</title><style type=text/css>.spinnerw {
-        margin: 200px auto 0;
-        /*  width: 80px;*/
-        text-align: center;
-      }
-
-      .spinnerw > div {
-        width: 12px;
-        height: 12px;
-        /* background-color: #eb9d21;*/
-        background-color: #2CACFC;
-        border-radius: 100%;
-        display: inline-block;
-        -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-        animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-      }
-
-      .spinnerw .bounce1 {
-        -webkit-animation-delay: -0.32s;
-        animation-delay: -0.32s;
-        background-color: #FB6127;
-      }
-
-      .spinnerw .bounce2 {
-        -webkit-animation-delay: -0.16s;
-        animation-delay: -0.16s;
-        background-color: #8F67F9;
-      }
-
-      @-webkit-keyframes sk-bouncedelay {
-        0%,
-        80%,
-        100% {
-          -webkit-transform: scale(0)
-        }
-        40% {
-          -webkit-transform: scale(1.0)
-        }
-      }
-
-      @keyframes sk-bouncedelay {
-        0%,
-        80%,
-        100% {
-          -webkit-transform: scale(0);
-          transform: scale(0);
-        }
-        40% {
-          -webkit-transform: scale(1.0);
-          transform: scale(1.0);
-        }
-      }</style><link href=css/chunk-1f93a276.b29baaa1.css rel=prefetch><link href=css/index.90bf7722.css rel=prefetch><link href=js/chunk-1f93a276.cc2e713f.js rel=prefetch><link href=js/index.110c7e65.js rel=prefetch><link href=css/app.dfc6c07c.css rel=preload as=style><link href=css/chunk-vendors.41c263c7.css rel=preload as=style><link href=js/chunk-vendors.7d70591f.js rel=preload as=script><link href=main.js rel=preload as=script><link href=css/chunk-vendors.41c263c7.css rel=stylesheet><link href=css/app.dfc6c07c.css rel=stylesheet><link rel=icon type=image/png sizes=32x32 href=img/icons/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=img/icons/favicon-16x16.png><link rel=manifest href=manifest.json><meta name=theme-color content=#FFC000><meta name=apple-mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-status-bar-style content=black><meta name=apple-mobile-web-app-title content=m_safereport><link rel=apple-touch-icon href=img/icons/apple-touch-icon-152x152.png><link rel=mask-icon href=img/icons/safari-pinned-tab.svg color=#FFC000><meta name=msapplication-TileImage content=img/icons/msapplication-icon-144x144.png><meta name=msapplication-TileColor content=#000000></head><body><noscript><strong>We're sorry but m_yingxindata doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app><div class=spinnerw id=spinnerw><div class=bounce1></div><div class=bounce2></div><div class=bounce3></div></div></div><script src=https://cdn.bootcss.com/vue/2.6.7/vue.min.js></script><script src=https://cdn.bootcss.com/vue-router/3.0.1/vue-router.min.js></script><script src=https://cdn.bootcss.com/axios/0.18.0/axios.min.js></script><script src=https://cdn.bootcss.com/vuex/3.1.1/vuex.min.js></script><script src="https://api.map.baidu.com/api?v=2.0&ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I"></script><script src=https://h5public.xiaoyuanjijiehao.com/sdk/antlinker.1.0.11.js></script><script src=js/chunk-vendors.7d70591f.js></script><script src=main.js></script></body><script>function showLocation(data) {
-    console.log('gggg')
-    console.log(data.content.address_detail.city);
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><link rel=icon href=favicon.ico><link rel=stylesheet href=https://unpkg.com/element-ui/lib/theme-chalk/index.css><title>报平安</title><style type=text/css>html,
+    body {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(248, 248, 248, 1);
     }
-    var obj = {};
-    antlinker.exeUserBasicInfoSdk(obj, function (obj, success) {
-      s = document.createElement("script");
-      s.setAttribute("src", "main.js");
-      document.body.appendChild(s);
-    })
-    var sEl = document.createElement("script");
-    sEl.setAttribute("src", "version.js?v=" + new Date().getTime());
-    document.body.appendChild(sEl);</script></html>
+
+    .spinnerw {
+      margin: 200px auto 0;
+      /*  width: 80px;*/
+      text-align: center;
+    }
+
+    .spinnerw>div {
+      width: 12px;
+      height: 12px;
+      /* background-color: #eb9d21;*/
+      background-color: #2CACFC;
+      border-radius: 100%;
+      display: inline-block;
+      -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    .spinnerw .bounce1 {
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+      background-color: #FB6127;
+    }
+
+    .spinnerw .bounce2 {
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+      background-color: #8F67F9;
+    }
+
+    @-webkit-keyframes sk-bouncedelay {
+
+      0%,
+      80%,
+      100% {
+        -webkit-transform: scale(0)
+      }
+
+      40% {
+        -webkit-transform: scale(1.0)
+      }
+    }
+
+    @keyframes sk-bouncedelay {
+
+      0%,
+      80%,
+      100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+      }
+
+      40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+      }
+    }</style><link href=css/detail.9ae0d0bf.css rel=prefetch><link href=css/home.c2500771.css rel=prefetch><link href=css/report.f548dda8.css rel=prefetch><link href=js/detail.e5ba9bfa.js rel=prefetch><link href=js/detail~home~report.9f46a380.js rel=prefetch><link href=js/home.18f1d987.js rel=prefetch><link href=js/report.ec28e0a3.js rel=prefetch><link href=css/app.3e39002b.css rel=preload as=style><link href=css/chunk-vendors.33d4cc3a.css rel=preload as=style><link href=js/chunk-vendors.59ee5bc0.js rel=preload as=script><link href=main.js rel=preload as=script><link href=css/chunk-vendors.33d4cc3a.css rel=stylesheet><link href=css/app.3e39002b.css rel=stylesheet></head><body><noscript><strong>We're sorry but m_yingxindata doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app><div class=spinnerw id=spinnerw><div class=bounce1></div><div class=bounce2></div><div class=bounce3></div></div></div><script src=https://h5public.xiaoyuanjijiehao.com/vue/vue.min.js></script><script src=https://h5public.xiaoyuanjijiehao.com/vue/vue-router.min.js></script><script src=https://h5public.xiaoyuanjijiehao.com/vue/axios.min.js></script><script src=https://h5public.xiaoyuanjijiehao.com/vue/vuex.min.js></script><script src=https://h5public.xiaoyuanjijiehao.com/moment/moment.min.js></script><script src="https://api.map.baidu.com/api?v=2.0&ak=5UxhchHxBYOnRGhEifyCGoPFtjpOFt1I"></script><script src=https://h5public.xiaoyuanjijiehao.com/sdk/antlinker.1.0.11.js></script><script src=js/chunk-vendors.59ee5bc0.js></script><script src=main.js></script></body><script>var obj = {};
+  antlinker.exeUserBasicInfoSdk(obj, function (obj, success) {
+    s = document.createElement("script");
+    s.setAttribute("src", "main.js");
+    document.body.appendChild(s);
+  })
+  var sEl = document.createElement("script");
+  sEl.setAttribute("src", "version.js?v=" + new Date().getTime());
+  document.body.appendChild(sEl);</script></html>

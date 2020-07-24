@@ -1,3 +1,8 @@
+let timeout = null;
+function debounce(fn, wait) {
+  if (timeout !== null) clearTimeout(timeout);
+  timeout = setTimeout(fn, wait);
+}
 function closeView() {
 // eslint-disable-next-line
     antlinker.closeView({
@@ -29,6 +34,29 @@ function getSChoolCode(callback) {
         fail: () => {}
     });
 }
+/**
+ * 获取基本信息
+ * @param callback
+ */
+function getBasicInfo(callback) {
+    // eslint-disable-next-line
+    antlinker.getUserBasicInfo({
+        success: function(data) {
+            callback(data)
+            //设置右上角按钮成功
+        },
+        fail: () => {}
+    });
+}
+function onTel(phone, name = "") {
+	// eslint-disable-next-line
+	antlinker.onTel({
+		tel: phone,
+		text: "您确定要拨打:" + name + "吗?",
+		success: () => {},
+		fail: () => {}
+	});
+}
 function setAntTitle(title = '校园集结号') {
     //eslint-disable-next-line
     antlinker.configTitle({
@@ -45,6 +73,8 @@ function setAntTitle(title = '校园集结号') {
 
 function formatDate(date3, fmt) {
     const date = new Date(date3);
+    console.log(date.getHours());
+    
     var o = {
         "M+": date.getMonth() + 1,                 //月份
         "d+": date.getDate(),                    //日
@@ -63,4 +93,14 @@ function formatDate(date3, fmt) {
     return fmt;
 }
 
-export { closeView, formatDate, setAntTitle, formater, getSChoolCode }
+export {
+  debounce,
+  closeView,
+  formatDate,
+  setAntTitle,
+  formater,
+  getSChoolCode,
+  getBasicInfo,
+  onTel
+};
+
