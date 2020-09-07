@@ -16,6 +16,7 @@
   height: 100%;
   width: 100%;
   font-size: 16px;
+  overflow: auto;
   /* margin-bottom: 65px; */
 }
 </style>

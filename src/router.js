@@ -14,19 +14,7 @@ export default new Router({
       path: "/home",
       name: "home",
       component: () =>
-        import("./views/demo/scan-home.vue")
-    },
-    {
-      path: "/studentlist",
-      name: "studentlist",
-      component: () =>
-        import("./views/demo/studentlist.vue")
-    },
-    {
-      path: "/scandetails",
-      name: "scandetails",
-      component: () =>
-        import("./views/demo/scandetails.vue")
+        import("./views/mainpage/index.vue")
     }
   ]
 });

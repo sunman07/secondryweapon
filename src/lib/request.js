@@ -13,7 +13,7 @@ axios.interceptors.request.use(function(config) {
     console.debug('发出请求');
     /* 开发需手动更换token */
      config.headers.AccessToken =
-       window["__AppWebkey"] || "QNP6YHPZMWAUDGQBLN9CSG";
+       window["__AppWebkey"] || "VNFC1IM7OOCOCLAWRZP9JA";
     return config;
 }, function(error) {
     // 对请求错误做些什么
