@@ -1,5 +1,11 @@
 <template>
-  <div>
+  <div class="formpage">
+    <van-cell-group v-if="infoGet">
+      <van-cell title="学号" :label="infoGet.StuUserCode" />
+      <van-cell title="姓名" :label="infoGet.StuName" />
+      <van-cell title="班级" :label="infoGet.ClassName" />
+      <van-cell title="分值" :label="infoGet.Score" />
+    </van-cell-group>
     <van-form @submit="onSubmit">
       <!--   <van-field
         v-model="value1"
@@ -103,10 +109,34 @@
         </template>
       </van-field>
 
-      <div style="margin: 16px;">
+      <div style="margin: 16px;" v-if="!infoGet">
         <van-button round block type="info" native-type="submit">提交</van-button>
       </div>
     </van-form>
+    <van-row v-if="infoGet&&!infoGet.from" class="buttonperi-remain">
+      <van-col span="12">
+        <van-button square plain type="info" class="approve-remain" @click="unApprove">审批不通过</van-button>
+      </van-col>
+      <van-col span="12">
+        <van-button square type="info" class="approve-remain" @click="getApprove">审批通过</van-button>
+      </van-col>
+    </van-row>
+    <van-dialog
+      v-model="unApproveDisplay"
+      title="请写明不通过的原因"
+      @confirm="unApproveSubmit"
+      show-cancel-button
+    >
+      <van-field
+        v-model="messageBind"
+        rows="2"
+        autosize
+        type="textarea"
+        maxlength="50"
+        placeholder="请输入..."
+        show-word-limit
+      />
+    </van-dialog>
   </div>
 </template>
 
@@ -126,6 +156,9 @@ import {
   Field,
   DatetimePicker,
   Uploader,
+  Cell,
+  CellGroup,
+  Dialog,
 } from "vant";
 Vue.use(Icon)
   .use(Row)
@@ -137,12 +170,16 @@ Vue.use(Icon)
   .use(Form)
   .use(Field)
   .use(DatetimePicker)
-  .use(Uploader);
+  .use(Uploader)
+  .use(Cell)
+  .use(CellGroup)
+  .use(Dialog);
 import {
   getModuleDic,
   getObjectDic,
   getStandardsDic,
   getApplyForAchievement,
+  getApproveOfScore,
 } from "../../service/common.service";
 export default {
   name: "formsubunit",
@@ -165,6 +202,8 @@ export default {
       detailsOfInfo: "",
       valueDate: "",
       uploader: [],
+      unApproveDisplay: false,
+      messageBind:""
     };
   },
   created() {
@@ -173,7 +212,7 @@ export default {
   mounted() {
     this.getSelectSum();
     //如果是编辑行为 初始化数据
-    this.onInitial()
+    this.onInitial();
   },
   methods: {
     //初始化数据
@@ -305,6 +344,41 @@ export default {
       console.log(this.uploader);
       // const imgCollect = this.uploader;
     },
+    unApprove() {
+      this.unApproveDisplay = true;
+    },
+    //审批不通过
+    unApproveSubmit() {
+      const params = {
+       RecordId: [this.infoGet.RecordId],
+            RejectReason: this.messageBind,
+        ApprovalStatus: 11,
+      };
+      this.submitApprovement(params);
+    },
+    //审批通过按钮
+    getApprove() {
+      Dialog.confirm({
+        title: "确定要审批通过吗？",
+      })
+        .then(() => {
+          const params = {
+            RecordId: [this.infoGet.RecordId],
+            RejectReason: this.messageBind,
+            ApprovalStatus: 12,
+          };
+          this.submitApprovement(params);
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    //提交审批
+    submitApprovement(params) {
+      getApproveOfScore(params).then((res) => {
+        console.log(res);
+      });
+    },
   },
 };
 </script>
@@ -314,5 +388,16 @@ export default {
   display: block;
   width: 80%;
   margin: 10px auto;
+}
+.buttonperi-remain {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
+.approve-remain {
+  width: 100%;
+}
+.formpage {
+  padding-bottom: 60px;
 }
 </style>
