@@ -15,6 +15,25 @@ export default new Router({
       name: "home",
       component: () =>
         import("./views/mainpage/index.vue")
-    }
+    },
+    {
+      path: "/apply",
+      name: "apply",
+      component: () =>
+        import("./views/mainpage/applypage.vue")
+    },
+    {
+      path: "/approve",
+      name: "approve",
+      component: () =>
+        import("./views/mainpage/approvepage.vue")
+    },
+    {
+      path: "/appdetails",
+      name: "appdetails",
+      component: () =>
+        import("./views/mainpage/approvedetailpage.vue")
+    },
+    
   ]
 });

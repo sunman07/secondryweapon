@@ -9,7 +9,6 @@ const productionGzipExtensions = ["js", "css"]; // 需要gzip压缩的文件后�
 module.exports = {
   /*基础地址*/
   publicPath: "./",
-
   lintOnSave: process.env.NODE_ENV !== "production",
   productionSourceMap: false,
   filenameHashing: true,
@@ -26,7 +25,54 @@ module.exports = {
         pathRewrite: {
           "^/api": "api"
         }
-      }
+      },
+      '/h5api': {
+        target: 'https://dev.xiaoyuanjijiehao.com:10010/',
+        pathRewrite: {
+          '^/h5api': 'h5api',
+        },
+      },
+      '/auth': {
+        target: 'https://dev.xiaoyuanjijiehao.com:10010/',
+        pathRewrite: {
+          '^/auth': 'auth',
+        },
+      },
+      '/antlinkerapp': {
+        //target: 'http://192.168.175.125:999',
+        //target:'https://ytvconline.xiaoyuanjijiehao.com:15085',
+        //target: "https://h5apitest.xiaoyuanjijiehao.com:9999/",
+        //target: 'https://dev.xiaoyuanjijiehao.com:10010',
+        target: 'https://dev.xiaoyuanjijiehao.com:10010/',
+        changeOrigin: true,
+        //target: 'http://192.168.175.6:9085',
+        // onProxyReq: (proxyReq) => {
+        //   proxyReq.setHeader("AccessToken", token);
+        //   // or log the req,
+        // },
+        //target: 'http://127.0.0.1:9085',
+        pathRewrite: {
+          '^/': '/',
+        },
+      },
+      //代理到服务器 访问服务器APP应用
+      /* '/': {
+        //target: 'http://192.168.175.125:999',
+        //target:'https://ytvconline.xiaoyuanjijiehao.com:15085',
+        // target: "https://h5apitest.xiaoyuanjijiehao.com:9999/",
+        // target: 'https://dev.xiaoyuanjijiehao.com:10010',
+        target: 'https://dev.xiaoyuanjijiehao.com:10010/',
+        changeOrigin: true,
+        //target: 'http://192.168.175.6:9085',
+        // onProxyReq: (proxyReq) => {
+        //   proxyReq.setHeader("AccessToken", token);
+        //   // or log the req,
+        // },
+        //target: 'http://127.0.0.1:9085',
+        pathRewrite: {
+          '^/': '/',
+        },
+      }, */
     }
     //disableHostCheck: true
   },

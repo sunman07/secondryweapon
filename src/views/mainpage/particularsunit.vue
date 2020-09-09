@@ -22,13 +22,22 @@ import { getStudentsScoreDetailed } from "../../service/common.service";
 Vue.use(Col).use(Row).use(Toast).use(Button).use(Loading);
 export default {
   name: "particularsunit",
+  props: ["headprops"],
   data() {
     return {
       entryOfParticulars: [],
-      infoForParams: { Page: 1, PageCount: 1 },
+      infoForParams: { Page: 1, PageCount: 1,Types: "", Code: ""  },
       loadingSet: false,
       loadingLine: false,
     };
+  },
+  watch: {
+    headprops(newVal) {
+      const paramsBackup = JSON.parse(JSON.stringify(newVal));
+      this.infoForParams = { Page: 1, PageCount: 1, ...paramsBackup };
+      this.getParticularsStudents(this.infoForParams);
+      console.log(paramsBackup, "新的a", this.infoForParams);
+    },
   },
   methods: {
     //按下加载一页
@@ -47,7 +56,6 @@ export default {
           } else {
             this.loadingSet = false;
             this.loadingLine = true;
-            Toast("已经到底啦");
           }
         } else {
           Toast("获取积分明细列表失败");

@@ -50,28 +50,43 @@
 
 <script>
 import Vue from "vue";
-import { Divider, Collapse, CollapseItem, Col, Row } from "vant";
+import { Divider, Collapse, CollapseItem, Col, Row, Toast } from "vant";
 import { getStudentsAchievement } from "../../service/common.service";
 Vue.use(Divider).use(Collapse).use(CollapseItem).use(Col).use(Row);
 export default {
   name: "initializeofmain",
-  props: [],
+  props: ["headprops"],
   data() {
     return {
       entryOfSubject: [],
       activeNames: ["0"],
+      termOfTitles: String,
+      paramsType: { Types: "", Code: "" },
     };
   },
-  mounted() {
-    //获取当前学生得分
-    getStudentsAchievement().then((res) => {
-      if (res.status === 200) {
-        console.log(res, "返回值");
-        this.entryOfSubject = res.data.List;
-      }
-    });
+  watch: {
+    headprops(newVal) {
+      this.paramsType = JSON.parse(JSON.stringify(newVal));
+      this.getStudentsAchieves();
+    },
   },
-  methods: {},
+  mounted() {
+    //启动获取当前学生得分
+    this.getStudentsAchieves();
+  },
+  methods: {
+    getStudentsAchieves() {
+      getStudentsAchievement(this.paramsType).then((res) => {
+        if (res.status === 200) {
+          this.$emit("getPropsForMain", res.data.ScoreConvert);
+          this.termOfTitles=res.data.CurYearTerm.AcademicYearName+' '+res.data.CurYearTerm.AcademicTermName 
+          this.entryOfSubject = res.data.List;
+        } else {
+          Toast("获取成绩列表失败");
+        }
+      });
+    },
+  },
 };
 </script>
 

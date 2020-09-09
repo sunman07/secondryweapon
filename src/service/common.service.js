@@ -6,7 +6,7 @@ const baseLink = '/secondclassroom'
 
 export function getStudentsAchievement(params) {
 	return axios
-		.get(baseLink + `/api/v1/stuoperate/stutranscript`,params)
+		.get(baseLink + `/api/v1/stuoperate/stutranscript?${params.Types}=${params.Codes}`,params)
 		.then(res => {
 			return res;
 		});
@@ -15,7 +15,7 @@ export function getStudentsAchievement(params) {
 //学生积分详情查看 
 export function getStudentsScoreDetailed(params) {
 	return axios
-		.get(baseLink + `/api/v1/stuoperate/stuintegral?Page=${params.Page}&PageCount=${params.PageCount}`)
+		.get(baseLink + `/api/v1/stuoperate/stuintegral?Page=${params.Page}&PageCount=${params.PageCount}&${params.Types}=${params.Codes}`,params)
 		.then(res => {
 			return res;
 		});
@@ -24,7 +24,7 @@ export function getStudentsScoreDetailed(params) {
 //获取学年学期 h5api/v1/school/core/api/v1/bizcode
 export function getTermSum(params) {
 	return axios
-		.get(`/core/api/v1/bizcode?code_type=AcademicYear`,params)
+		.get(`/core/api/v1/bizcode?code_type=${params}`)
 		.then(res => {
 			return res;
 		});
@@ -46,6 +46,40 @@ export const getDictionaryInfo = () => {
 		});
 };
 
+// 获取模块字典
+export function getModuleDic(){
+	return axios.get(`/core/api/v1/bizcode?code_type=secondclass`).then(res => {
+	return res
+	});
+  }
+  //获取项目字典
+  export function getObjectDic(){
+	return axios.get(baseLink + `/api/v1/standard/queryitemnopag`).then(res => {
+	return res
+});
+  }
+  //获取标准字典
+  export function getStandardsDic(){
+	return axios.get(baseLink + `/api/v1/standard/querystandardnopag`).then(res => {
+		return res;
+});
+  }
+  //成绩申请 
+  export function getApplyForAchievement(params) {
+	return axios
+		.post(baseLink + `/api/v1/stuoperate/scoreapplication`,params)
+		.then(res => {
+			return res;
+		});
+}
+//班委老师查成绩 /api/v1/scoreapprove/queryscoreapprove
+export function getStudentsScoreInfo(params) {
+	return axios
+		.get(baseLink + `/api/v1/scoreapprove/queryscoreapprove?Page=${params.Page}&PageCount=${params.PageCount}&ApprovalStatus=${params.ApprovalStatus}`)
+		.then(res => {
+			return res;
+		});
+}
 // 校级-院级-班级 一级页面 二级页面 6合1
 export function getschoolbackinfo(level, id, type) {
 	return http.postJSON({
