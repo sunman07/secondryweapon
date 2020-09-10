@@ -53,14 +53,14 @@ export function getModuleDic() {
 	});
 }
 //获取项目字典
-export function getObjectDic() {
-	return axios.get(baseLink + `/api/v1/standard/queryitemnopag`).then(res => {
+export function getObjectDic(params) {
+	return axios.get(baseLink + `/api/v1/standard/queryitemnopag?ModuleCode=${params}`).then(res => {
 		return res
 	});
 }
 //获取标准字典
-export function getStandardsDic() {
-	return axios.get(baseLink + `/api/v1/standard/querystandardnopag`).then(res => {
+export function getStandardsDic(params) {
+	return axios.get(baseLink + `/api/v1/standard/querystandardnopag?ItemCode=${params}`).then(res => {
 		return res;
 	});
 }

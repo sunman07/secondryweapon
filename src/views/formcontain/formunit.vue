@@ -22,7 +22,6 @@
         placeholder="点击选择模块"
         :rules="[{ required: true, message: '请选择模块' }]"
         @click="editAble?showModulesPicker = true:null"
-        
       />
       <van-popup v-model="showModulesPicker" position="bottom">
         <van-picker
@@ -38,10 +37,9 @@
         name="ItemCode"
         :value="selectProject"
         label="所属项目"
-          @click="editAble?showProjectPicker = true:null"
+        @click="editAble?showProjectPicker = true:null"
         placeholder="点击选择项目"
         :rules="[{ required: true, message: '请选择项目' }]"
-     
       />
       <van-popup v-model="showProjectPicker" position="bottom">
         <van-picker
@@ -57,10 +55,9 @@
         name="StandardCode"
         :value="selectStandard"
         label="所属标准"
-         @click="editAble?showStandardPicker = true:null"
+        @click="editAble?showStandardPicker = true:null"
         placeholder="点击选择标准"
         :rules="[{ required: true, message: '请选择标准' }]"
-        
       />
       <van-popup v-model="showStandardPicker" position="bottom">
         <van-picker
@@ -92,8 +89,7 @@
         name="Description"
         v-model="detailsOfInfo"
         label="详细内容"
-        placeholder="
-请输入详细内容"
+        placeholder="请输入详细内容"
         :disabled="!editAble"
         type="textarea"
         maxlength="50"
@@ -289,11 +285,17 @@ export default {
     //选择模块确认
     onConfirm(value) {
       this.selectValue = value.text;
+      this.getItemDic(value.code);
+      this.getStandardDic(value.code);
+      this.selectProject = "";
+      this.selectStandard = "";
       this.showModulesPicker = false;
     },
     //选择项目确认
     onProjectConfirm(value) {
       this.selectProject = value.text;
+      this.selectStandard = "";
+      this.getStandardDic(value.code);
       this.showProjectPicker = false;
     },
     //选择标准确认
@@ -320,8 +322,11 @@ export default {
           Toast("获取模块字典失败");
         }
       });
-      //项目字典
-      getObjectDic().then((res) => {
+    },
+
+    //项目字典
+    getItemDic(params) {
+      getObjectDic(params).then((res) => {
         if (res.status === 200) {
           res.data.List.forEach((item) => {
             item.text = item.ItemName;
@@ -331,8 +336,10 @@ export default {
           Toast("获取项目字典失败");
         }
       });
-      //标准字典
-      getStandardsDic().then((res) => {
+    },
+    //标准字典
+    getStandardDic(params) {
+      getStandardsDic(params).then((res) => {
         if (res.status === 200) {
           res.data.List.forEach((item) => {
             item.text = item.StandardName;
@@ -343,6 +350,7 @@ export default {
         }
       });
     },
+
     //格式化日期
     formatter(type, val) {
       switch (type) {
@@ -401,7 +409,6 @@ export default {
           useCdnDomain: true,
         }
       );
-      console.log(observable);
 
       const observer = {
         //  next(res) { },
@@ -457,7 +464,7 @@ export default {
         },
       };
       const subscription = observable.subscribe(observer);
-      console.log(subscription); // 上传开始
+      console.log(subscription);
       // this.fileLoading = this.helpUtil.loadingPop('正在上传，请稍等...');
     },
     //删除文件
