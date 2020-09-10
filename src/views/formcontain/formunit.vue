@@ -20,6 +20,7 @@
         :value="selectValue"
         label="所属模块"
         placeholder="点击选择模块"
+        :disabled="editAble"
         :rules="[{ required: true, message: '请选择模块' }]"
         @click="showModulesPicker = true"
       />
@@ -37,6 +38,7 @@
         name="ItemCode"
         :value="selectProject"
         label="所属项目"
+        :disabled="editAble"
         placeholder="点击选择项目"
         :rules="[{ required: true, message: '请选择项目' }]"
         @click="showProjectPicker= true"
@@ -55,6 +57,7 @@
         name="StandardCode"
         :value="selectStandard"
         label="所属标准"
+        :disabled="editAble"
         placeholder="点击选择标准"
         :rules="[{ required: true, message: '请选择标准' }]"
         @click="showStandardPicker = true"
@@ -72,6 +75,7 @@
         clickable
         name="ParticipateDate"
         :value="valueDate"
+        :disabled="editAble"
         label="时间选择"
         placeholder="点击选择时间"
         :rules="[{ required: true, message: '请选择时间' }]"
@@ -91,18 +95,20 @@
         label="详细内容"
         placeholder="
 请输入详细内容"
+        :disabled="editAble"
         type="textarea"
         maxlength="50"
         rows="2"
         :rules="[{required: true,  message: '请输入详细内容' }]"
       />
 
-      <van-field name="Evidence" label="文件上传">
+      <van-field name="Evidence" label="文件上传" :rules="[{required: true,message: '请选择文件上传' }]">
         <template #input>
           <van-uploader
-            v-model="uploader"
-            multiple
-            :max-count="2"
+            v-model="uploaders"
+            :disabled="editAble"
+             multiple
+            :max-count="1"
             :before-read="beforeRead"
             @delete="delFile()"
           />
@@ -137,6 +143,16 @@
         show-word-limit
       />
     </van-dialog>
+
+    <div v-if="scoreLogs.length>0" class="bottom-particular">
+      <p class="header-particular">审批明细</p>
+      <van-row v-for="item in scoreLogs" :key="item">
+        <van-col span="8">{{item.ApprovalDate}}</van-col>
+        <van-col span="8">{{item.Operator}}</van-col>
+        <van-col span="8">{{item.ApprovalDesc}}</van-col>
+      </van-row>
+      <van-cell v-if="this.unApproveReason!==''" title="审批不通过原因" :label="this.unApproveReason" />
+    </div>
   </div>
 </template>
 
@@ -144,6 +160,8 @@
 import { setAntTitle } from "../../lib/common";
 import Vue from "vue";
 import moment from "moment";
+import * as qiniu from "qiniu-js";
+import http from "../../lib/fetch";
 import {
   Icon,
   Row,
@@ -180,6 +198,9 @@ import {
   getStandardsDic,
   getApplyForAchievement,
   getApproveOfScore,
+  queryUpToken,
+  getRecordOfApprove,
+  //getschoolbackinfo,
 } from "../../service/common.service";
 export default {
   name: "formsubunit",
@@ -201,9 +222,13 @@ export default {
       selectStandard: "",
       detailsOfInfo: "",
       valueDate: "",
-      uploader: [],
+      uploaders: [],
       unApproveDisplay: false,
-      messageBind:""
+      messageBind: "",
+      evidenceKey: "",
+      scoreLogs: [],
+      unApproveReason: "",
+      editAble:true
     };
   },
   created() {
@@ -224,7 +249,17 @@ export default {
         this.selectStandard = this.defaultValues.StandardName;
         this.valueDate = this.defaultValues.ReportDate;
         this.detailsOfInfo = this.defaultValues.Description;
-        console.log(this.defaultValues.ModuleName);
+        this.editAble=true
+        //获取审批明细
+        getRecordOfApprove(this.defaultValues.RecordId).then((res) => {
+          if (res.status === 200) {
+            console.log(res);
+            this.scoreLogs = res.data.ScoreLogs.Record;
+            if (res.data.RejectReason) {
+              this.unApproveReason = res.data.RejectReason;
+            }
+          }
+        });
       }
     },
     onSubmit(values) {
@@ -241,7 +276,7 @@ export default {
       values.ModuleCode = this.modulesBelong[x].code;
       values.ItemCode = this.projectBelong[y].ItemCode;
       values.StandardCode = this.standardBelong[z].StandardCode;
-      values.Evidence = "ue83r92ru283";
+      values.Evidence = this.evidenceKey;
       //提交申请
       getApplyForAchievement(values).then((res) => {
         if (res.status === 200) {
@@ -329,7 +364,6 @@ export default {
     },
     //上传文件uploader
     beforeRead(file) {
-      console.log(file, "内容");
       if (file.type !== "image/jpeg" && file.type !== "image/png") {
         Toast("请上传jpeg,png格式图片");
         return false;
@@ -337,11 +371,99 @@ export default {
         Toast("上传文件大于10m");
         return false;
       }
+
+      queryUpToken(file.name, file.size).then((res) => {
+        this.upload({
+          file: file,
+          key: res.data.Data.Key,
+          token: res.data.Data.Proof,
+        });
+      });
       return true;
+    },
+    upload(obj) {
+      const that = this;
+      const observable = qiniu.upload(
+        obj.file,
+        obj.key,
+        obj.token,
+        {
+          mimeType: [
+            "image/png",
+            "image/jpeg",
+            "image/jpg",
+            "image/gif",
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          ],
+        },
+        {
+          useCdnDomain: true,
+        }
+      );
+      console.log(observable);
+
+      const observer = {
+        //  next(res) { },
+        error(err) {
+          this.message.create("warn", err.message);
+        },
+        complete(res) {
+          const file = obj.file;
+          // that.fileLoading.dismiss();
+          http
+            .postJSON({
+              Router: "/api/system/saveattach",
+              Method: "POST",
+              Body: {
+                BizType: "",
+                AttachmentItemName: file.name || "",
+                AttachmentItemType: file.type,
+                AttachmentItemSize: file.size.toString(),
+                AttachmentURL: res.key,
+              },
+            })
+            .then((ress) => {
+              console.log(ress, that);
+              that.evidenceKey = ress.data.Data.RecordID;
+              /*       if (ress.data.Data.RecordID) {
+              if (
+                file.type !== 'application/msword' &&
+                'application/pdf' &&
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+              ) {
+                that.uploaders.push({
+                  uid: ress.data.Data.RecordID,
+                  url: ress.data.Data.URL,
+                  name: file.name,
+                  status: 'done',
+                });
+               
+
+                
+               // that.fileUpdate();
+              } else {
+                that.uploaders.push({
+                  uid: ress.data.Data.RecordID,
+                  url: ress.data.Data.URL,
+                  name: file.name,
+                  status: 'done',
+                });
+                 
+                //that.fileUpdate();
+              }
+            } */
+            });
+        },
+      };
+      const subscription = observable.subscribe(observer);
+      console.log(subscription); // 上传开始
+      // this.fileLoading = this.helpUtil.loadingPop('正在上传，请稍等...');
     },
     //删除文件
     delFile() {
-      console.log(this.uploader);
+      console.log(this.uploaders);
       // const imgCollect = this.uploader;
     },
     unApprove() {
@@ -350,8 +472,8 @@ export default {
     //审批不通过
     unApproveSubmit() {
       const params = {
-       RecordId: [this.infoGet.RecordId],
-            RejectReason: this.messageBind,
+        RecordId: [this.infoGet.RecordId],
+        RejectReason: this.messageBind,
         ApprovalStatus: 11,
       };
       this.submitApprovement(params);
@@ -399,5 +521,29 @@ export default {
 }
 .formpage {
   padding-bottom: 60px;
+}
+.bottom-particular {
+  background: #fff;
+  padding: 0px 0px 16px 0px;
+}
+.header-particular {
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-indent: 15px;
+  line-height: 32px;
+  margin: 15px 0px 0px 0px;
+}
+.line-particular {
+  color: #405fff;
+}
+.van-row .van-col--8 {
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 22px;
+  text-indent: 18px;
+}
+.van-cell-group {
+  background-color: red;
 }
 </style>

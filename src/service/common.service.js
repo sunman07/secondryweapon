@@ -83,11 +83,35 @@ export function getStudentsScoreInfo(params) {
 // 班委和老师审批成绩 
 export function getApproveOfScore(params) {
 	return axios
-		.post(baseLink + `api/v1/scoreapprove/approvescore`, params)
+		.post(baseLink + `/api/v1/scoreapprove/approvescore`, params)
 		.then(res => {
 			return res;
 		});
 }
+  //审批记录
+  export function getRecordOfApprove(params) {
+	return axios
+		.get(baseLink + `/api/v1/scoreapprove/getscore?RecordId=${params}`)
+		.then(res => {
+			return res;
+		});
+}
+//文件上传
+// 获取上传接口需要的token
+export function queryUpToken(name, size){
+	return http.postJSON({
+		Router: '/api/fproof/appget',
+		Method: 'POST',
+		Body: {
+			Name: name,
+			Size: size,
+			BizType: 'act',
+		}
+	});
+    
+  }
+
+  
 // 校级-院级-班级 一级页面 二级页面 6合1
 export function getschoolbackinfo(level, id, type) {
 	return http.postJSON({

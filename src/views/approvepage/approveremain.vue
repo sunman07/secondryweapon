@@ -3,7 +3,7 @@
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
       <van-checkbox-group v-model="resultChecked">
         <van-cell-group>
-          <div v-for="(item,index) in entryDetails" :key="item" class="card-remain">
+          <div v-for="(item,index) in entryDetails" :key="item.RecordId" class="card-remain">
             <van-row>
               <van-col span="3">
                 <van-checkbox
@@ -48,6 +48,7 @@
       v-model="unApproveDisplay"
       title="请写明不通过的原因"
       @confirm="unApproveSubmit"
+      @cancel="undoOfApprove"
       show-cancel-button
     >
       <van-field
@@ -100,7 +101,7 @@ export default {
       resultChecked: [],
       unApproveDisplay: false,
       messageBind: "",
-      paramsQuery: {ApprovalStatus: 10, Page: 0, PageCount: 10},
+      paramsQuery: { ApprovalStatus: 10, Page: 0, PageCount: 10 },
     };
   },
   methods: {
@@ -146,7 +147,6 @@ export default {
     },
     //复选框选中
     toggleCheckBox(index) {
-      console.log(index, this.resultChecked);
       //手动处理选中事件
       this.$refs.checkboxes[index].checked.toggle();
     },
@@ -154,20 +154,32 @@ export default {
       if (this.resultChecked.length > 0) {
         this.unApproveDisplay = true;
       } else {
-        Toast("请选择项目后再再操作");
+        Toast("请选择项目后再操作");
       }
     },
+
+    //取消按钮
+    undoOfApprove() {
+      this.messageBind = "";
+    },
+
     //审批不通过
     unApproveSubmit() {
+      this.finished = false;
+      this.loading = true;
+
       const params = {
         RecordId: this.resultChecked,
         RejectReason: this.messageBind,
         ApprovalStatus: 11,
       };
+      this.messageBind = "";
       this.submitApprovement(params);
     },
     //审批通过按钮
     getApprove() {
+      this.finished = false;
+      this.loading = true;
       if (this.resultChecked.length > 0) {
         Dialog.confirm({
           title: "确定要审批通过吗？",
@@ -184,17 +196,21 @@ export default {
             // on cancel
           });
       } else {
-        Toast("请选择项目后再再操作");
+        Toast("请选择项目后再操作");
       }
     },
     submitApprovement(params) {
       getApproveOfScore(params).then((res) => {
-        console.log(res);
+        if (res.status === 200) {
+          this.paramsQuery.Page = 0;
+          this.entryDetails = [];
+          this.onLoad();
+        }
       });
     },
   },
   mounted() {
-  /*   this.paramsQuery = { ApprovalStatus: 10, Page: 1, PageCount: 10 };
+    /*   this.paramsQuery = { ApprovalStatus: 10, Page: 1, PageCount: 10 };
     this.getStudentsScoreDetails(this.paramsQuery); */
   },
 };
@@ -233,6 +249,9 @@ export default {
   position: fixed;
   bottom: 0px;
   width: 100%;
+}
+.van-cell-group{
+  background-color: #f8f8f8;
 }
 .approve-remain {
   width: 100%;

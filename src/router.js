@@ -20,19 +20,19 @@ export default new Router({
       path: "/apply",
       name: "apply",
       component: () =>
-        import("./views/mainpage/applypage.vue")
+        import("./views/formcontain/applypage.vue")
     },
     {
       path: "/approve",
       name: "approve",
       component: () =>
-        import("./views/mainpage/approvepage.vue")
+        import("./views/approvepage/approvepage.vue")
     },
     {
       path: "/appdetails",
       name: "appdetails",
       component: () =>
-        import("./views/mainpage/approvedetailpage.vue")
+        import("./views/approvepage/approvedetailpage.vue")
     },
     
   ]

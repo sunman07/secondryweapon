@@ -5,7 +5,7 @@
     <InitializeOfMain :headprops="transferUnit" @getPropsForMain="getTypes" />
     <ParticularsUnit :headprops="transferUnit" />
     <van-popup v-model="displayPopup" position="bottom">
-      <van-picker show-toolbar :columns="columnsOfTerm" @confirm="onTermOfChange" />
+      <van-picker show-toolbar :columns="columnsOfTerm" @cancel="cancelConfirm" @confirm="onTermOfChange" />
     </van-popup>
     <van-button @click="applySubmit" class="button-main" type="primary">我要申请</van-button>
   </div>
@@ -78,6 +78,9 @@ export default {
         : ((params.Codes = picker.code), (params.Types = "AcademicYearCode"));
       //赋值并传给子组件
       this.transferUnit = params;
+      this.displayPopup = false;
+    },
+    cancelConfirm(){
       this.displayPopup = false;
     },
     //我要申请

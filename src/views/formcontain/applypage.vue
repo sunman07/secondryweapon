@@ -1,7 +1,6 @@
 <template>
   <div>
     <FormSubUnit/>
-    <van-button class="submit-apply" type="info">提交</van-button>
   </div>
 </template>
 

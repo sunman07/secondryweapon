@@ -1,7 +1,7 @@
 <template>
   <div class="bottom-particular">
     <p class="header-particular">积分明细</p>
-    <van-row v-for="(item,index) in entryOfParticulars" :key="index">
+    <van-row v-for="(item,index) in entryOfParticulars" @click="pushDetails(item)" :key="index">
       <van-col span="6">{{item.ApprovalDate}}</van-col>
       <van-col span="6">
         <a class="line-particular" href="#">论文</a>
@@ -18,7 +18,10 @@
 <script>
 import Vue from "vue";
 import { Col, Row, Toast, Button, Loading } from "vant";
-import { getStudentsScoreDetailed } from "../../service/common.service";
+import {
+  getStudentsScoreDetailed,
+  getRecordOfApprove,
+} from "../../service/common.service";
 Vue.use(Col).use(Row).use(Toast).use(Button).use(Loading);
 export default {
   name: "particularsunit",
@@ -26,7 +29,7 @@ export default {
   data() {
     return {
       entryOfParticulars: [],
-      infoForParams: { Page: 1, PageCount: 1,Types: "", Code: ""  },
+      infoForParams: { Page: 1, PageCount: 5, Types: "", Code: "" },
       loadingSet: false,
       loadingLine: false,
     };
@@ -34,9 +37,8 @@ export default {
   watch: {
     headprops(newVal) {
       const paramsBackup = JSON.parse(JSON.stringify(newVal));
-      this.infoForParams = { Page: 1, PageCount: 1, ...paramsBackup };
+      this.infoForParams = { Page: 1, PageCount: 5, ...paramsBackup };
       this.getParticularsStudents(this.infoForParams);
-      console.log(paramsBackup, "新的a", this.infoForParams);
     },
   },
   methods: {
@@ -51,6 +53,7 @@ export default {
       getStudentsScoreDetailed(params).then((res) => {
         if (res.status === 200) {
           if (res.data.List !== null) {
+            console.log(res);
             this.loadingSet = false;
             this.entryOfParticulars.push(...res.data.List);
           } else {
@@ -62,12 +65,29 @@ export default {
         }
       });
     },
+    //跳转明细查看
+    pushDetails(item) {
+      console.log(item.RecordId);
+      getRecordOfApprove(item.RecordId).then((res) => {
+        if (res.status === 200) {
+          console.log(res.data.ScoreDetails);
+          this.$router.push({
+            name: "appdetails",
+            query: { mark: res.data.ScoreDetails },
+          });
+        }
+      });
+      /*  this.$router.push({
+        name: "appdetails",
+        query: { mark: item },
+      }); */
+    },
   },
   mounted() {
     //第一次加载
     const params = {
       Page: 1,
-      PageCount: 1,
+      PageCount: 5,
     };
     this.getParticularsStudents(params);
   },

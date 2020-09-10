@@ -3,7 +3,7 @@
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
     
         <van-cell-group>
-          <div v-for="(item) in entryDetails" :key="item" class="card-remain">
+          <div v-for="(item) in entryDetails" :key="item.RecordId" class="card-remain">
             <van-row>
               <van-col span="2">
            
@@ -72,7 +72,7 @@ export default {
       resultChecked: [],
       unApproveDisplay: false,
       messageBind: "",
-      paramsQuery: {ApprovalStatus: 10, Page: 0, PageCount: 10},
+      paramsQuery: {ApprovalStatus: 1112, Page: 0, PageCount: 10},
     };
   },
   methods: {
@@ -162,6 +162,9 @@ export default {
   position: fixed;
   bottom: 0px;
   width: 100%;
+}
+.van-cell-group{
+  background-color: #f8f8f8;
 }
 .approve-remain {
   width: 100%;

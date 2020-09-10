@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import FormSubUnit from "./formunit";
+import FormSubUnit from "../formcontain/formunit";
 export default {
   components: {
     FormSubUnit,
@@ -21,5 +21,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang='less' scoped>
+.van-cell-group{
+  background: red;
+}
 </style>
