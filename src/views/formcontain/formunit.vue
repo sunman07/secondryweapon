@@ -20,9 +20,9 @@
         :value="selectValue"
         label="所属模块"
         placeholder="点击选择模块"
-        :disabled="editAble"
         :rules="[{ required: true, message: '请选择模块' }]"
-        @click="showModulesPicker = true"
+        @click="editAble?showModulesPicker = true:null"
+        
       />
       <van-popup v-model="showModulesPicker" position="bottom">
         <van-picker
@@ -38,10 +38,10 @@
         name="ItemCode"
         :value="selectProject"
         label="所属项目"
-        :disabled="editAble"
+          @click="editAble?showProjectPicker = true:null"
         placeholder="点击选择项目"
         :rules="[{ required: true, message: '请选择项目' }]"
-        @click="showProjectPicker= true"
+     
       />
       <van-popup v-model="showProjectPicker" position="bottom">
         <van-picker
@@ -57,10 +57,10 @@
         name="StandardCode"
         :value="selectStandard"
         label="所属标准"
-        :disabled="editAble"
+         @click="editAble?showStandardPicker = true:null"
         placeholder="点击选择标准"
         :rules="[{ required: true, message: '请选择标准' }]"
-        @click="showStandardPicker = true"
+        
       />
       <van-popup v-model="showStandardPicker" position="bottom">
         <van-picker
@@ -75,11 +75,10 @@
         clickable
         name="ParticipateDate"
         :value="valueDate"
-        :disabled="editAble"
+        @click="editAble?showTimePicker = true:null"
         label="时间选择"
         placeholder="点击选择时间"
         :rules="[{ required: true, message: '请选择时间' }]"
-        @click="showTimePicker = true"
       />
       <van-popup v-model="showTimePicker" position="bottom">
         <van-datetime-picker
@@ -95,7 +94,7 @@
         label="详细内容"
         placeholder="
 请输入详细内容"
-        :disabled="editAble"
+        :disabled="!editAble"
         type="textarea"
         maxlength="50"
         rows="2"
@@ -106,8 +105,8 @@
         <template #input>
           <van-uploader
             v-model="uploaders"
-            :disabled="editAble"
-             multiple
+            :disabled="!editAble"
+            multiple
             :max-count="1"
             :before-read="beforeRead"
             @delete="delFile()"
@@ -228,7 +227,7 @@ export default {
       evidenceKey: "",
       scoreLogs: [],
       unApproveReason: "",
-      editAble:true
+      editAble: true,
     };
   },
   created() {
@@ -249,7 +248,7 @@ export default {
         this.selectStandard = this.defaultValues.StandardName;
         this.valueDate = this.defaultValues.ReportDate;
         this.detailsOfInfo = this.defaultValues.Description;
-        this.editAble=true
+        this.editAble = false;
         //获取审批明细
         getRecordOfApprove(this.defaultValues.RecordId).then((res) => {
           if (res.status === 200) {
